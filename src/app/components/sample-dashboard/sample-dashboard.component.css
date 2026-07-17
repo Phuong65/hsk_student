@@ -1,0 +1,58 @@
+.sale-dashboard-layout {
+    --bs-card-bg: #ffffff;
+    --bs-border-color: #efefef;
+    display: block;
+    --gutter-x: 1.5rem;
+    padding: var(--gutter-x);
+}
+
+.sale-dashboard-layout__inner {
+    display: block;
+    padding: var(--gutter-y) calc(0.5 * var(--gutter-x));
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.card {
+    width: 100%;
+    border: none;
+    overflow: hidden;
+    background-color: var(--bs-card-bg);
+    border-color: var(--bs-border-color);
+    --bs-success-bg-subtle: #d1e7dd;
+}
+
+.w-30 {
+    width: 112px !important;
+}
+
+.bg-light-success {
+    background-color: var(--bs-success-bg-subtle) !important;
+}
+
+.bg-light-danger {
+    background-color: var(--bs-danger-bg-subtle) !important;
+}
+
+.bg-light-warning {
+    background-color: var(--bs-warning-bg-subtle) !important;
+}
+
+.bg-light-info {
+    background-color: var(--bs-info-bg-subtle) !important;
+}
+
+.sale-card__title {
+    font-size: 41px;
+    font-weight: 700;
+}
+
+.sale-card__subtitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--bs-dark), transparent 20%) !important
+}
+
+.row + .row {
+    margin-top: var(--gutter-x);
+}

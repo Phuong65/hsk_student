@@ -1,0 +1,57 @@
+<div class="staff-control d-flex align-items-center justify-content-start w-100 h-100 position-relative" [ngClass]="'staff-control--'+layout()">
+	@switch (state()) {
+		@case ('loading') {
+			<div class="staff-control__loading position-absolute inset-1 zdx-5 d-flex align-items-center justify-content-start">
+				<img ngSrc="images/analytics-short-report-loader.svg" priority alt="Analytics Report Loader" width="300" height="50">
+			</div>
+		}
+		@case ('success') {
+			<p-select [disabled]="disabled()" [options]="options()" [showClear]="showClear()" [(ngModel)]="value" [filter]="filter()" filterBy="label" (ngModelChange)="triggerChanges($event)" appendTo="body" class="staff-control__selector w-100" [placeholder]="placeholder()" [emptyFilterMessage]="emptyFilterMessage()" [emptyMessage]="emptyMessage()" [panelStyleClass]="panelStyleClasses()">
+				<ng-template #selectedItem let-selectedOption>
+					@if (selectedOption) {
+						<div class="staff-control__content position-relative d-flex w-100">
+							@switch (layout()) {
+								@case ('simple') {
+									<!-- <figure class="staff-control__content__avatar wid-40 hei-40">
+										<img [src]="selectedOption.raw | employeePhoto : 'images/user/avatar-placeholder.jpg'" alt="" width="50" height="50">
+									</figure> -->
+									<div class="staff-control__content__info align-items-center d-inline-flex flex-fill p-l-5 p-r-10">
+										<h4 class="staff-control__content__info__name d-block f-roboto f-14 fw-normal lh-base p-0 m-0">{{ selectedOption.raw?.full_name ?? '---- ---- ---- ----' }}</h4>
+									</div>
+								}
+								@default {
+									<figure class="staff-control__content__avatar wid-40 hei-40">
+										<img [src]="selectedOption.raw | employeePhoto : 'images/user/avatar-placeholder.jpg'" alt="" width="50" height="50">
+									</figure>
+									<div class="staff-control__content__info flex-fill d-flex flex-column justify-content-start align-items-start p-l-5 p-r-5">
+										<h4 class="staff-control__content__info__name d-block f-roboto f-14 fw-medium lh-base p-0 m-0">{{ selectedOption.raw?.full_name ?? '---- ---- ---- ----' }}</h4>
+										<p class="staff-control__content__info__email d-block f-roboto f-14 fw-normal lh-1 p-0">{{ selectedOption.raw?.email ?? '---- ---- ---- ----' }}</p>
+									</div>
+								}
+							}
+						</div>
+					}
+				</ng-template>
+				<ng-template let-option #item>
+					<div class="staff-control__content position-relative d-flex w-100">
+						<figure class="staff-control__content__avatar wid-40 hei-40">
+							<img [src]="option.raw | employeePhoto : 'images/user/avatar-placeholder.jpg'" alt="" width="50" height="50">
+						</figure>
+						<div class="staff-control__content__info flex-fill d-flex flex-column justify-content-start align-items-start p-l-10 p-r-5">
+							<h4 class="staff-control__content__info__name d-block f-roboto f-14 fw-medium lh-base p-0 m-0">{{ option.raw?.full_name ?? '---- ---- ---- ----' }}</h4>
+							<p class="staff-control__content__info__email d-block f-roboto f-14 fw-normal lh-1 p-0">{{ option.raw?.email ?? '---- ---- ---- ----' }}</p>
+						</div>
+					</div>
+				</ng-template>
+				<ng-template #dropdownicon>
+					<i [ngClass]="dropdownIcon()"></i>
+				</ng-template>
+			</p-select>
+		}
+		@default {
+			<div class="position-absolute d-flex align-items-center justify-content-center inset-1 zdx-5">
+				<button (click)="btnReload()" class="staff-control__btn-alert d-flex align-items-center justify-content-center w-100 h-100 f-roboto f-14 fw-normal lh-base">Mất kết nối với máy chủ. Tải lại.</button>
+			</div>
+		}
+	}
+</div>

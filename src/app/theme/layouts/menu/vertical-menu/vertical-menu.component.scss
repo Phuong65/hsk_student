@@ -1,0 +1,47 @@
+@use '../../../styles/theme-palette-colors' as *;
+
+.w-50 {
+    width: 50%;
+}
+
+.user-setting {
+    .btn-collapse-toggle {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: center;
+        background: 0 0;
+        color: #5b6b79;
+        border-color: transparent;
+
+        &:hover, &:focus {
+            background: #eff0f2;
+            color: #5b6b79;
+            border-color: #eff0f2;
+        }
+    }
+}
+
+.pc-user-links {
+    .pc-user-links__container {
+        padding-top: 16px;
+    }
+
+    a {
+        display: flex;
+        align-items: center;
+        color: #5b6b79;
+        padding: 8px 0;
+
+        &:hover {
+            color: #4680ff;
+        }
+    }
+
+    i {
+        font-size: 18px;
+        margin-right: 10px
+    }
+}

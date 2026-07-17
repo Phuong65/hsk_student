@@ -1,0 +1,129 @@
+<div class="card card-2 bg-white" style="--card-2-padding: 25px;--card-2-heading-gap: 25px;">
+	<div class="card-2-body position-relative">
+		<form [formGroup]="formGroup" class="ictu-form p-0">
+			<div class="ictu-form__row">
+				<div class="d-flex justify-content-center align-items-center">
+					<div class="profile-photo-maker">
+						<div class="profile-photo-maker__photo ictu-media-wrapper">
+							<img [src]="getControl( 'photo' ).value || profilePhotoPlaceholder()" alt="" class="profile-photo-maker__photo__img">
+							<button (click)="btnUpdateEmployeePhoto()" class="btn profile-photo-maker__btn-upload">
+								<i class="ti ti-camera-plus"></i>
+							</button>
+						</div>
+						<h4 class="profile-photo-maker__heading">Ảnh hồ sơ</h4>
+						<p class="profile-photo-maker__desc">(Size 200x200)</p>
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<div class="row">
+					<div class="col-8">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('full_name').hasValidator(Validators.required)" class="ictu-form__label" for="f_name">Họ và tên</label>
+							<input class="ictu-form__input-field" formControlName="full_name" id="f_name" pInputText placeholder="Họ và tên" type="text">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('code').hasValidator(Validators.required)" class="ictu-form__label" for="em_code">Mã nhân viên</label>
+							<input class="ictu-form__input-field" formControlName="code" id="em_code" pInputText placeholder="Mã nhân viên" type="text">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<div class="row">
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('gender').hasValidator(Validators.required)" class="ictu-form__label">Giới tính</label>
+							<p-select [options]="genderOptions" appendTo="body" class="ictu-form__input-field" formControlName="gender" placeholder="Giới tính"/>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('dob').hasValidator(Validators.required)" class="ictu-form__label">Ngày sinh</label>
+							<p-inputmask class="ictu-form__input-field" formControlName="dob" mask="99/99/9999" placeholder="dd/mm/yyyy" slotChar="--/--/----"/>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('linhvuc_id').hasValidator(Validators.required)" class="ictu-form__label">Lĩnh vực chuyên môn</label>
+							<p-select [options]="dmLinhVuc()" appendTo="body" class="ictu-form__input-field" emptyMessage="không có lĩnh vực chuyên môn" formControlName="linhvuc_id" placeholder="Lĩnh vực chuyên môn"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<div class="row">
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('email').hasValidator(Validators.required)" class="ictu-form__label">Email</label>
+							<input class="ictu-form__input-field" formControlName="email" pInputText placeholder="Email" type="text">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('phone').hasValidator(Validators.required)" class="ictu-form__label">Số điện thoại</label>
+							<input class="ictu-form__input-field" formControlName="phone" pInputText placeholder="Số điện thoại liên hệ" type="text">
+						</div>
+					</div>
+					<div class="col-4">
+
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<div class="row">
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('academic_degree').hasValidator(Validators.required)" class="ictu-form__label">Học vị</label>
+							<p-select [options]="ACADEMIC_DEGREE_OPTIONS" [showClear]="true" appendTo="body" class="ictu-form__input-field" formControlName="academic_degree" placeholder="Học vị"/>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('academic_rank').hasValidator(Validators.required)" class="ictu-form__label">Học hàm</label>
+							<p-select [options]="ACADEMIC_RANK_OPTIONS" [showClear]="true" appendTo="body" class="ictu-form__input-field" formControlName="academic_rank" placeholder="Học hàm"/>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('nationality').hasValidator(Validators.required)" class="ictu-form__label" for="em_nationality">Quốc tịch</label>
+							<input class="ictu-form__input-field" formControlName="nationality" id="em_nationality" pInputText placeholder="Quốc tịch" type="text">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<div class="row">
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('language').hasValidator(Validators.required)" class="ictu-form__label">Ngôn ngữ</label>
+							<p-select [options]="EMPLOYEE_LANGUAGE_OPTIONS" appendTo="body" class="ictu-form__input-field" formControlName="language" placeholder="-- Ngôn ngữ hiển thị --"/>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('workplace').hasValidator(Validators.required)" class="ictu-form__label" for="em_workplace_name">Đơn vị công tác<i appendTo="body" class="ictu-form__label__guide pi pi-info-circle ms-1 fw-normal text-muted f-14" pTooltip="Đơn vị công tác của bạn hiện tại." tooltipPosition="left" tooltipStyleClass="ictu-input-form__tooltip"></i></label>
+							<input class="ictu-form__input-field" formControlName="workplace" id="em_workplace_name" pInputText pTextarea placeholder="Tên đơn vị đang công tác" type="text">
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="ictu-form__row">
+							<label [class.ictu-form__label--required]="getControl('workplace_position').hasValidator(Validators.required)" class="ictu-form__label" for="em_workplace_position">Chức vụ<i appendTo="body" class="ictu-form__label__guide pi pi-info-circle ms-1 fw-normal text-muted f-14" pTooltip="Chức vụ bạn đang đảm nhiệm tại đơn vị công tác." tooltipPosition="left" tooltipStyleClass="ictu-input-form__tooltip"></i></label>
+							<input class="ictu-form__input-field" formControlName="workplace_position" id="em_workplace_position" pInputText pTextarea placeholder="Chức vụ tại đơn vị đang công tác" type="text">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ictu-form__row">
+				<label [class.ictu-form__label--required]="getControl('contract_status').hasValidator(Validators.required)" class="ictu-form__label">Trạng thái hợp đồng</label>
+				<p-select [options]="EMPLOYEE_CONTRACT_STATUS_OPTIONS" appendTo="body" class="ictu-form__input-field" formControlName="contract_status" placeholder="-- Trạng thái hợp đồng --"/>
+			</div>
+			<div class="d-flex justify-content-end align-items-center w-100">
+				<small class="ictu-form-guide f-roboto my-0 ms-0 me-auto fw-normal text-muted text-left" style="font-size: 13px;">Những trường đánh dấu (*) là những trường bắt buộc, không được bỏ trống</small>
+				<button [disabled]="!(formGroup.valid && formGroup.touched)" class="card-2-footer__button btn ictu-badge-btn--success-reverse" mat-flat-button>Lưu lại</button>
+			</div>
+		</form>
+	</div>
+</div>

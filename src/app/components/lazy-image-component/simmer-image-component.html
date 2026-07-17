@@ -1,0 +1,11 @@
+<div class="shimmer-image-wrapper">
+  @if (loading) {
+    <div class="shimmer-image"></div>
+  }
+
+  @if (imageUrl) {
+    <img [src]="imageUrl" (load)="onImageLoad()" (error)="onImageError()" class="shimmer-image__img" alt="Lazy loaded image" [style.opacity]="loading ? 0 : 1"/>
+  }
+</div>
+
+<div class="shimmer-image__page">Trang {{ idPage() }}</div>

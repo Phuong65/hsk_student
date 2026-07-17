@@ -1,0 +1,612 @@
+:root {
+    --primary-50: #e9f0ff;
+    --primary-100: #dae6ff;
+    --primary-200: #b5ccff;
+    --primary-300: #90b3ff;
+    --primary-400: #6b99ff;
+    --primary-500: #4680ff;
+    --primary-600: #2281df;
+    --primary-700: #1c76da;
+    --primary-800: #176cd6;
+    --primary-900: #0d59cf;
+    --accent-50: #fff;
+    --accent-100: #f8f9fa;
+    --accent-200: #f3f5f7;
+    --accent-300: #dbe0e5;
+    --accent-400: #bec8d0;
+    --accent-500: #8996a4;
+    --accent-600: #5b6b79;
+    --accent-700: #3e4853;
+    --accent-800: #1d2630;
+    --accent-900: #131920;
+    --warn-50: #fbe5e5;
+    --warn-100: #f5bebe;
+    --warn-200: #ee9393;
+    --warn-300: #e76767;
+    --warn-400: #e14747;
+    --warn-500: #dc2626;
+    --warn-600: #d82222;
+    --warn-700: #d31c1c;
+    --warn-800: #ce1717;
+    --warn-900: #c50d0d;
+    --success-50: #e6f5f0;
+    --success-100: #c0e5d9;
+    --success-200: #96d4bf;
+    --success-300: #6bc2a5;
+    --success-400: #4cb592;
+    --success-500: #2ca87f;
+    --success-600: #27a077;
+    --success-700: #21976c;
+    --success-800: #1b8d62;
+    --success-900: #107d4f;
+    --warning-50: #fcf1e0;
+    --warning-100: #f7dcb3;
+    --warning-200: #f2c580;
+    --warning-300: #edad4d;
+    --warning-400: #e99c26;
+    --warning-500: #e58a00;
+    --warning-600: #e28200;
+    --warning-700: #de7700;
+    --warning-800: #da6d00;
+    --warning-900: #d35a00;
+
+    --ictu-primary-rgb: 139, 126, 255;
+    --ictu-secondary-rgb: 255, 183, 72;
+    --ictu-warning-rgb: 255, 192, 65;
+    --ictu-info-rgb: 46, 142, 247;
+    --ictu-success-rgb: 53, 189, 170;
+    --ictu-danger-rgb: 248, 66, 56;
+    --ictu-light-rgb: 246, 248, 251;
+    --ictu-dark-rgb: 35, 35, 35;
+    --ictu-light-black-rgb: 71, 85, 105;
+    --ictu-orange-rgb: 255, 127, 80;
+    --ictu-pink-rgb: 244, 138, 167;
+    --ictu-teal-rgb: 18, 194, 194;
+    --ictu-purple-rgb: 140, 11, 244;
+    --ictu-green-rgb: 10, 216, 44;
+    --ictu-primary-color: rgb(var(--ictu-primary-rgb));
+    --ictu-primary01: rgba(var(--ictu-primary-rgb), 0.1);
+    --ictu-primary02: rgba(var(--ictu-primary-rgb), 0.2);
+    --ictu-primary03: rgba(var(--ictu-primary-rgb), 0.3);
+    --ictu-primary04: rgba(var(--ictu-primary-rgb), 0.4);
+    --ictu-primary05: rgba(var(--ictu-primary-rgb), 0.5);
+    --ictu-primary06: rgba(var(--ictu-primary-rgb), 0.6);
+    --ictu-primary07: rgba(var(--ictu-primary-rgb), 0.7);
+    --ictu-primary08: rgba(var(--ictu-primary-rgb), 0.8);
+    --ictu-primary09: rgba(var(--ictu-primary-rgb), 0.9);
+    --ictu-primary005: rgba(var(--ictu-primary-rgb), 0.05);
+}
+
+[class*=ictu-badge-btn],
+[class*=ictu-button] {
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: none;
+    font-family: var(--primary-font-family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+[class*=ictu-button].mdc-button,
+[class*=ictu-badge-btn].mdc-button {
+    padding: 0;
+    min-width: auto;
+    min-height: auto;
+    --mat-button-filled-container-height: auto;
+    --mat-button-outlined-container-height: auto;
+    line-height: 1;
+}
+
+/* Start:: Light Buttons */
+.ictu-button-primary-light.mdc-button:not(:disabled),
+.ictu-button-primary-light {
+    background-color: var(--ictu-primary01);
+    color: var(--ictu-primary-color);
+    border: none;
+}
+
+.mdc-button.ictu-button-primary-light:not(:disabled):hover,
+.ictu-button-primary-light:hover {
+    background-color: var(--ictu-primary-color);
+    color: #fff;
+    border-color: var(--ictu-primary-color);
+}
+
+.ictu-button-secondary-light.mdc-button:not(:disabled),
+.ictu-button-secondary-light {
+    background-color: rgba(var(--ictu-secondary-rgb), 0.1);
+    color: rgb(var(--ictu-secondary-rgb));
+    border: none;
+}
+
+.ictu-button-secondary-light.mdc-button:not(:disabled):hover,
+.ictu-button-secondary-light:hover {
+    background-color: rgb(var(--ictu-secondary-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-secondary-rgb));
+}
+
+.ictu-button-warning-light.mdc-button:not(:disabled),
+.ictu-button-warning-light {
+    background-color: rgba(var(--ictu-warning-rgb), 0.1);
+    color: rgb(var(--ictu-warning-rgb));
+    border: none;
+}
+
+.ictu-button-warning-light.mdc-button:not(:disabled):hover,
+.ictu-button-warning-light:hover {
+    background-color: rgb(var(--ictu-warning-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-warning-rgb));
+}
+
+.ictu-button-info-light.mdc-button:not(:disabled),
+.ictu-button-info-light {
+    background-color: rgba(var(--ictu-info-rgb), 0.1);
+    color: rgb(var(--ictu-info-rgb));
+    border: none;
+}
+
+.ictu-button-info-light.mdc-button:not(:disabled):hover,
+.ictu-button-info-light:hover {
+    background-color: rgb(var(--ictu-info-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-info-rgb));
+}
+
+.ictu-button-success-light.mdc-button:not(:disabled),
+.ictu-button-success-light {
+    background-color: rgba(var(--ictu-success-rgb), 0.1);
+    color: rgb(var(--ictu-success-rgb));
+    border: none;
+}
+
+.ictu-button-success-light.mdc-button:not(:disabled):hover,
+.ictu-button-success-light:hover {
+    background-color: rgb(var(--ictu-success-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-success-rgb));
+}
+
+.ictu-button-danger-light.mdc-button:not(:disabled),
+.ictu-button-danger-light {
+    background-color: rgba(var(--ictu-danger-rgb), 0.1);
+    color: rgb(var(--ictu-danger-rgb));
+    border: none;
+}
+
+.ictu-button-danger-light.mdc-button:not(:disabled):hover,
+.ictu-button-danger-light:hover {
+    background-color: rgb(var(--ictu-danger-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-danger-rgb));
+}
+
+.ictu-button-purple-light.mdc-button:not(:disabled),
+.ictu-button-purple-light {
+    background-color: rgba(var(--ictu-purple-rgb), 0.1);
+    color: rgb(var(--ictu-purple-rgb));
+    border: none;
+}
+
+.ictu-button-purple-light.mdc-button:not(:disabled):hover,
+.ictu-button-purple-light:hover {
+    background-color: rgb(var(--ictu-purple-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-purple-rgb));
+}
+
+.ictu-button-teal-light.mdc-button:not(:disabled),
+.ictu-button-teal-light {
+    background-color: rgba(var(--ictu-teal-rgb), 0.1);
+    color: rgb(var(--ictu-teal-rgb));
+    border: none;
+}
+
+.ictu-button-teal-light.mdc-button:not(:disabled):hover,
+.ictu-button-teal-light:hover {
+    background-color: rgb(var(--ictu-teal-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-teal-rgb));
+}
+
+.ictu-button-orange-light.mdc-button:not(:disabled),
+.ictu-button-orange-light {
+    background-color: rgba(var(--ictu-orange-rgb), 0.1);
+    color: rgb(var(--ictu-orange-rgb));
+    border: none;
+}
+
+.ictu-button-orange-light.mdc-button:not(:disabled):hover,
+.ictu-button-orange-light:hover {
+    background-color: rgb(var(--ictu-orange-rgb));
+    color: #fff;
+    border-color: rgb(var(--ictu-orange-rgb));
+}
+
+.ictu-button-primary-light:disabled,
+.ictu-button-secondary-light:disabled,
+.ictu-button-warning-light:disabled,
+.ictu-button-info-light:disabled,
+.ictu-button-success-light:disabled,
+.ictu-button-danger-light:disabled,
+.ictu-button-purple-light:disabled,
+.ictu-button-teal-light:disabled,
+.ictu-button-orange-light:disabled {
+    color: rgb(var(--c2-secondary)) !important;
+    background-color: rgb(var(--c2-secondary) / 0.1) !important;
+    border: none !important;
+    cursor: default;
+    opacity: .5;
+}
+
+/* End:: Light Buttons */
+
+/* Start:: Gradient Buttons */
+.ictu-button-primary-gradient.mdc-button:not(:disabled),
+.ictu-button-primary-gradient {
+    background: linear-gradient(to right, var(--ictu-primary-color) 0%, #b1abff 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-primary-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-primary-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-secondary-gradient.mdc-button:not(:disabled),
+.ictu-button-secondary-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-secondary-rgb)) 0%, #fbab99 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-secondary-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-secondary-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-warning-gradient.mdc-button:not(:disabled),
+.ictu-button-warning-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-warning-rgb)) 0%, #7FA53A 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-warning-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-warning-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-info-gradient.mdc-button:not(:disabled),
+.ictu-button-info-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-info-rgb)) 0%, #4bd5ff 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-info-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-info-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-success-gradient.mdc-button:not(:disabled),
+.ictu-button-success-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-success-rgb)) 0%, #358bbd 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-success-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-success-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-danger-gradient.mdc-button:not(:disabled),
+.ictu-button-danger-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-danger-rgb)) 0%, #aa1231 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-danger-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-danger-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-orange-gradient.mdc-button:not(:disabled),
+.ictu-button-orange-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-orange-rgb)) 0%, #9BA815 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-orange-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-orange-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-teal-gradient.mdc-button:not(:disabled),
+.ictu-button-teal-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-teal-rgb)) 0%, #0695DD 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-teal-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-teal-gradient:hover {
+    border: 0;
+}
+
+.ictu-button-purple-gradient.mdc-button:not(:disabled),
+.ictu-button-purple-gradient {
+    background: linear-gradient(to right, rgb(var(--ictu-purple-rgb)) 0%, #FF496D 100%);
+    color: #fff !important;
+    border: 0;
+}
+
+.ictu-button-purple-gradient.mdc-button:not(:disabled):hover,
+.ictu-button-purple-gradient:hover {
+    border: 0;
+}
+
+/* End:: Gradient Buttons */
+
+/* Start:: Ghost Buttons */
+.ictu-button-primary-ghost {
+    background-color: transparent;
+    color: var(--ictu-primary-color);
+    border: 1px solid var(--ictu-primary-color);
+}
+
+.ictu-button-primary-ghost:active {
+    color: var(--ictu-primary-color);
+    border: 1px solid var(--ictu-primary-color);
+}
+
+.ictu-button-secondary-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-secondary-rgb));
+    border: 1px solid rgb(var(--ictu-secondary-rgb));
+}
+
+.ictu-button-secondary-ghost:active {
+    color: rgb(var(--ictu-secondary-rgb));
+    border: 1px solid rgb(var(--ictu-secondary-rgb));
+}
+
+.ictu-button-muted-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-light-black-rgb));
+    border: 1px solid rgb(var(--ictu-light-black-rgb));
+}
+
+.ictu-button-muted-ghost:active {
+    color: rgb(var(--ictu-light-black-rgb));
+    border: 1px solid rgb(var(--ictu-light-black-rgb));
+}
+
+.ictu-button-warning-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-warning-rgb));
+    border: 1px solid rgb(var(--ictu-warning-rgb));
+}
+
+.ictu-button-warning-ghost:active {
+    color: rgb(var(--ictu-warning-rgb));
+    border: 1px solid rgb(var(--ictu-warning-rgb));
+}
+
+.ictu-button-info-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-info-rgb));
+    border: 1px solid rgb(var(--ictu-info-rgb));
+}
+
+.ictu-button-info-ghost:active {
+    color: rgb(var(--ictu-info-rgb));
+    border: 1px solid rgb(var(--ictu-info-rgb));
+}
+
+.ictu-button-success-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-success-rgb));
+    border: 1px solid rgb(var(--ictu-success-rgb));
+}
+
+.ictu-button-success-ghost:active {
+    color: rgb(var(--ictu-success-rgb));
+    border: 1px solid rgb(var(--ictu-success-rgb));
+}
+
+.ictu-button-danger-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-danger-rgb));
+    border: 1px solid rgb(var(--ictu-danger-rgb));
+}
+
+.ictu-button-danger-ghost:active {
+    color: rgb(var(--ictu-danger-rgb));
+    border: 1px solid rgb(var(--ictu-danger-rgb));
+}
+
+.ictu-button-orange-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-orange-rgb));
+    border: 1px solid rgb(var(--ictu-orange-rgb));
+}
+
+.ictu-button-orange-ghost:active {
+    color: rgb(var(--ictu-orange-rgb));
+    border: 1px solid rgb(var(--ictu-orange-rgb));
+}
+
+.ictu-button-teal-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-teal-rgb));
+    border: 1px solid rgb(var(--ictu-teal-rgb));
+}
+
+.ictu-button-teal-ghost:active {
+    color: rgb(var(--ictu-teal-rgb));
+    border: 1px solid rgb(var(--ictu-teal-rgb));
+}
+
+.ictu-button-purple-ghost {
+    background-color: transparent;
+    color: rgb(var(--ictu-purple-rgb));
+    border: 1px solid rgb(var(--ictu-purple-rgb));
+}
+
+.ictu-button-purple-ghost:active {
+    color: rgb(var(--ictu-purple-rgb));
+    border: 1px solid rgb(var(--ictu-purple-rgb));
+}
+
+/* End:: Ghost Buttons */
+/* Start:: Ictu Badge Buttons */
+
+[class*=ictu-badge-btn].mdc-button {
+    --mat-button-filled-label-text-font: "Roboto", sans-serif;
+    --mat-button-filled-label-text-size: 14px;
+    --mat-button-filled-label-text-color: rgb(var(--c2-primary));
+    --mat-button-filled-container-color: rgb(var(--c2-primary) / 0.1);
+    line-height: 1.5;
+    padding: 10px 15px;
+}
+
+.ictu-badge-btn--primary.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-primary));
+    --mat-button-filled-container-color: rgb(var(--c2-primary) / 0.1);
+}
+
+.ictu-badge-btn--secondary.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-secondary));
+    --mat-button-filled-container-color: rgb(var(--c2-secondary) / 0.1);
+}
+
+.ictu-badge-btn--warning.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-warning));
+    --mat-button-filled-container-color: rgb(var(--c2-warning) / 0.1);
+}
+
+.ictu-badge-btn--info.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-info));
+    --mat-button-filled-container-color: rgb(var(--c2-info) / 0.1);
+}
+
+.ictu-badge-btn--success.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-success));
+    --mat-button-filled-container-color: rgb(var(--c2-success) / 0.1);
+}
+
+.ictu-badge-btn--danger.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-danger));
+    --mat-button-filled-container-color: rgb(var(--c2-danger) / 0.1);
+}
+
+.ictu-badge-btn--light.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-light));
+    --mat-button-filled-container-color: rgb(var(--c2-light) / 0.1);
+}
+
+.ictu-badge-btn--dark.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-dark));
+    --mat-button-filled-container-color: rgb(var(--c2-dark) / 0.1);
+}
+
+.ictu-badge-btn--orange.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-orange));
+    --mat-button-filled-container-color: rgb(var(--c2-orange) / 0.1);
+}
+
+.ictu-badge-btn--pink.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-pink));
+    --mat-button-filled-container-color: rgb(var(--c2-pink) / 0.1);
+}
+
+.ictu-badge-btn--teal.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-teal));
+    --mat-button-filled-container-color: rgb(var(--c2-teal) / 0.1);
+}
+
+.ictu-badge-btn--purple.mdc-button {
+    --mat-button-filled-label-text-color: rgb(var(--c2-purple));
+    --mat-button-filled-container-color: rgb(var(--c2-purple) / 0.1);
+}
+
+/* End:: Ictu Badge Buttons */
+
+.ictu-badge-btn--primary-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-primary));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--secondary-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-secondary));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--warning-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-warning));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--info-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-info));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--success-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-success));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--danger-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-danger));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--light-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-light));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--dark-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-dark));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--orange-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-orange));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--pink-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-pink));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--teal-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-teal));
+    --mat-button-filled-label-text-weight: 400;
+}
+
+.ictu-badge-btn--purple-reverse.mdc-button {
+    --mat-button-filled-label-text-color: #FFFFFF;
+    --mat-button-filled-container-color: rgb(var(--c2-purple));
+    --mat-button-filled-label-text-weight: 400;
+}

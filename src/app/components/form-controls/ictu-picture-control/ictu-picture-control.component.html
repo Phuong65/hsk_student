@@ -1,0 +1,19 @@
+<div class="ictu-picture-control w-100 position-relative" [style.aspect-ratio]="aspectRatio()">
+    @if (imgSrc()) {
+        <img class="ictu-picture-control__image" [src]="imgSrc() | safeUrl" alt="img form control">
+    } @else {
+        <div class="ictu-picture-control__placeholder w-100 h-100 d-flex justify-content-center align-items-center">
+            <p class="m-0 f-roboto lh-base fw-normal f-14">Placeholder</p>
+        </div>
+    }
+    @if (! disabled()) {
+        <button (click)="btnCallUploadPanel()" mat-button class="btn ictu-picture-control__btn-call-upload position-absolute inset-0 w-100 h-100 zdx-5 d-flex align-items-center justify-content-center">
+            <i class="ti ti-camera-plus f-22"></i>
+        </button>
+    }
+    @if (enableLoading()) {
+        <div class="ictu-picture-control__loading position-absolute inset-0 w-100 h-100 zdx-5 d-flex justify-content-center align-items-center">
+            <span class="spinner-border spinner-border-sm text-danger"></span>
+        </div>
+    }
+</div>

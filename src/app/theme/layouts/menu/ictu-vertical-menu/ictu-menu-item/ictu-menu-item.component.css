@@ -1,0 +1,44 @@
+li {
+    margin: 0 !important;
+}
+
+li a {
+    padding: 10px !important;
+    position: relative;
+}
+
+li.coded-menu-caption {
+    padding-left: 10px !important;
+    font-size: 12px !important;
+}
+
+svg.coded-micon--default {
+    width: 10px !important;
+    margin: 0 5px !important;
+    height: 10px !important;
+    fill: currentColor;
+}
+
+a::before {
+    content: '';
+    border-radius: 4px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    left: 2px;
+    bottom: 2px;
+    opacity: 0.1;
+}
+
+li.active > a,
+li:focus > a,
+li:hover > a {
+    color: var(--primary-500);
+}
+
+
+li.active > a::before,
+li:focus > a::before,
+li:hover > a::before {
+    background: var(--primary-500);
+}

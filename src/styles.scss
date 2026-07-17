@@ -1,0 +1,10 @@
+// ---- 1. Import libraries & themes ----
+@use '@angular/material' as mat;
+@use './scss/generic' as generic;
+@use './scss/common' as common;
+@use './scss/variables' as variables;
+@use './app/theme/styles/theme-palette-colors';
+@use './app/theme/styles/theme';
+@use './app/theme/styles/layouts/menu';
+@use './app/theme/styles/pages/dashboard';
+@use './app/theme/styles/grid';

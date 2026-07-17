@@ -1,0 +1,18 @@
+<div class="d-inline-flex justify-content-start align-items-center gap-10">
+    <label [for]="inputID" class="d-inline-flex justify-content-start align-items-center gap-10" [ngClass]="className()" (click)="btnToggle()">
+        <input [id]="inputID" type="number" class="ictu-switch-control__input d-none" [value]="value()">
+        <span class="ictu-switch-control__track d-inline-flex justify-content-start" [@toggleBg]="animationName()">
+            <span class="ictu-switch-control__thumb" [@toggleKnob]="animationName()"></span>
+        </span>
+        @if (label()) {
+            <span class="ictu-switch-control__label" [ngClass]="labelCssClass()">{{ label() }}</span>
+        }
+    </label>
+    @if (description()) {
+        <span class="ictu-switch-control__guide" [matTooltip]="description()" matTooltipPosition="above" matTooltipClass="mat-tooltip-max-width-250px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="32" viewBox="0 0 34 32" focusable="false">
+                <path d="M16.506 32c3.165 0 6.258-0.938 8.889-2.696s4.682-4.257 5.893-7.181c1.211-2.924 1.528-6.141 0.91-9.244s-2.141-5.955-4.379-8.192c-2.238-2.238-5.089-3.761-8.192-4.379s-6.321-0.3-9.244 0.91c-2.924 1.211-5.422 3.262-7.181 5.893s-2.696 5.725-2.696 8.889c0.005 4.242 1.692 8.309 4.691 11.309s7.067 4.687 11.309 4.691zM16.506 2.667c2.637 0 5.215 0.782 7.408 2.247s3.902 3.547 4.911 5.984 1.273 5.117 0.759 7.704c-0.514 2.586-1.784 4.962-3.649 6.827s-4.241 3.135-6.827 3.649c-2.586 0.514-5.267 0.25-7.704-0.759s-4.519-2.718-5.984-4.911c-1.465-2.193-2.247-4.771-2.247-7.408 0.004-3.535 1.41-6.924 3.91-9.424s5.889-3.906 9.424-3.91zM17.842 9.333c0-0.736-0.597-1.333-1.333-1.333s-1.333 0.597-1.333 1.333v7.999c0 0.736 0.597 1.333 1.333 1.333s1.333-0.597 1.333-1.333v-7.999zM17.839 22.669c0 0.736-0.597 1.333-1.333 1.333s-1.333-0.597-1.333-1.333c0-0.736 0.597-1.333 1.333-1.333s1.333 0.597 1.333 1.333z"></path>
+            </svg>
+        </span>
+    }
+</div>

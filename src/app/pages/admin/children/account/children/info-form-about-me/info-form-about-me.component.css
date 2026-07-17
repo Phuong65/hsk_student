@@ -1,0 +1,49 @@
+.co-so-dao-tao-info {
+    gap: 10px;
+    flex-direction: column;
+    --co-so-dao-tao-info-label-size: 85px;
+    --co-so-dao-tao-info-input-size: calc(100% - var(--co-so-dao-tao-info-label-size));
+}
+
+.co-so-dao-tao-info__node {
+    display: flex;
+    background-color: #eef1f7;
+    border-radius: 4px;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+    width: 100%;
+}
+
+.co-so-dao-tao-info__input {
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 5px 10px 10px;
+    border-radius: 0 4px 4px 0;
+    background-color: #ffffff;
+    border: none !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    outline: none !important;
+    width: var(--co-so-dao-tao-info-input-size);
+    min-width: var(--co-so-dao-tao-info-input-size);
+    max-width: var(--co-so-dao-tao-info-input-size);
+}
+
+.co-so-dao-tao-info__input,
+.co-so-dao-tao-info__input:hover,
+.co-so-dao-tao-info__input:focus,
+.co-so-dao-tao-info__input:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+}
+
+.co-so-dao-tao-info__label {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    width: var(--co-so-dao-tao-info-label-size);
+    min-width: var(--co-so-dao-tao-info-label-size);
+    max-width: var(--co-so-dao-tao-info-label-size);
+    line-height: 1.5;
+    padding: 0 0 0 10px;
+}

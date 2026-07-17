@@ -1,0 +1,90 @@
+<section class="admin-standard-layout position-relative">
+	@if (state() === 'loading') {
+		<app-loading-progress heading="Loading..." backdropFilter="none"></app-loading-progress>
+	}
+	<div class="admin-standard-layout__header">
+		<h4 class="admin-wrap-table__heading">
+			<svg>
+				<use href="fonts/custom-icon.svg#custom-user-circle-2"></use>
+			</svg>
+			Thông tin tài khoản
+		</h4>
+	</div>
+	<div class="admin-standard-layout__body w-100">
+		<div class="admin-standard-layout__body__inner">
+			<div class="row">
+				<div class="col-12">
+					<div class="card card-2 bg-white">
+						<div class="card-2-body position-relative py-0">
+							<ul class="nav nav-tabs profile-tabs" role="tablist">
+								<li class="nav-item" role="presentation">
+									<a class="nav-link active" href="#"><i class="ti ti-id"></i>Tài khoản</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="tab-content">
+						<div class="card card-2 bg-white" style="--card-2-padding: 25px;--card-2-heading-gap: 25px;">
+							<div class="card-2-body position-relative">
+								@if (userSession.loading) {
+									<div class="d-flex position-absolute top-0 start-0 w-100 h-100 justify-content-center align-items-center flex-column" style="background-color: rgb(255 255 255 / 71%);z-index: 50;border-radius: inherit;backdrop-filter: blur(10px);gap: 5px;color: #333333;">
+										<div class="d-block ictu-image-loading-bg wid-25 aspect-ratio-1"></div>
+										<p class="f-14 fw-normal f-roboto" style="margin: 10px 0 0;line-height: 1">Cập nhật thông tin...</p>
+									</div>
+								}
+								<form [formGroup]="userSession.form" class="ictu-form p-0">
+									<div class="ictu-form__row">
+										<div class="d-flex w-100 justify-content-center align-items-center">
+											<div class="user-upload wid-75">
+												<img [ngSrc]="avatar()" alt="img" class="img-fluid" fill>
+												<button (click)="btnUploadAvatar()" class="img-avtar-upload">
+													<i class="ti ti-camera f-24 mb-1"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="ictu-form__row">
+												<label class="ictu-form__label ictu-form__label--readonly" for="u_username">Tên tài khoản</label>
+												<input [value]="user().username" class="ictu-form__input-field" disabled="disabled" id="u_username" name="u_username" pInputText type="text"/>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="ictu-form__row">
+												<label class="ictu-form__label ictu-form__label--required" for="u_display_name">Tên hiển thị</label>
+												<input class="ictu-form__input-field" formControlName="display_name" id="u_display_name" name="u_display_name" pInputText type="text"/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="ictu-form__row">
+												<label class="ictu-form__label ictu-form__label--readonly" for="u_email">Email</label>
+												<input [value]="user().email" class="ictu-form__input-field" disabled="disabled" id="u_email" name="u_email" pInputText type="text"/>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="ictu-form__row">
+												<label class="ictu-form__label ictu-form__label--readonly" for="u_phone">Số điện thoại</label>
+												<input [value]="user().phone" class="ictu-form__input-field" disabled="disabled" id="u_phone" name="u_phone" pInputText type="text"/>
+											</div>
+										</div>
+									</div>
+									<div class="ictu-form__row">
+										<label class="ictu-form__label ictu-form__label--readonly" for="u_donvi">Đơn vị</label>
+										<input class="ictu-form__input-field" disabled="disabled" id="u_donvi" name="u_donvi" pInputText type="text" value="10/10/2015"/>
+									</div>
+									<div class="d-flex justify-content-end align-items-center w-100">
+										<small class="ictu-form-guide f-roboto my-0 ms-0 me-auto fw-normal text-muted text-left" style="font-size: 13px;">Những trường đánh dấu (*) là những trường bắt buộc, không được bỏ trống</small>
+										<button (click)="btnSubmitForm('USER')" [disabled]="!(userSession.form.valid && userSession.form.touched)" class="card-2-footer__button btn ictu-badge-btn--success-reverse" mat-flat-button>Lưu lại</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

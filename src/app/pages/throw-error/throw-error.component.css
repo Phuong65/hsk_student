@@ -1,0 +1,21 @@
+.throw-error-template {
+    width: var(--device-width);
+    max-height: var(--device-height);
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    background: url('/images/page-throw-error-bg.jpg');
+    min-height: 100vh;
+    background-size: cover;
+    justify-content: center;
+}
+
+.throw-error-template__inner {
+    min-height: var(--device-height);
+    width: var(--device-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}

@@ -1,0 +1,67 @@
+<ng-scrollbar orientation="vertical" style="height: calc(100vh - 88px)" visibility="hover">
+	<app-card [padding]="20" [showHeader]="false" cardClass="user-card">
+		<div class="flex align-items-center">
+			<div class="flex-shrink-0" style="line-height: 0;">
+				<img alt="user-image" class="user-avatar" src="images/user/avatar-1.jpg" />
+			</div>
+			<div class="flex-grow-1 user-details">
+				<h6>Jonh Smith</h6>
+				<small>Administrator</small>
+			</div>
+			<div class="user-setting">
+				<a (click)="toggleMenu()" class="btn-collapse-toggle" href="javascript:">
+					<svg class="pc-icon"><use href="fonts/custom-icon.svg#custom-sort-outline"></use></svg>
+				</a>
+				<!--
+				<a [matMenuTriggerFor]="menu" class="text-muted" href="javascript:">
+					<svg class="pc-icon"><use href="fonts/custom-icon.svg#custom-sort-outline"></use></svg>
+				</a>
+				<mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="after" yPosition="below">
+					@for (list of accountList; track $index) {
+						<button mat-menu-item>
+							<a href="javascript:" class="text-muted">
+								<i class="{{ list.icon }} f-18 m-r-10"></i>
+								<span class="mat-body">{{ list.title }}</span>
+							</a>
+						</button>
+					}
+				</mat-menu> -->
+			</div>
+		</div>
+		<div [(collapseState)]="menuCollapseState" class="pc-user-links" collapse dimension="height">
+			<div class="pc-user-links__container">
+				@for (list of accountList; track $index) {
+					<a href="javascript:"><i class="{{ list.icon }}"></i> <span>{{ list.title }}</span> </a>
+				}
+			</div>
+		</div>
+	</app-card>
+	<div class="navbar-content">
+		<ul (click)="fireOutClick()" class="nav coded-inner-navbar">
+			@for (item of menus(); track item) {
+				@if (item.type === 'group') {
+					<app-menu-group-vertical [item]="item"></app-menu-group-vertical>
+				}
+				@if (item.type === 'collapse') {
+					<app-menu-collapse [item]="item"></app-menu-collapse>
+				}
+				@if (item.type === 'item') {
+					<app-menu-item [item]="item"></app-menu-item>
+				}
+			}
+		</ul>
+	</div>
+	<!-- <app-card [padding]="20" [showHeader]="false" cardClass="pro-card m-15 bg-accent-200">
+		<div class="text-center">
+			<img alt="img" class="img-fluid w-50" src="images/application/img-coupon.png" />
+			<h5 class="m-b-0 f-16 f-w-600 m-t-5">Able Pro</h5>
+			<p>Checkout pro features</p>
+			<button class="upgrade-button hei-45" mat-flat-button>
+				<a class="flex align-items-center" href="https://1.envato.market/zNkqj6">
+					<svg class="pc-icon m-r-10"><use href="fonts/custom-icon.svg#custom-logout-1-outline"></use></svg>
+					Upgrade to Pro
+				</a>
+			</button>
+		</div>
+	</app-card> -->
+</ng-scrollbar>

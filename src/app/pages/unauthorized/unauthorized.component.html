@@ -1,0 +1,15 @@
+<div class="unauthorized-template">
+	<div class="unauthorized-template__inner position-relative">
+		@if (state() === 'loading') {
+			<app-loading-progress heading="Processing..." backdropFilter="none"></app-loading-progress>
+		} @else {
+			<div class="unauthorized-template__box d-flex flex-column align-items-center justify-content-center">
+				<h4 class="unauthorized-template__heading w3-animate-top">Cảnh báo!</h4>
+				<p class="unauthorized-template__message w3-animate-right">Tài khoản của bạn không có quyền truy cập nội dung trên hệ thống này.</p>
+				<p class="unauthorized-template__sup-code w3-animate-zoom">🚫🚫🚫🚫</p>
+				<code class="unauthorized-template__code w3-animate-zoom">Error Code: 403 forbidden</code>
+				<button (click)="btnLogin()" class="unauthorized-template__logout-button w3-animate-bottom" color="primary" mat-flat-button>Đăng xuất</button>
+			</div>
+		}
+	</div>
+</div>

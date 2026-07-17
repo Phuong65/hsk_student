@@ -1,0 +1,141 @@
+@charset "UTF-8";
+:root {
+    --font-roboto: 'Roboto';
+    --primary-color: #284CE0;
+    --primary-hover-color: #3667F0;
+    --primary-font-family: var(--font-roboto);
+
+    /* device size */
+    --device-width: 100vw;
+    --device-height: 100vh;
+
+    /* scrollbar */
+    --scrollbar-thickness: 6;
+    --scrollbar-border-radius: 3px;
+
+    /* color */
+    --color-primary: #465dff;
+    --color-secondary: #783bff;
+    --color-success: #6ac75a;
+    --color-info: #67baf1;
+    --color-warning: #f9c45c;
+    --color-danger: #ff6d43;
+    --color-light: #eef2f7;
+    --color-dark: #313a46;
+    --color-primary-rgb: 70, 93, 255;
+    --color-secondary-rgb: 120, 59, 255;
+    --color-success-rgb: 106, 199, 90;
+    --color-info-rgb: 103, 186, 241;
+    --color-warning-rgb: 249, 196, 92;
+    --color-danger-rgb: 255, 109, 67;
+    --color-light-rgb: 238, 242, 247;
+    --color-dark-rgb: 49, 58, 70;
+
+    /*color plate 2*/
+    --c2-primary-rgb: 1, 98, 232;
+    --c2-secondary-rgb: 95, 109, 136;
+    --c2-warning-rgb: 251, 188, 11;
+    --c2-info-rgb: 0, 185, 255;
+    --c2-success-rgb: 34, 192, 60;
+    --c2-danger-rgb: 238, 51, 94;
+    --c2-light-rgb: 243, 246, 246;
+    --c2-dark-rgb: 59, 72, 99;
+    --c2-orange-rgb: 253, 126, 20;
+    --c2-pink-rgb: 241, 0, 117;
+    --c2-teal-rgb: 0, 204, 204;
+    --c2-purple-rgb: 72, 0, 201;
+
+    --c2-body-bg: 236 240 250;
+    --c2-primary: 1 98 232;
+    --c2-secondary: 95 109 136;
+    --c2-warning: 251 188 11;
+    --c2-info: 0 185 255;
+    --c2-success: 34 192 60;
+    --c2-danger: 238 51 94;
+    --c2-light: 236 240 250;
+    --c2-dark: 59 72 99;
+    --c2-orange: 253 126 20;
+    --c2-pink: 241 0 117;
+    --c2-teal: 0 204 204;
+    --c2-purple: 72 0 201;
+
+    --sys-heading-color: #262626;
+
+    --ictu-form-control-outlined-field-color: rgb(209, 213, 219);
+    --ictu-form-control-outlined-field-forcus-color: #1c64f2;
+    --ictu-form-control-outlined-field-error-color: #dc2626;
+
+    --ictu-loading-image: url('../../public/images/loading-50x49.gif');
+
+    --mat-toolbar-standard-height: 56px;
+}
+
+body {
+    --drawer-container-height: var(--device-height);
+}
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.user-select-none {
+    user-select: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.primary-font,
+.font-roboto,
+.f-roboto {
+    font-family: var(--font-roboto, 'Roboto'), sans-serif !important;
+}
+
+.aspect-ratio-1 {
+    aspect-ratio: 1;
+}
+
+.aspect-ratio-auto {
+    aspect-ratio: auto;
+}
+
+.f-13 {
+    font-size: 13px;
+}
+
+.f-15 {
+    font-size: 15px;
+}
+
+.f-17 {
+    font-size: 17px;
+}
+
+.f-19 {
+    font-size: 19px;
+}
+
+.f-21 {
+    font-size: 21px;
+}
+
+.f-23 {
+    font-size: 23px;
+}
+
+.f-25 {
+    font-size: 25px;
+}
+
+.f-27 {
+    font-size: 27px;
+}
+
+.f-29 {
+    font-size: 29px;
+}
+
+.f-31 {
+    font-size: 31px;
+}

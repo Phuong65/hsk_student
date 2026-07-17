@@ -1,0 +1,79 @@
+<ng-scrollbar orientation="vertical" style="height: calc(var(--device-height, 100vh) - var(--mat-toolbar-standard-height, 54px))" visibility="hover">
+	<div class="navbar-content">
+		<div class="navbar-content__tab">
+			@for (item of menus(); track item.id) {
+				<button class="navbar-content__tab__btn mat-button-full-width" (click)="activeMenu(item)" [class.--active]="menuActivated()?.id === item.id">
+					<span class="navbar-content__tab__btn__inside">
+						@if (item.icon) {
+							<span class="coded-micon" [ngClass]="item.icon"></span>
+							<span class="coded-mtext">{{ item.title }}</span>
+						} @else if (item.customSvg) {
+							<span class="coded-micon"><svg class="pc-icon"><use [attr.href]="'fonts/custom-icon.svg#'+item.customSvg"></use></svg></span>
+							<span class="coded-mtext">{{ item.title }}</span>
+						} @else {
+							{{ item.title }}
+						}
+					</span>
+					@if (collapsed()) {
+						<a href="#" (click)="mouseEnter(menuTrigger,item , $event)" class="open-menu-on-hover" (mouseenter)="mouseEnter(menuTrigger,item)" (mouseleave)="mouseLeave(menuTrigger)"></a>
+						<span class="open-menu-on-hover__point" [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger"></span>
+					}
+				</button>
+			}
+			<button (click)="confirmSignOut()" class="navbar-content__tab__btn mat-button-full-width">
+				<span class="navbar-content__tab__btn__inside">
+					<span class="coded-micon"><svg class="pc-icon"><use href="fonts/custom-icon.svg#custom-stand-by"></use></svg></span>
+					<span class="coded-mtext">Đăng xuất</span>
+				</span>
+			</button>
+			<div class="d-flex w-100 justify-content-center align-items-center navbar-content__tab__avatar">
+				<button [matMenuTriggerFor]="userMenu" class="navbar-content__tab__avatar__btn" type="button">
+					<img [ngSrc]="avatar() | safeUrl" alt="img" class="img-fluid" fill>
+				</button>
+			</div>
+		</div>
+		<div class="navbar-content__content">
+			@if (! collapsed() && menuActivated()) {
+				<ul (click)="fireOutClick()" class="nav coded-inner-navbar w-100 d-flex">
+					@for (item of menuActivated()?.child; track item.id) {
+						<app-ictu-menu-item [item]="item"/>
+					}
+				</ul>
+			}
+		</div>
+	</div>
+</ng-scrollbar>
+
+<mat-menu #menu="matMenu" [hasBackdrop]="false" class="ictu-pc-mat-mdc-menu" xPosition="after" yPosition="below">
+	<div (mouseenter)="mouseEnter(activatedMenuTrigger)" (mouseleave)="mouseLeave(activatedMenuTrigger)" class="ictu-sidebar-menu__content pc-sidebar">
+		<div class="navbar-content__content w-100">
+			@if (collapsedMenuChild()) {
+				<ul (click)="fireOutClick()" class="nav coded-inner-navbar w-100 d-flex">
+					@for (item of collapsedMenuChild()?.child; track item.id) {
+						<app-ictu-menu-item [item]="item" (onActiveChange)="activeCurrentParent()"/>
+					}
+				</ul>
+			}
+		</div>
+	</div>
+</mat-menu>
+
+<mat-menu #userMenu="matMenu" [hasBackdrop]="true" class="ictu-pc-mat-mdc-menu" xPosition="after" yPosition="below">
+	<div class="dacms-user-popup-menu">
+		<div (click)="clickPreventDefault($event)" class="dacms-user-popup-menu__avatar flex align-items-center">
+			<div class="dacms-user-popup-menu__avatar__img flex-shrink-0">
+				<img [ngSrc]="avatar() | safeUrl" alt="user-image" class="user-avatar" height="45" width="45"/>
+			</div>
+			<div class="dacms-user-popup-menu__avatar__user-details flex-grow-1 user-details">
+				<h6>{{ displayName() }}</h6>
+				<small>{{ email() }}</small>
+			</div>
+		</div>
+		<nav class="dacms-user-popup-menu__nav-list">
+			<a class="dacms-user-popup-menu__nav-list__item" href="javascript:" routerLink="account/profile" routerLinkActive="dacms-user-popup-menu__nav-list__item__active"><i class="ti ti-user f-18 m-r-10"></i><span>Tài khoản</span></a>
+			<a class="dacms-user-popup-menu__nav-list__item" href="javascript:" routerLink="account/info" routerLinkActive="dacms-user-popup-menu__nav-list__item__active"><i class="ti ti-settings f-18 m-r-10"></i><span>Cài đặt</span></a>
+			<a class="dacms-user-popup-menu__nav-list__item" href="javascript:" routerLink="account/password" routerLinkActive="dacms-user-popup-menu__nav-list__item__active"><i class="ti ti-lock f-18 m-r-10"></i><span>Cập nhật mật khẩu</span></a>
+			<a (click)="confirmSignOut()" class="dacms-user-popup-menu__nav-list__item" href="javascript:"><i class="ti ti-power f-18 m-r-10"></i><span>Đăng xuất</span></a>
+		</nav>
+	</div>
+</mat-menu>

@@ -1,0 +1,50 @@
+.service-unavailable-page {
+    height: var(--device-height, 100vh);
+    overflow: hidden auto;
+}
+
+.service-unavailable-page__inner {
+    min-height: var(--device-height, 100vh);
+    width: 100%;
+}
+
+.service-unavailable-page__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.service-unavailable-page__overlay__404-text {
+    font-family: Roboto, sans-serif;
+    color: #ececec;
+    font-weight: 900;
+    font-size: 276px;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.service-unavailable-page__title {
+    position: relative;
+    font-family: Roboto, sans-serif;
+    font-size: 46px;
+    color: #000;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    z-index: 5;
+}
+
+.service-unavailable-page__sub-title {
+    position: relative;
+    font-family: Roboto, sans-serif;
+    font-size: 20px;
+    color: #000;
+    font-weight: 400;
+    margin: 10px 0 0;
+    line-height: 1.5;
+    z-index: 5;
+}

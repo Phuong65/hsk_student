@@ -1,0 +1,40 @@
+@if (state() === 'loading') {
+    <app-loading-progress [transparent]="true"/>
+} @else {
+    <div class="p-25 position-relative b-block">
+        <div class="tabler-icon-wrapper">
+            <div class="row">
+                <div class="col-12">
+                    <div class="icon-tabler">
+                        <div class="icon-tabler__head">
+                            <div class="icon-tabler__head__search-wrap">
+                                <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="10" cy="10" r="7"></circle>
+                                    <line x1="21" x2="15" y1="21" y2="15"></line>
+                                </svg>
+                                <input [(ngModel)]="filter" pInputText placeholder="Search here" type="text">
+                            </div>
+                        </div>
+                        <div class="icon-tabler__body">
+                            <h3 class="icon-tabler__body__title">{{ bodyHeading() }}</h3>
+                            <div class="icon-tabler__body__items">
+                                @for (svgId of icons(); track svgId) {
+                                    <button class="icon-tabler__body__items__btn" (click)="copySvgId(svgId)" mat-button [matTooltip]="svgId" matTooltipPosition="above">
+                                        <svg class="pc-icon">
+                                            <use [attr.href]="'fonts/custom-icon.svg#'+svgId"></use>
+                                        </svg>
+                                    </button>
+                                } @empty {
+                                    <div class="text-center py-6 text-secondary icon-tabler__body__empty">
+                                        <h3 class="icon-tabler__body__empty__heading">Can't find what you're looking for?</h3>
+                                        <p class="icon-tabler__body__empty__desc">We're happy to add new icons, as soon as possible. Feel free to request new icons on Twitter.</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

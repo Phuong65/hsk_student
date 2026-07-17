@@ -1,0 +1,53 @@
+@if (fileInput()) {
+    <div #preview [ngxFilePreview]="fileInput()" class="d-none" lang="en" themeMode="light" trigger="click" (onClosePreview)="onClosePreview()" (previewVisible)="previewVisible($event)"></div>
+    @if (loadingAnimation()) {
+        <div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+            <h4 class="ictu-media-player__box-size__heading fw-normal font-roboto f-14 lh-base m-0">Phân tích file...</h4>
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+            <!-- <div class="animation-typing-dots">
+                <span class="animation-typing-dots__element"></span>
+                <span class="animation-typing-dots__element"></span>
+                <span class="animation-typing-dots__element"></span>
+            </div> -->
+            <button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+        </div>
+    }
+} @else {
+    @switch (state()) {
+        @case ('loading') {
+            <div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+                @if (totalElements() > 1) {
+                    <h5 class="ictu-file-preview-label-downloading m-0 f-roboto f-14 fw-medium text-center">Tải xuống</h5>
+                    <b class="m-0 f-roboto f-15 fw-normal text-center text-primary">{{ totalDownloadedElements() }} / {{ totalElements() }}</b>
+                } @else {
+                    <h5 class="m-0 f-roboto f-14 fw-medium text-center">Tải xuống... {{ downloadProgress() }}%</h5>
+                }
+                <mat-progress-bar mode="determinate" [value]="downloadProgress()"></mat-progress-bar>
+                <button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+            </div>
+        }
+        @case ('loaded') {
+        }
+        @case ('error') {
+            <div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+                <h4 class="ictu-media-player__box-size__heading fw-medium font-roboto f-15 lh-base m-0 text-danger">Lỗi tải xuống</h4>
+                <p class="fw-normal font-roboto f-14 lh-base m-0 text-muted">Quá trình tải xuống file bị gián đoạn!</p>
+                <div class="d-flex justify-content-center align-items-center" style="gap:10px;">
+                    <button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+                    <button (click)="btnReload()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--reload btn fw-normal font-roboto f-14 lh-base m-0">Tải lại</button>
+                </div>
+            </div>
+        }
+        @default {
+            <div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+                <h4 class="ictu-media-player__box-size__heading fw-normal font-roboto f-14 lh-base m-0">Xử lý thông tin...</h4>
+                <div class="animation-typing-dots">
+                    <span class="animation-typing-dots__element"></span>
+                    <span class="animation-typing-dots__element"></span>
+                    <span class="animation-typing-dots__element"></span>
+                </div>
+                <button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+            </div>
+        }
+    }
+}

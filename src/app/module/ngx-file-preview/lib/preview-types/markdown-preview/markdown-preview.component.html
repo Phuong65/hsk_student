@@ -1,0 +1,22 @@
+<div class="markdown-container">
+	<div class="toolbar">
+		<div class="left-controls">
+			<button class="tool-btn" (click)="zoomOut()">
+				<preview-icon [themeMode]="themeMode()" name="zoom-out" [title]="'preview.toolbar.zoomOut'|i18n"></preview-icon>
+			</button>
+			<span class="zoom-text" (click)="resetZoom()" [title]="'preview.toolbar.resetZoom'|i18n">{{ (scale * 100).toFixed(0) }}%</span>
+			<button class="tool-btn" (click)="zoomIn()">
+				<preview-icon [themeMode]="themeMode()" name="zoom-in" [title]="'preview.toolbar.zoomIn'|i18n"></preview-icon>
+			</button>
+		</div>
+		<div class="right-controls">
+			<button class="tool-btn" (click)="toggleFullscreen()">
+				<preview-icon [themeMode]="themeMode()" name="fullscreen" [title]="'preview.toolbar.fullscreen'|i18n"></preview-icon>
+			</button>
+		</div>
+	</div>
+
+	<div class="content-container">
+		<div class="viewer" [innerHTML]="content|markdown"></div>
+	</div>
+</div>

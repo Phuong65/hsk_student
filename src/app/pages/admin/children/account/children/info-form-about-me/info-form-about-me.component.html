@@ -1,0 +1,43 @@
+<div class="card card-2 bg-white" style="--card-2-padding: 25px;--card-2-heading-gap: 25px;">
+	<div class="card-2-body position-relative">
+		<form [formGroup]="formGroup" class="ictu-form p-0">
+			<div class="ictu-form__row">
+				<label class="ictu-form__label" for="bio">Giới thiệu</label>
+				<textarea class="ictu-form__input-field" cols="30" formControlName="bio" id="bio" pTextarea placeholder="Tự giới thiệu về bản thân" rows="5" style="resize: none"></textarea>
+				<small class="d-block mt-1 f-roboto ms-0 me-auto fw-normal text-muted text-left f-13 lh-base"><i class="pi pi-info-circle me-1"></i>Đoạn văn ngắn không quá 250 ký tự ( bao gồm cả dấu cách) mô tả về bản thân.</small>
+			</div>
+			<div class="ictu-form__row">
+				<label class="ictu-form__label" for="employee_social_link">Liên kết mạng xã hội</label>
+				<div class="d-flex align-items-center co-so-dao-tao-info" formGroupName="social_media" id="employee_social_link" style="margin: 10px 0 0;">
+					<div (keydown.enter)="preventKeyDown($event)" class="co-so-dao-tao-info__node">
+						<label class="co-so-dao-tao-info__label" for="co_so_dao_website">Instagram</label>
+						<input class="co-so-dao-tao-info__input" formControlName="instagram" id="co_so_dao_website" pInputText placeholder="https://www.instagram.com">
+					</div>
+					<div (keydown.enter)="preventKeyDown($event)" class="co-so-dao-tao-info__node">
+						<label class="co-so-dao-tao-info__label" for="co_so_dao_email">LinkedIn</label>
+						<input class="co-so-dao-tao-info__input" formControlName="linkedIn" id="co_so_dao_email" pInputText placeholder="https://www.linkedin.com">
+					</div>
+					<div (keydown.enter)="preventKeyDown($event)" class="co-so-dao-tao-info__node">
+						<label class="co-so-dao-tao-info__label" for="co_so_dao_facebook">Facebook</label>
+						<input class="co-so-dao-tao-info__input" formControlName="facebook" id="co_so_dao_facebook" pInputText placeholder="https://www.facebook.com">
+					</div>
+					<div (keydown.enter)="preventKeyDown($event)" class="co-so-dao-tao-info__node">
+						<label class="co-so-dao-tao-info__label" for="co_so_dao_youtube">Youtube</label>
+						<input class="co-so-dao-tao-info__input" formControlName="youtube" id="co_so_dao_youtube" pInputText placeholder="https://www.youtube.com">
+					</div>
+					<div (keydown.enter)="preventKeyDown($event)" class="co-so-dao-tao-info__node">
+						<label class="co-so-dao-tao-info__label" for="co_so_dao_tiktok">Tiktok</label>
+						<input class="co-so-dao-tao-info__input" formControlName="tiktok" id="co_so_dao_tiktok" pInputText placeholder="https://www.tiktok.com">
+					</div>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-end align-items-center w-100">
+				<small class="ictu-form-guide f-roboto my-0 ms-0 me-auto fw-normal text-muted text-left f-13">Những trường đánh dấu (*) là những trường bắt buộc, không được bỏ trống</small>
+				<button (click)="btnSave($event)" [disabled]="!(formGroup.valid && formGroup.touched)" class="card-2-footer__button btn ictu-badge-btn--success-reverse" mat-flat-button>
+					<i class="pi pi-save me-1"></i>Lưu lại
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

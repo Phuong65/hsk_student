@@ -1,0 +1,100 @@
+<div class="employee-control position-relative">
+	@switch (state()) {
+		@case ('loading') {
+			<div class="d-flex position-absolute z-2 top-0 start-0 w-100 h-100 justify-content-center align-items-center">
+				<div class="d-flex flex-column justify-content-center align-items-center">
+					<div class="d-block ictu-image-loading-bg wid-25 aspect-ratio-1"></div>
+					<p class="f-14 fw-normal f-roboto" style="margin: 10px 0 0;line-height: 1">Tải thông tin nhân viên...</p>
+				</div>
+			</div>
+		}
+		@case ('success') {
+			<div class="d-flex w-100 h-100 justify-content-center align-items-center position-relative" style="min-height: var(--employee-control-min-height); padding: 10px;">
+				@if (layout() === 'dropdown') {
+					<button [matMenuTriggerFor]="menuListEmployees" mat-flat-button class="btn employee-control__btn-open-panel position-absolute top-0 start-0 w-100 h-100 z-2"></button>
+				} @else {
+					<button mat-flat-button class="btn employee-control__btn-open-panel position-absolute top-0 start-0 w-100 h-100 z-2"></button>
+				}
+				@if (selected()) {
+					<div class="employee-show w-100 align-items-center" style="--employee-show-avatar-size:46px;">
+						<div class="employee-show__avatar">
+							<img src="images/user/avatar-1.jpg" alt="">
+						</div>
+						<div class="employee-show__info employee-show__info--truncate">
+							<h4 class="employee-show__info__name">{{ candidateName() }}</h4>
+							<p class="employee-show__info__email" style="line-height: 1.5;">{{ candidateEmail() }}</p>
+							<p class="employee-show__info__email" style="color: #1c76da;line-height: 1.5">{{ candidatePhone() }}</p>
+						</div>
+					</div>
+				} @else {
+					<span style="color: var(--accent-600);line-height: 1.5;">{{ placeholder() }}</span>
+				}
+			</div>
+		}
+		@default {
+			<div class="admin-table__alert-danger text-center w-100" style="background-color: transparent;color: #f84238;line-height: 1.5;">Tải thông tin nhân viên. Vui lòng chọn
+				<a href="javascript:" (click)="reloadSelectedEmployeeInfo($event)" class="admin-table__alert-danger__btn-reload">tải lại</a>
+			</div>
+		}
+	}
+</div>
+
+<mat-menu #menuListEmployees="matMenu" class="ictu-switchers-menu ictu-switchers-menu-fixed-size ictu-switchers-menu-fixed-size--450px">
+	<div (click)="avoidCloseMenuByClicking($event)" class="employee-control-dropdown">
+		<div class="employee-control-dropdown__head">
+			<svg style="height: auto;width: 20px;aspect-ratio: 1;">
+				<use href="fonts/custom-icon.svg#custom-folder-open"></use>
+			</svg>
+			<h4 class="employee-control-dropdown__head__title">Danh sách nhân viên</h4>
+			<div class="employee-control-dropdown__head__search ms-auto position-relative">
+				<input (keydown.enter)="onEmployeeControlSearch($event)" [(ngModel)]="formSearchText" [disabled]="formSearchState()!== 'success'" class="employee-control-dropdown__head__search__input" pInputText placeholder="Tìm kiếm theo tên hoặc email" type="text">
+			</div>
+		</div>
+		<div class="employee-control-dropdown__body">
+			@switch (formSearchState()) {
+				@case ('loading') {
+					<div class="employee-control-dropdown__section-loading">
+						<div class="d-flex position-absolute z-2 top-0 start-0 w-100 h-100 justify-content-center align-items-center">
+							<div class="d-flex flex-column justify-content-center align-items-center">
+								<div class="d-block ictu-image-loading-bg wid-25 aspect-ratio-1"></div>
+								<p class="f-14 fw-normal f-roboto" style="margin: 10px 0 0;line-height: 1">Tìm kiếm nhân viên...</p>
+							</div>
+						</div>
+					</div>
+				}
+				@case ('success') {
+					@for (employee of employees(); track employee.id) {
+						<button style="--mat-menu-item-leading-spacing: 5px;--mat-menu-item-trailing-spacing: 5px;padding-top: 5px;padding-bottom: 5px;border-radius: 4px;overflow: hidden;" (click)="setEmployee(employee)" [class.ictu-switchers-menu__item--active]="false" class="ictu-switchers-menu__item border-bottom-0" mat-menu-item>
+							<div class="employee-show w-100 align-items-center">
+								<div class="employee-show__avatar">
+									<img src="images/user/avatar-1.jpg" alt="">
+								</div>
+								<div class="employee-show__info employee-show__info--truncate">
+									<h4 class="employee-show__info__name">{{ employee.full_name }}</h4>
+									<p class="employee-show__info__email" style="line-height: 1.5">{{ employee.email }} -
+										<span style="color: #1c76da;">{{ employee.phone }}</span>
+									</p>
+								</div>
+							</div>
+						</button>
+					} @empty {
+						<div class="employee-control-dropdown__empty">
+							<svg class="employee-control-dropdown__empty__icon" width="40" height="40" viewBox="0 0 20 20" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+								<path fill="none" d="M15.5 4.8c2 3 1.7 7-1 9.7h0l4.3 4.3-4.3-4.3a7.8 7.8 0 01-9.8 1m-2.2-2.2A7.8 7.8 0 0113.2 2.4M2 18L18 2"></path>
+							</svg>
+							<p class="employee-control-dropdown__empty__text" style="border-radius: 0">Không tìm thấy nhân viên</p>
+						</div>
+					}
+				}
+				@default {
+					<div class="admin-table__alert-danger text-center w-100">Tải danh sách nhân viên thất bại. Vui lòng chọn
+						<a href="javascript:" (click)="reloadEmployeeData($event)" class="admin-table__alert-danger__btn-reload">tải lại</a>
+					</div>
+				}
+			}
+		</div>
+		<div class="employee-control-dropdown__foot d-flex justify-content-center align-items-center w-100" style="--ictu-paginator-gap:5px">
+			<ictu-paginator (onChangePage)="onChangePage($event)" [control]="paginator"></ictu-paginator>
+		</div>
+	</div>
+</mat-menu>

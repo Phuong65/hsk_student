@@ -1,0 +1,43 @@
+.employee-card-template__avatar figure {
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 2px;
+    border: 1px solid #e2e8f0;
+    width: 42px;
+    border-radius: 999px;
+}
+
+.employee-card-template__avatar figure img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
+    border-radius: 999px;
+}
+
+.employee-card-template--size-small .employee-card-template__info {
+    justify-content: center;
+    padding-left: 5px !important;
+}
+
+.employee-card-template--size-small .employee-card-template__info__email {
+    line-height: 1.2 !important;
+}
+
+.employee-card-template__error-text {
+    color: #e83e8c;
+    word-break: break-word;
+}
+
+.employee-card-template__error-text a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.employee-card-template__error-text a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

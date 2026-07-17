@@ -1,0 +1,177 @@
+<section class="fontawesome-component-wrapper">
+    <div class="search-header">
+        <div class="container">
+            <div class="search-header__inside">
+                <svg class="search-header__svg-icon" viewBox="0 0 512 512">
+                    <path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376C296.3 401.1 253.9 416 208 416 93.1 416 0 322.9 0 208S93.1 0 208 0 416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
+                </svg>
+                <input class="search-header__input" type="text" [placeholder]="'Search '+(paginator.totalRecords() | number)+' icons...'" [(ngModel)]="searchByName">
+                @if (searchByName()) {
+                    <button class="btn icons-search-clear" (click)="btnClearSearchByName()">
+                        <svg viewBox="0 0 512 512">
+                            <path fill="currentColor" d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM167 167c9.4-9.4 24.6-9.4 33.9 0l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9z"></path>
+                        </svg>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="sidebar sidebar--left">
+                <div class="sidebar__head d-flex">
+                    <h3 class="sidebar__head__label m-0 d-inline-flex text-uppercase">Icon Packs</h3>
+                    @if (filterByPackNames().length) {
+                        <a (click)="btnRemoveFilterByPackName($event)" href="#" class="sidebar__head__clear ms-auto d-inline-flex">Reset</a>
+                    }
+                </div>
+                <ul class="icons-facets-group-styles">
+                    <li [class.menu-item--selected]="filterByPackNames().includes('brands')">
+                        <i class="fab fa-font-awesome fa-fw"></i>
+                        <span class="icons-facet-pack-name">Brands</span>
+                        <span class="icons-facet-count">550</span>
+                        <button (click)="btnToggleSelectPackNames('brands')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('chisel')">
+                        <i class="facr fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Chisel</span>
+                        <span class="icons-facet-count">209</span>
+                        <button (click)="btnToggleSelectPackNames('chisel')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('classic')">
+                        <i class="fas fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Classic</span>
+                        <span class="icons-facet-count">15.088</span>
+                        <button (click)="btnToggleSelectPackNames('classic')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('duotone')">
+                        <i class="fad fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Duotone</span>
+                        <span class="icons-facet-count">15.088</span>
+                        <button (click)="btnToggleSelectPackNames('duotone')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('etch')">
+                        <i class="faes fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Etch</span>
+                        <span class="icons-facet-count">207</span>
+                        <button (click)="btnToggleSelectPackNames('etch')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('jelly')">
+                        <i class="fajr fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Jelly</span>
+                        <span class="icons-facet-count">711</span>
+                        <button (click)="btnToggleSelectPackNames('jelly')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('notdog')">
+                        <i class="fans fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Notdog</span>
+                        <span class="icons-facet-count">434</span>
+                        <button (click)="btnToggleSelectPackNames('notdog')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('sharp')">
+                        <i class="fass fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Sharp</span>
+                        <span class="icons-facet-count">15.088</span>
+                        <button (click)="btnToggleSelectPackNames('sharp')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('sharp-duotone')">
+                        <i class="fasds fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Sharp Duotone</span>
+                        <span class="icons-facet-count">15.088</span>
+                        <button (click)="btnToggleSelectPackNames('sharp-duotone')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('slab')">
+                        <i class="faslr fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Slab</span>
+                        <span class="icons-facet-count">416</span>
+                        <button (click)="btnToggleSelectPackNames('slab')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('thumbprint')">
+                        <i class="fatl fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Thumbprint</span>
+                        <span class="icons-facet-count">204</span>
+                        <button (click)="btnToggleSelectPackNames('thumbprint')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('utility')">
+                        <i class="fausb fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Utility</span>
+                        <span class="icons-facet-count">1.014</span>
+                        <button (click)="btnToggleSelectPackNames('utility')" class="btn btn-toggle-selected"></button>
+                    </li>
+                    <li [class.menu-item--selected]="filterByPackNames().includes('whiteboard')">
+                        <i class="fawsb fa-house fa-fw"></i>
+                        <span class="icons-facet-pack-name">Whiteboard</span>
+                        <span class="icons-facet-count">337</span>
+                        <button (click)="btnToggleSelectPackNames('whiteboard')" class="btn btn-toggle-selected"></button>
+                    </li>
+                </ul>
+            </div>
+            <div class="main-preview position-relative">
+                @if (state() === 'loading') {
+                    <app-loading-progress heading="Loading..." backdropFilter="none"></app-loading-progress>
+                }
+                <div class="icons-results-summary">
+                    <h4 class="icons-results-summary-count">{{ paginator.totalRecords() | number }} Icons</h4>
+                    <span class="icons-results-summary-pages">Page {{ pageCount() ? paginator.paged() : 0 }} of {{ pageCount() }}</span>
+                </div>
+                <div class="icon-listing">
+                    @for (icon of filteredData(); track icon.id) {
+                        <button (click)="btnCopyIcon(icon)" class="article position-relative">
+                            <i [class]="icon.cssClass"></i>
+                            <span class="icon-name">{{ icon.name }}</span>
+                            <!-- <span class="icon-style">{{ icon.style }}</span> -->
+                        </button>
+                    } @empty {
+                        @if (state() === 'success') {
+                            <div class="card-empty-icons">
+                                <svg viewBox="0 0 512 512" class="svg-inline--fa" style="--fa-secondary-opacity: 1; --fa-secondary-color: #ffd43b;">
+                                    <g class="fa-duotone-group">
+                                        <path fill="currentColor" d="M0 256c0 18 1.9 35.6 5.4 52.5 8.3-2.9 17.3-4.5 26.6-4.5 38.7 0 71 27.5 78.4 64L224 368c44.2 0 80 35.8 80 80 0 25.8-12.3 48.8-31.3 63.5 133.6-8.6 239.3-119.7 239.3-255.5 0-141.4-114.6-256-256-256S0 114.6 0 256zM94.6 121.9c-5.5-9.6-2.1-21.8 7.4-27.3l13.1-7.5c32.9-18.8 73.6-17.4 105.1 3.6l30.9 20.6c9.2 6.1 11.7 18.5 5.5 27.7s-18.5 11.7-27.7 5.5L198 124.1c-18.9-12.6-43.3-13.4-63.1-2.2l-13.1 7.5c-9.6 5.5-21.8 2.1-27.3-7.4zM208 176a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM146 296c0-13.3 10.7-24 24-24l110 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-110 0c-13.3 0-24-10.7-24-24zM368 192a32 32 0 1 1 -64 0 32 32 0 1 1 64 0z" class="fa-secondary"></path>
+                                        <path fill="currentColor" d="M198 124.1l30.9 20.6c9.2 6.1 21.6 3.6 27.7-5.5s3.6-21.6-5.5-27.7L220.2 90.8c-31.5-21-72.2-22.4-105.1-3.6l-13.1 7.5c-9.6 5.5-12.9 17.7-7.4 27.3s17.7 12.9 27.3 7.4l13.1-7.5c19.7-11.3 44.1-10.4 63.1 2.2zM64 384c0-17.7-14.3-32-32-32S0 366.3 0 384L0 504c0 39.8 32.2 72 72 72l32 0c39.8 0 72-32.2 72-72l0-24 48 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0 0-32zM208 176a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm128 48a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" class="fa-primary"></path>
+                                    </g>
+                                </svg>
+                                <h1 class="card-empty-icons__message">No Icons Found</h1>
+                                <p class="card-empty-icons__desc">There are no icons that match your current filters. Try removing some of them to get better results.</p>
+                                <button (click)="btnClearAllFilters()" class="btn card-empty-icons__clear-all-filter m-t-20">Clear All Filters + Start Over</button>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (paginator.totalRecords()) {
+                    <div class="ais-pagination">
+                        @if (! isFirstPage()) {
+                            <button (click)="changePage( paginator.paged() - 1)" class="btn ais-pagination__btn ais-pagination__btn--prev ais-pagination__element">
+                                <svg viewBox="0 0 256 512">
+                                    <path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path>
+                                </svg>
+                                prev
+                            </button>
+                        }
+                        @if (showFirstPageNav()) {
+                            <button (click)="changePage(1)" class="btn ais-pagination__btn ais-pagination__element">1</button>
+                            <span class="ais-pagination__element ais-pagination__element--separator">...</span>
+                        }
+                        @for (pageNumber of navigationElements(); track pageNumber) {
+                            @if (pageNumber === paginator.paged()) {
+                                <span class="ais-pagination__element ais-pagination__element--current">{{ pageNumber }}</span>
+                            } @else {
+                                <button (click)="changePage(pageNumber)" class="btn ais-pagination__btn ais-pagination__element">{{ pageNumber }}</button>
+                            }
+                        }
+                        @if (showLastPageNav()) {
+                            <span class="ais-pagination__element ais-pagination__element--separator">...</span>
+                            <button (click)="changePage( pageCount())" class="btn ais-pagination__btn ais-pagination__element">{{ pageCount() }}</button>
+                        }
+                        @if (! isLastPage()) {
+                            <button (click)="changePage( paginator.paged() + 1)" class="btn ais-pagination__btn ais-pagination__btn--next ais-pagination__element">next
+                                <svg viewBox="0 0 256 512">
+                                    <path fill="currentColor" d="M247.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L179.2 256 41.9 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path>
+                                </svg>
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

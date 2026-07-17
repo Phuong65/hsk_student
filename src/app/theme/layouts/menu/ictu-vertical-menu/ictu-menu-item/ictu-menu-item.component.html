@@ -1,0 +1,45 @@
+@if (item.url) {
+	@if (! item.external) {
+		<li [ngClass]="item.classes!" [routerLinkActive]="['active']" (isActiveChange)="onRouterLinkActive($event)">
+			<a class="nav-link" [routerLink]="[item.url]" (click)="toggleMenu($event)">
+				@if (item.icon) {
+					<span class="coded-micon" [ngClass]="item.icon"></span>
+				} @else if (item.customSvg) {
+					<svg class="coded-micon pc-icon">
+						<use [attr.href]="'fonts/custom-icon.svg#'+item.customSvg"></use>
+					</svg>
+				} @else {
+					<svg class="coded-micon pc-icon coded-micon--default">
+						<use href="fonts/custom-icon.svg#custom-angle-right"></use>
+					</svg>
+				}
+				<span class="coded-mtext">{{ item.title }}</span> </a>
+		</li>
+	} @else {
+		<li [ngClass]="item.classes!">
+			<a [target]="item.target ? '_blank' : '_self'" [href]="sanitizeURL(item.url)">
+				@if (item.icon) {
+					<span class="coded-micon" [ngClass]="item.icon"></span>
+				} @else if (item.customSvg) {
+					<svg class="coded-micon pc-icon">
+						<use [attr.href]="'fonts/custom-icon.svg#'+item.customSvg"></use>
+					</svg>
+				} @else {
+					<svg class="coded-micon pc-icon coded-micon--default">
+						<use href="fonts/custom-icon.svg#custom-angle-right"></use>
+					</svg>
+				}
+				<span class="coded-mtext">{{ item.title }}</span> </a>
+		</li>
+	}
+} @else {
+	<li class="nav-item coded-menu-caption">
+		<label>{{ item.title }}</label>
+	</li>
+}
+
+@if (item.child && item.child.length) {
+	@for (child of item.child; track child.id) {
+		<app-ictu-menu-item [item]="child"/>
+	}
+}

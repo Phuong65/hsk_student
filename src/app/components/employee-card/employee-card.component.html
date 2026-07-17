@@ -1,0 +1,31 @@
+@if (canLoadData()) {
+    @switch (state()) {
+        @case ('success') {
+            <div class="employee-card-template d-flex align-items-center" [ngClass]="'employee-card-template--size-'+size()">
+                <div class="employee-card-template__avatar flex-shrink-0">
+                    <figure>
+                        <img class="employee-card-template__avatar__img" [src]="employee() | employeePhoto  : 'images/user/avatar-placeholder.jpg'" [alt]="employee()?.full_name">
+                    </figure>
+                </div>
+                <div class="employee-card-template__info flex-grow-1 d-inline-flex flex-column p-l-10">
+                    <h6 class="employee-card-template__info__name f-roboto f-14 fw-medium m-0 p-0 lh-base text-truncate">{{ fullName() }}</h6>
+                    <small class="employee-card-template__info__email f-roboto f-14 fw-normal m-0 p-0 lh-base text-muted text-truncate">{{ email() }}</small>
+                </div>
+            </div>
+        }
+        @case ('error') {
+            <div class="employee-card-template d-flex align-items-center">
+                <p class="employee-card-template__error-text f-roboto f-14 fw-normal lh-base m-0 p-l-10 p-r-10">Lỗi mất kết nối với máy chủ.
+                    <a href="#" (click)="reload($event)">Tải lại</a>
+                </p>
+            </div>
+        }
+        @default {
+            <div class="employee-card-template d-flex align-items-center employee-card-template--loading">
+                <img alt="Analytics Report Loader" height="30" ngSrc="images/analytics-short-report-loader.svg" priority width="180">
+            </div>
+        }
+    }
+} @else {
+    <p class="alert alert-danger admin-table__alert-danger f-roboto f-14 lh-base m-0 p-10">Tài khoản của bạn không có quyền truy cập thông tin nhân viên. </p>
+}

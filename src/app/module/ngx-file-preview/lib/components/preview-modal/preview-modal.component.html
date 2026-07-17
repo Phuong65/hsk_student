@@ -1,0 +1,75 @@
+@if (isVisible) {
+    <div (click)="close()" class="nfp-modal__overlay">
+        <div (click)="$event.stopPropagation()" (mouseleave)="hideControls()" (mousemove)="handleMouseMove()" class="nfp-modal__content">
+            <div [class.nfp-modal__header--multiple]="hasMultipleFiles" class="nfp-modal__header">
+                <div class="nfp-modal__header-left">
+                    <span class="nfp-modal__filename">{{ currentFile?.name }}</span>
+                    @if (hasMultipleFiles) {
+                        <span class="nfp-modal__fileindex">{{ getCurrentFileInfo() }}</span>
+                    }
+                </div>
+                <div class="nfp-modal__header-right">
+                    <div (click)="toggleTheme()" class="nfp-modal__theme-toggle">
+                        <ngx-theme-icon [themeMode]="theme$|async"></ngx-theme-icon>
+                    </div>
+                    <preview-icon (click)="close()" [themeMode]="theme$|async" cursor="pointer" name="close"></preview-icon>
+                </div>
+            </div>
+            <div class="nfp-modal__body">
+                @if (canShowPrevious()) {
+                    <button (click)="previous()" [class.nfp-modal__nav-btn--visible]="isControlsVisible" class="nfp-modal__nav-btn nfp-modal__nav-btn--prev">
+                        <preview-icon [size]="36" [themeMode]="themeMode" name="previous"></preview-icon>
+                    </button>
+                }
+                <div class="nfp-modal__preview">
+                    @if (loading$|async) {
+                        <div class="nfp-modal__loading-overlay">
+                            <div class="spinner"></div>
+                            <span>{{ 'loading'|i18n }}</span>
+                        </div>
+                    }
+                    @switch (currentFile?.type) {
+                        @case ('image') {
+                            <ngx-image-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-image-preview>
+                        }
+                        @case ('video') {
+                            <ngx-video-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-video-preview>
+                        }
+                        @case ('pdf') {
+                            <ngx-pdf-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-pdf-preview>
+                        }
+                        @case ('word') {
+                            <ngx-word-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-word-preview>
+                        }
+                        @case ('excel') {
+                            <ngx-excel-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-excel-preview>
+                        }
+                        @case ('ppt') {
+                            <ngx-ppt-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-ppt-preview>
+                        }
+                        @case ('txt') {
+                            <ngx-text-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-text-preview>
+                        }
+                        @case ('markdown') {
+                            <ngx-markdown-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-markdown-preview>
+                        }
+                        @case ('zip') {
+                            <ngx-archive-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-archive-preview>
+                        }
+                        @case ('audio') {
+                            <ngx-audio-preview [file]="currentFile!" [themeMode]="theme$|async" [canDownload]="canDownload"></ngx-audio-preview>
+                        }
+                        @default {
+                            <ngx-unknown-preview [file]="currentFile!">[themeMode]="theme$|async"</ngx-unknown-preview>
+                        }
+                    }
+                </div>
+                @if (canShowNext()) {
+                    <button (click)="next()" [class.nfp-modal__nav-btn--visible]="isControlsVisible" class="nfp-modal__nav-btn nfp-modal__nav-btn--next">
+                        <preview-icon [size]="36" [themeMode]="themeMode" name="next"></preview-icon>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}

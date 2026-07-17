@@ -1,0 +1,119 @@
+:host {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.ictu-audio-player {
+    display: block;
+    text-align: left;
+}
+
+.ictu-audio-player__private-mode--border-rounded {
+    /*border-radius: 4px;*/
+    overflow: hidden;
+    /*box-shadow: 0 0 3px 2px rgba(45, 105, 240, .2);*/
+}
+
+.ictu-audio-player__private-mode {
+    display: flex;
+    background-color: #ffffff;
+}
+
+.ictu-audio-player__private-mode__btn {
+    display: inline-block;
+    border-radius: 0;
+    padding: 12px 11px 12px 13px;
+    font-size: 0;
+    line-height: 0;
+    background-color: #2d69f0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    position: relative;
+    height: 41px;
+    width: 41px;
+    cursor: pointer;
+}
+
+.ictu-audio-player__private-mode__btn svg {
+    width: 15px;
+    height: 15px;
+    fill: #ffffff;
+}
+
+.ictu-audio-player__private-mode__btn.paused-icon {
+    padding: 0;
+    width: 41px;
+    height: 41px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ictu-audio-player__private-mode__btn.paused-icon::before,
+.ictu-audio-player__private-mode__btn.paused-icon::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 17px;
+    background-color: #ffffff;
+    margin: 0 2px;
+}
+
+.ictu-audio-player__private-mode__btn.paused-icon svg {
+    display: none;
+}
+
+.ictu-audio-player__update-time,
+.ictu-audio-player__ended-time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    font-family: var(--primary-font-family), sans-serif;
+    font-size: 14px;
+    color: #333333;
+    font-weight: 500;
+}
+
+.ictu-audio-player__process-tag {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: center;
+    /*background-color: #b3b3b3;*/
+    background-color: #dadee3;
+    margin: 0;
+    border-radius: 999px;
+}
+
+.ictu-audio-player__process-line {
+    height: 4px;
+    display: inline-block;
+    background-color: #666666;
+    border-radius: 999px;
+    /*transition: all 0.8s ease 0s;*/
+}
+
+.media-error {
+    position: relative;
+}
+
+.media-error::after {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    /*background-color: rgba(255, 255, 255, 0.5);*/
+    cursor: not-allowed;
+}
+
+.ictu-audio-control__btn-func {
+    padding: 0;
+}

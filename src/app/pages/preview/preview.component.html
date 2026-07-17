@@ -1,0 +1,29 @@
+<head class="components-sample__heading d-block">
+	<div class="d-flex justify-content-center align-items-center" style="height: 60px">
+		<div class="components-sample__heading__menu">
+			<button (click)="collapseMenu.panel?.toggle()" pButton pRipple rounded="true" severity="info">
+				<i class="pi pi-bars" pButtonIcon></i>
+			</button>
+			<div class="components-sample__heading__menu__list">
+				<collapse-panel #collapseMenu>
+					<nav class="d-flex justify-content-start align-items-start">
+						@for (item of menuList; track item.routerLink) {
+							<a (click)="collapseMenu.panel?.hide()" href="#" [routerLink]="item.routerLink" routerLinkActive="--nav-active">{{ item.label }}</a>
+						}
+					</nav>
+				</collapse-panel>
+			</div>
+		</div>
+		@if (heading().heading) {
+			<div class="components-sample__heading__wrap-text flex-fill text-center">
+				<h4 class="components-sample__heading__text text-center">{{ heading().heading }}</h4>
+				@if (heading().description) {
+					<p class="components-sample__heading__text__desc">{{ heading().description }}</p>
+				}
+			</div>
+		}
+	</div>
+</head>
+<div class="components-sample-layout">
+    <router-outlet></router-outlet>
+</div>

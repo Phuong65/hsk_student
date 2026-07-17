@@ -1,0 +1,58 @@
+import { Component , CUSTOM_ELEMENTS_SCHEMA , HostBinding , Input , NO_ERRORS_SCHEMA } from "@angular/core";
+
+import { ThemeMode } from "../../types/theme.types";
+import { TooltipDirective } from "../../directives/tooltip.diretive";
+
+@Component( {
+	selector   : "preview-icon" ,
+	template   : `
+		@if (name) {
+			<i [tooltip]="title" class="fp-font-icon NGX-FILE-PREVIEW" [class]="'nfp-'+name" [style.width]="size" [style.font-size]="size" [style.color]="color ? color: (themeMode=='light'?'#333333':'#FFFFFF')"></i>
+		}
+		@if (svg) {
+			<svg class="fp-svg-icon" [style.width]="size" [style.height]="size" [tooltip]="title" aria-hidden="true">
+				<use [attr.xlink:href]="'#nfp-' + svg">"></use>
+			</svg>
+		}
+	` ,
+	styles     : [ `:host {
+        display: inline-block;
+        line-height: 0;
+
+        .fp-svg-icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .fp-font-icon {
+            color: #FFFFFF;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+    }` ] ,
+	imports: [TooltipDirective] ,
+	standalone : true ,
+	schemas    : [ CUSTOM_ELEMENTS_SCHEMA , NO_ERRORS_SCHEMA ]
+} )
+export class PreviewIconComponent {
+
+	@Input() name : string = "";
+
+	@Input() svg : string = "";
+
+	@Input( { transform : ( v : any ) => typeof v === 'number' ? `${ v }px` : v } ) size : number | string = '16px';
+
+	@Input() color? : string;
+
+	@Input() themeMode? : ThemeMode | null;
+
+	@Input() title : string = "";
+
+	@Input() @HostBinding( 'style.cursor' ) cursor : string = 'pointer'
+}

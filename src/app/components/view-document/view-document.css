@@ -1,0 +1,17 @@
+.view-document-layout-section {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.video-wrapper {
+    height: 100%;
+}
+
+.video-wrapper-document {
+    height: calc(var(--device-height) * 0.9);
+}
+
+.audio-wrapper {
+    height: 50px;
+}

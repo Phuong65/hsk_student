@@ -1,0 +1,49 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+    "compileOnSave"          : false ,
+    "compilerOptions"        : {
+        "baseUrl"                            : "./" ,
+        "outDir"                             : "./dist/out-tsc" ,
+        "strict"                             : false ,
+        "noImplicitOverride"                 : true ,
+        "noPropertyAccessFromIndexSignature" : true ,
+        "noImplicitReturns"                  : true ,
+        "noFallthroughCasesInSwitch"         : true ,
+        "skipLibCheck"                       : true ,
+        "isolatedModules"                    : true ,
+        "esModuleInterop"                    : true ,
+        "experimentalDecorators"             : true ,
+        "resolveJsonModule": true,
+        "moduleResolution"                   : "bundler" ,
+        "importHelpers"                      : true ,
+        "target"                             : "ES2022" ,
+        "module"                             : "ES2022" ,
+        "useDefineForClassFields": false,
+        "paths"                              : {
+            "@app/*"            : [ "src/app/*" ] ,
+            "@components/*"     : [ "src/app/components/*" ] ,
+            "@theme/*"          : [ "src/app/theme/*" ] ,
+            "@pages/*"          : [ "src/app/pages/*" ] ,
+            "@guards/*"         : [ "src/app/guards/*" ] ,
+            "@shared/*"         : [ "src/app/shared/*" ] ,
+            "@services/*"       : [ "src/app/services/*" ] ,
+            "@directives/*"     : [ "src/app/directives/*" ] ,
+            "@models/*"         : [ "src/app/models/*" ] ,
+            "@module/*"         : [ "src/app/module/*" ] ,
+            "@pipes/*"          : [ "src/app/pipes/*" ] ,
+            "@utilities/*"      : [ "src/app/utilities/*" ] ,
+            "@sample/*"         : [ "src/app/sample/*" ] ,
+            "@setup/*"          : [ "src/app/setup/*" ] ,
+            "@env"              : [ "src/environments" ] ,
+            "@environmentModel" : [ "src/environments/environment.model.ts" ]
+        }
+    } ,
+    "angularCompilerOptions" : {
+        "enableI18nLegacyMessageIdFormat" : false ,
+        "strictInjectionParameters"       : true ,
+        "strictInputAccessModifiers"      : true ,
+        "strictTemplates"                 : true ,
+        "enableInputTransform"            : true
+    }
+}

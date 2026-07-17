@@ -1,0 +1,133 @@
+.mat-mdc-progress-bar.loader {
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 9999;
+}
+
+.app-version {
+    position: fixed;
+    z-index: 99;
+    bottom: 0;
+    right: 0;
+    font-size: 11px;
+    line-height: 1;
+    color: #000;
+    background-color: rgb(191 191 191 / 34%);
+    padding: 2px 2px 2px 5px;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    height: 16px;
+    align-items: center;
+    border-radius: 999px 0 0 999px;
+}
+
+.app-version__connect-status {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #ff3d00;
+    border-radius: 999px;
+    margin: 0 3px 0 0;
+    opacity: 1;
+    box-shadow: 0 0 3px 2px #ff3d00;
+}
+
+.app-version__connect-status.connected {
+    background-color: #05c30c;
+    box-shadow: 0 0 3px 2px #05c30c;
+}
+
+.ictu-connection-checker {
+    position: fixed;
+    left: 50%;
+    width: min(420px, calc(100% - 10px));
+    border-radius: 4px;
+    padding: 13px 17px 20px;
+    background: #fff;
+    display: flex;
+    border-top: 3px solid #EA4D67;
+    box-shadow: 0 10px 25px rgba(52, 87, 220, 0.1);
+    transition: all .35s ease-in-out 0.1s;
+    z-index: 1000;
+    top: 0;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    @starting-style {
+        top: 10px;
+        visibility: hidden;
+        transform: translate(-50%, -50px);
+    }
+}
+
+.ictu-connection-checker--leave {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50px);
+}
+
+.ictu-connection-checker__icon {
+    width: 30px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ea4d67;
+    margin-right: 15px;
+    padding: 5px;
+    aspect-ratio: 1;
+    align-self: flex-start;
+}
+
+.ictu-connection-checker__details {
+    width: calc(100% - 40px - 15px);
+}
+
+.ictu-connection-checker__icon svg {
+    color: #ffffff;
+    max-width: 100%;
+    height: auto;
+}
+
+.ictu-connection-checker__title {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--primary-font-family), sans-serif;
+    margin: 5px 0 0;
+}
+
+.ictu-connection-checker__desc {
+    color: #474747;
+    margin: 5px 0 0;
+    font-size: 15px;
+    line-height: 1.4;
+    font-family: var(--primary-font-family), sans-serif;
+}
+
+.ictu-connection-checker__btn-reconnect {
+    border: none;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 4px;
+    background: #007bff;
+    font-family: var(--primary-font-family), sans-serif;
+    line-height: 1;
+    margin: 10px 0 0;
+}
+
+.ictu-connection-checker__close--times {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 36px !important;
+    height: 36px !important;
+}

@@ -1,0 +1,95 @@
+.staff-control {
+    font-size: 0;
+    line-height: 0;
+    --staff-control-avatar-size: 40px;
+}
+
+.staff-control__loading {
+    background-color: #ffffff;
+}
+
+.staff-control__loading img {
+    aspect-ratio: 6;
+    height: 32px;
+    width: auto;
+}
+
+.staff-control__content__avatar {
+    border-radius: 999px;
+    overflow: hidden;
+    padding: 2px;
+    border: 1px solid #aaaaaa;
+    max-width: var(--staff-control-avatar-size);
+}
+
+.staff-control__content__avatar img {
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 999px;
+}
+
+.staff-control__content__info {
+    max-width: calc(100% - var(--staff-control-avatar-size));
+}
+
+.staff-control__content__info__email,
+.staff-control__content__info__name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333333;
+    max-width: 100%;
+}
+
+.staff-control__content__info__email {
+    color: #555555;
+    margin: 2px 0 0 0;
+}
+
+.staff-control__content__button {
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+.staff-control__btn-alert {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.staff-control__selector {
+    --p-select-padding-x: var(--staff-control-padding-x);
+    --p-select-padding-y: var(--staff-control-padding-y);
+    height: var(--staff-control-height, 43px);
+    display: flex;
+    align-items: center;
+    border-radius: var(--staff-control-border-radius, 4px);
+    background: var(--staff-control-background);
+    border: var(--staff-control-border);
+}
+
+/*staff-control__content--simple*/
+.staff-control--simple {
+    --staff-control-height: 30px;
+    --ictu-topbar-filter-menu-max-height: 30px;
+}
+
+.staff-control--simple .staff-control__content__avatar {
+    max-width: 28px;
+    max-height: 28px;
+    padding: 0;
+    border: none;
+    --staff-control-avatar-size: 30px;
+}
+
+.staff-control--simple .staff-control__content {
+    height: 100%;
+}

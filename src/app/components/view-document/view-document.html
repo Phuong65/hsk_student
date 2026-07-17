@@ -1,0 +1,49 @@
+<section class="view-document-layout-section">
+    @switch(type_view()){
+        @case('EXCERPT_FROM_DOCUMENT'){
+            @for (pageImage of listidPage; track $index; let indexPageImage = $index){
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <div style="width: 70%;">
+                            <app-simmer-image-component [idFile]="form_document().id_file" [idPage]="pageImage"></app-simmer-image-component>
+                        </div>
+                </div>
+            }
+        }
+        @case('LINK'){
+            @switch(urlType()){
+                @case('youtube'){
+                    <div class="video-wrapper-document">
+                        <plyr [plyrOptions]="playerOptions" [plyrSources]="[{ src: extractYouTubeId(linkRegxr()), provider: 'youtube' }]"></plyr>
+                    </div>
+                }
+                @case('google_drive'){
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%">
+                        <div style="font-size: 16px;">Chưa hỗ trợ link Driver</div>
+                        <a style="font-size: 16px;" [href]="linkRegxr()">Truy cập link</a>
+                    </div>
+                }
+                @case('other'){
+                    <iframe [src]="linkRegxr() | safeResourceUrl" width="100%" height="100%" style="border: none;"></iframe>
+                }
+            }
+        }
+        @case('VIDEO'){
+            @if(link()){
+                <div class="video-wrapper">
+                    <plyr [plyrOptions]="playerOptions" [plyrSources]="plyrSources()"> </plyr>
+                </div>
+            }
+        }
+        @case('YOUTUBE'){
+            <div class="video-wrapper">
+                <plyr [plyrOptions]="playerOptions" [plyrSources]="plyrSources()"> </plyr>
+            </div>
+        }
+        @case('AUDIO'){
+            <div class="audio-wrapper">
+                <plyr [plyrOptions]="audioOptions" [plyrSources]="plyrSources()"> </plyr>
+            </div>
+
+        }
+    }
+</section>

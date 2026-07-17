@@ -1,0 +1,50 @@
+.ictu-picture-control {
+    font-size: 0;
+    line-height: 0;
+}
+
+.ictu-picture-control__placeholder {
+    font-size: 0;
+    line-height: 0;
+    background-color: #dddddd;
+    color: #999999;
+}
+
+.ictu-picture-control__image {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+}
+
+.ictu-picture-control__btn-call-upload {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-size: 0;
+    line-height: 0;
+    cursor: pointer;
+}
+
+.ictu-picture-control__loading {
+    background-color: rgba(255, 255, 255, .3);
+    backdrop-filter: blur(2px);
+}
+
+.ictu-picture-control__btn-call-upload i {
+    color: #ffffff;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .35s ease;
+}
+
+.ictu-picture-control__btn-call-upload:hover i {
+    opacity: 1;
+    visibility: visible;
+}

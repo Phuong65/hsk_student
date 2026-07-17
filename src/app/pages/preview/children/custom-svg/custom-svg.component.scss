@@ -1,0 +1,92 @@
+.tabler-icon-wrapper {
+    width: 100%;
+    max-width: 1376px;
+    display: block;
+    margin: 60px auto 0;
+}
+
+.icon-tabler {
+    &__head {
+        &__search-wrap {
+            position: relative;
+            display: block;
+
+            input {
+                font-size: 16px;
+                font-weight: 400;
+                font-family: var(--primary-font-family), sans-serif;
+                line-height: 1.5;
+                padding: 15px 15px 15px 56px;
+                width: 100%;
+            }
+
+            svg {
+                position: absolute;
+                top: calc(28px - 12px);
+                left: calc(28px - 12px);
+                color: #666666;
+            }
+        }
+    }
+
+    &__body {
+        display: block;
+        margin-top: 50px;
+
+        &__title {
+            display: block;
+            text-align: left;
+            font-weight: 500;
+            font-family: var(--primary-font-family), sans-serif;
+            line-height: 1.5;
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: rgb(49, 59, 73);
+        }
+
+        &__empty {
+            &__desc {
+                font-family: var(--primary-font-family), sans-serif;
+                font-size: 18px;
+                margin: 0;
+                line-height: 1.5;
+            }
+
+            &__heading {
+                font-size: 26px;
+                font-weight: 700;
+                font-family: var(--primary-font-family), sans-serif;
+                line-height: 1.5;
+                margin: 0 0 5px;
+            }
+        }
+
+        &__items {
+            --icon-min-width: 5.5rem;
+            display: grid;
+            grid-gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(var(--icon-min-width), 1fr));
+
+            &__btn {
+                background-color: #f8fafc;
+                border: 1px solid rgba(49, 59, 73, .12);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                aspect-ratio: 1;
+                border-radius: 8px;
+                padding: 0;
+                max-width: 93px;
+                cursor: pointer;
+                height: auto;
+
+                .pc-icon {
+                    font-size: 28px;
+                    width: 28px;
+                    height: 28px;
+                    color: rgb(49, 59, 73);
+                }
+            }
+        }
+    }
+}

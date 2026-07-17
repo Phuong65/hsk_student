@@ -1,0 +1,15 @@
+<div class="app-confirm-wrap confirm-delete-2 d-flex flex-column justify-content-center align-items-center p-20">
+    <div class="ictu-confirm-delete__head m-b-15">
+        <span class="ictu-confirm-delete__head__icon wid-50 hei-50 d-inline-flex justify-content-center align-items-center lh-1 f-0">
+            <i class="ti ti-trash f-28 fw-medium"></i>
+        </span>
+    </div>
+    <div class="ictu-confirm-delete__body">
+        <h4 class="f-roboto f-18 fw-bold m-b-5 text-center">{{ heading() }}</h4>
+        <div class="ictu-confirm-delete__body__message" [innerHTML]="htmlMessage() | safeHtml"></div>
+    </div>
+    <div class="ictu-confirm-delete__foot m-t-15 d-flex align-items-center justify-content-center">
+        <button (click)="confirm($event, false)" class="btn ictu-confirm-delete__btn d-inline-flex justify-content-center align-items-center f-roboto f-14 fw-medium lh-base p-10" mat-button>Hủy bỏ</button>
+        <button (click)="confirm($event, true)" class="btn ictu-confirm-delete__btn ictu-confirm-delete__btn--highlight d-inline-flex justify-content-center align-items-center f-roboto f-14 fw-medium lh-base p-10" mat-button>Có, tôi muốn xóa</button>
+    </div>
+</div>

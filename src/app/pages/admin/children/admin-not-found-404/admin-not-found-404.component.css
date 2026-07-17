@@ -1,0 +1,28 @@
+.admin-not-found-404__heading,
+.admin-not-found-404__sub-heading,
+.admin-not-found-404__text-desc {
+    font-family: var(--primary-font-family), sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: rgb(107, 114, 128);
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.admin-not-found-404__heading {
+    color: rgb(37 99 235);
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.admin-not-found-404__sub-heading {
+    color: rgb(17, 24, 39);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.admin-not-found-404__text-desc {
+    margin-bottom: 0;
+}

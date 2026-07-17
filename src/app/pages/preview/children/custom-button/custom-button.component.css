@@ -1,0 +1,14 @@
+.grid-buttons {
+    --icon-min-width: 250px;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(var(--icon-min-width), 1fr));
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.font-medium {
+    font-weight: 500;
+}

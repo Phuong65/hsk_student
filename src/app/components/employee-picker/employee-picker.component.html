@@ -1,0 +1,28 @@
+<div class="employee-picker position-relative">
+	@switch (state()) {
+		@case ('loading') {
+			<div class="employee-picker__loading-box">
+				<mat-progress-bar class="loader" mode="indeterminate" value="40"></mat-progress-bar>
+			</div>
+		}
+		@case ('success') {
+			<p-select [options]="employees()" [(ngModel)]="selected" placeholder="Chọn người đại diện" class="w-full">
+				<ng-template #selectedItem let-selectedOption>
+					<div class="flex items-center gap-2" *ngIf="selectedOption">
+						<span>{{ selectedOption.value }}</span> <span>{{ selectedOption.label }}</span>
+					</div>
+				</ng-template>
+				<ng-template let-employee #item>
+					<div class="flex items-center gap-2">
+						<span>{{ employee.value }}</span> <span>{{ employee.label }}</span>
+					</div>
+				</ng-template>
+			</p-select>
+		}
+		@default {
+			<div class="admin-table__alert-danger text-center w-100">Tải dữ liệu thất bại. Vui lòng chọn
+				<a href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+			</div>
+		}
+	}
+</div>

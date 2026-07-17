@@ -1,0 +1,49 @@
+<div class="ictu-audio-control w-100 h-100 position-relative">
+    @if (ready()) {
+        <div class="d-flex w-100 h-100">
+            <!--             <div class="flex-fill"> -->
+            <!--                 <plyr class="w-100 ictu-plyr-default" [plyrSources]="sources()" [plyrOptions]="options()" plyrType="audio"></plyr> -->
+            <!--             </div> -->
+            <div class="ictu-audio-player flex-fill">
+                <div class="ictu-audio-player__private-mode ictu-audio-player__private-mode--border-rounded" [ngClass]="{ 'media-error': error(), 'ictu-is-loading' : isLoading }">
+                    <button class="btn ictu-audio-player__private-mode__btn" [ngClass]="{ 'paused-icon' : isPlaying() }" (click)="playAudio()">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 494.148 494.148">
+                            <g>
+                                <g>
+                                    <path d="M405.284,201.188L130.804,13.28C118.128,4.596,105.356,0,94.74,0C74.216,0,61.52,16.472,61.52,44.044v406.124c0,27.54,12.68,43.98,33.156,43.98c10.632,0,23.2-4.6,35.904-13.308l274.608-187.904c17.66-12.104,27.44-28.392,27.44-45.884C432.632,229.572,422.964,213.288,405.284,201.188z"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
+                    <span class="ictu-audio-player__update-time">{{ lblCurrentTime() }}</span>
+                    <div class="ictu-audio-player__process-tag">
+                        <span class="ictu-audio-player__process-line" [style.width]="progress + '%'"></span>
+                    </div>
+                    <span class="ictu-audio-player__ended-time">{{ lblEndTime() }}</span>
+                </div>
+            </div>
+            <div class="d-inline-flex justify-content-center align-items-center p-r-10 gap-10">
+                <button (click)="btnCallUploadPanel()" [disabled]="disabled()" class="btn ictu-button-info-light ictu-audio-control__btn-func p-0 wid-30 hei-30">
+                    <i class="fa-classic fa-regular fa-refresh"></i>
+                </button>
+                <button (click)="btnCallDelete()" class="btn ictu-button-danger-light ictu-audio-control__btn-func p-0 wid-30 hei-30">
+                    <i class="fa-classic fa-regular fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    } @else {
+        <div class="ictu-audio-control__placeholder w-100 h-100 d-flex justify-content-center align-items-center">
+            <p class="m-0 f-roboto lh-base fw-normal f-14" style="color: #8a8a8a;">
+                <i class="fa-classic fa-light fa-file-upload f-14"></i> Upload Audio
+            </p>
+            @if (! disabled()) {
+                <button (click)="btnCallUploadPanel()" mat-button class="btn ictu-audio-control__btn-call-upload position-absolute inset-0 w-100 h-100 zdx-5 d-flex align-items-center justify-content-center"></button>
+            }
+        </div>
+    }
+    @if (enableLoading()) {
+        <div class="ictu-audio-control__loading position-absolute inset-0 w-100 h-100 zdx-5 d-flex justify-content-center align-items-center">
+            <span class="spinner-border spinner-border-sm text-danger"></span>
+        </div>
+    }
+</div>

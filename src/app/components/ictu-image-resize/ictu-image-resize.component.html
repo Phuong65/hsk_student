@@ -1,0 +1,64 @@
+<div class="avatar-picker__wrap-panel">
+	<div [@effect]="croppedPanelMode" class="avatar-picker__container">
+		<div class="avatar-picker__section avatar-picker__section--left">
+			<div class="avatar-maker__head">
+				<h4 class="avatar-maker__heading">Ảnh gốc</h4>
+			</div>
+			<div class="avatar-maker__section-content">
+				@if (imgRaw) {
+					<image-cropper (cropperReady)="cropperReady()" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (loadImageFailed)="loadImageFailed()" [aspectRatio]="config.aspectRatio" [cropperMaxHeight]="config.cropperMaxHeight" [cropperMaxWidth]="config.cropperMaxWidth" [cropperMinHeight]="config.cropperMinHeight" [cropperMinWidth]="config.cropperMinWidth" [cropperStaticHeight]="config.cropperStaticHeight" [cropperStaticWidth]="config.cropperStaticWidth" [format]="config.format" [imageQuality]="config.imageQuality" [imageURL]="imgRaw" [maintainAspectRatio]="config.maintainAspectRatio" [resizeToHeight]="config.resizeToHeight" [resizeToWidth]="config.resizeToWidth" class="avatar-maker__img-creator"></image-cropper>
+				}
+			</div>
+		</div>
+		<div class="avatar-picker__section avatar-picker__section--right">
+			<div class="avatar-maker__head">
+				<h4 class="avatar-maker__heading">Ảnh kết quả</h4>
+			</div>
+			<div class="avatar-maker__section-content">
+				@if (croppedImage) {
+					<img [height]="croppedImage.height" [src]="croppedImage.objectUrl | safeUrl" [width]="croppedImage.width" alt="" class="avatar-maker__cropped-image">
+				}
+			</div>
+		</div>
+		<div class="avatar-picker__section avatar-picker__section--bottom">
+			@if (! config.dataUrl) {
+				<button (click)="takeNewPicture()" class="theme-button p-button--center avatar-picker__btn-control" pButton pRipple>
+					<i class="pi-camera pi m-0 f-14" pButtonIcon></i><span style="font-size: 14px;font-weight: 400;line-height: 1;font-family: var(--primary-font-family), sans-serif;" pButtonLabel>Chụp lại</span>
+				</button>
+			}
+			<button (click)="closeProcess(result)" class="theme-button p-button--center p-button-success avatar-picker__btn-control" pButton pRipple>
+				<i class="pi-save pi m-0 f-14" pButtonIcon></i><span pButtonLabel style="font-size: 14px;font-weight: 400;line-height: 1;font-family: var(--primary-font-family), sans-serif;">Lưu lại</span>
+			</button>
+			<button (click)="cancelAct()" class="theme-button p-button--center p-button-danger avatar-picker__btn-control" pButton pRipple>
+				<i class="pi-times pi m-0 f-14" pButtonIcon></i><span pButtonLabel style="font-size: 14px;font-weight: 400;line-height: 1;font-family: var(--primary-font-family), sans-serif;">Hủy</span>
+			</button>
+		</div>
+	</div>
+	<div [@effect]="cameraMode" class="avatar-maker__camera-frame">
+		<div class="avatar-maker__camera-frame-inner">
+			<video #video [height]="config.panelHeight" [width]="config.panelWidth" autoplay class="avatar-maker__video-tag"></video>
+			<canvas #canvas [height]="config.panelHeight" [width]="config.panelWidth" class="d-none"></canvas>
+			<button (click)="capture()" class="btn avatar-maker__btn-capture">
+				<svg height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="16" cy="7" r="3"/>
+					<path d="M4,19a1,1,0,0,0,1,1H20V18.586L11.121,9.707a3,3,0,0,0-4.242,0L4,12.586Z"/>
+					<path d="M21,24H16V22h5a1,1,0,0,0,1-1V16h2v5A3,3,0,0,1,21,24Z"/>
+					<path d="M2,8H0V3A3,3,0,0,1,3,0H8V2H3A1,1,0,0,0,2,3Z"/>
+					<path d="M8,24H3a3,3,0,0,1-3-3V16H2v5a1,1,0,0,0,1,1H8Z"/>
+					<path d="M24,8H22V3a1,1,0,0,0-1-1H16V0h5a3,3,0,0,1,3,3Z"/>
+				</svg>
+				chụp hình
+			</button>
+		</div>
+	</div>
+	@if (errorMessage) {
+		<div class="avatar-maker__error-mes">
+			<div class="avatar-maker__error-mes-inner">
+				<p class="avatar-maker__error-mes-text">{{ errorMessage }}</p>
+				<button (click)="closeProcess(dismissAct)" class="btn btn-danger avatar-maker__btn-quit">
+					<i class="fa fa-times"></i> Thoát ra
+				</button>
+			</div>
+		</div>
+	}
+</div>

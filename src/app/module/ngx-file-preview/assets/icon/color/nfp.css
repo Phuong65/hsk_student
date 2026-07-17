@@ -1,0 +1,61 @@
+@font-face {
+  font-family: "NGX-FILE-PREVIEW"; /* Project id 4798817 */
+  src: url('nfp.svg?t=1742551827025#NGX-FILE-PREVIEW') format('svg');
+}
+
+.NGX-FILE-PREVIEW {
+  font-family: "NGX-FILE-PREVIEW" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.nfp-markdown:before {
+  content: "\ebb1";
+}
+
+.nfp-download:before {
+  content: "\e6c6";
+}
+
+.nfp-ppt:before {
+  content: "\e904";
+}
+
+.nfp-word:before {
+  content: "\e902";
+}
+
+.nfp-excel:before {
+  content: "\e907";
+}
+
+.nfp-txt:before {
+  content: "\e903";
+}
+
+.nfp-unknown:before {
+  content: "\e901";
+}
+
+.nfp-video:before {
+  content: "\e900";
+}
+
+.nfp-zip:before {
+  content: "\e908";
+}
+
+.nfp-image:before {
+  content: "\e909";
+}
+
+.nfp-audio:before {
+  content: "\e905";
+}
+
+.nfp-pdf:before {
+  content: "\e906";
+}
+

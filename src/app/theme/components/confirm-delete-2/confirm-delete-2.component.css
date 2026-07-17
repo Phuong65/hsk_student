@@ -1,0 +1,48 @@
+.confirm-delete-2 {
+    width: min(400px, calc(100vw - 20px));
+}
+
+.ictu-confirm-delete__head__icon {
+    color: #E70D0D;
+    background: #F6CECE;
+    border-radius: 4px;
+}
+
+.ictu-confirm-delete__foot {
+    gap: 20px;
+}
+
+.ictu-confirm-delete__btn {
+    background-color: #F8F9FA;
+    border: 1px solid #ededed;
+    color: #111827;
+    border-radius: 4px;
+    transition: all 0.5s;
+    cursor: pointer;
+    box-shadow: none !important;
+    outline: none !important;
+    min-width: 120px;
+    height: 43px;
+}
+
+.ictu-confirm-delete__btn:hover,
+.ictu-confirm-delete__btn:focus,
+.ictu-confirm-delete__btn:active {
+    background-color: rgb(239.075, 241.35, 243.625);
+    border: 1px solid #F8F9FA;
+    color: #111827;
+}
+
+.ictu-confirm-delete__btn--highlight {
+    background-color: #E70D0D;
+    border: 1px solid #E70D0D;
+    color: #FFF;
+}
+
+.ictu-confirm-delete__btn--highlight:hover,
+.ictu-confirm-delete__btn--highlight:focus,
+.ictu-confirm-delete__btn--highlight:active {
+    background-color: rgb(192.3737704918, 10.8262295082, 10.8262295082);
+    border: 1px solid rgb(192.3737704918, 10.8262295082, 10.8262295082);
+    color: #FFF;
+}

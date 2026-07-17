@@ -1,0 +1,72 @@
+.app-container {
+    //padding: var(--mat-toolbar-standard-height, 54px) 0 0;
+    min-height: var(--device-height, 100vh);
+    padding: 0;
+    box-shadow: inset 1px 0 0 0 var(--accent-300);
+}
+
+.pc-sidebar {
+    //transition-duration: 400ms;
+    //transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    //transition-property: width;
+    //transition: width 400ms cubic-bezier(0.25, 0.8, 0.25, 1) 0s !important;
+
+    .m-header {
+        &__logo {
+            padding-right: 10px;
+
+            img {
+                height: auto;
+                max-width: 46px;
+            }
+        }
+
+        .version {
+            margin: 0;
+            width: auto;
+            align-self: flex-start;
+        }
+
+        .domain-deploy {
+            font-family: var(--primary-font-family), sans-serif;
+            font-size: 13px;
+            margin: 5px 0 0;
+            line-height: 1;
+            color: var(--accent-600);
+        }
+    }
+
+    .navbar-wrapper {
+        &__btn-toggle {
+            &__icon {
+                height: auto;
+                width: 24px;
+            }
+
+            &--left {
+                font-size: 0;
+                line-height: 1;
+                height: calc(100% - 2px);
+                width: calc(80px - 2px);
+                border-radius: 0;
+                padding: 0;
+                margin: 0 10px 0 1px;
+
+                &:not(:hover) {
+                    background-color: #ededed;
+                }
+            }
+        }
+    }
+}
+
+::ng-deep {
+    @media only screen and (max-width: 1024px) {
+        .mat-drawer-content {
+            .app-container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+    }
+}

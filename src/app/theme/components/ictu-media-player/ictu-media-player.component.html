@@ -1,0 +1,36 @@
+@switch (state()) {
+	@case ('loaded') {
+		<div [style.aspect-ratio]="aspectRatio()?? '16/9'" class="ictu-media-player__wrapper position-relative" videoAutoFit>
+			<plyr [plyrOptions]="options()" [plyrPlaysInline]="true" [plyrSources]="sources()" [plyrTitle]="title()" class="plyr-component ictu-media-player__plyr-component"></plyr>
+			<button (click)="btnClose()" class="ictu-media-player__wrapper__btn-close btn ictu-button-danger-light"><i class="ti ti-x"></i></button>
+		</div>
+	}
+	@case ('invalid') {
+		<div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+			<h4 class="ictu-media-player__box-size__heading fw-medium font-roboto f-15 lh-base m-0 text-danger">Lỗi định dạng file</h4>
+			<p class="fw-normal font-roboto f-14 lh-base m-0 text-muted" [innerHTML]="fileExtensionError() | safeHtml "></p>
+			<button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+		</div>
+	}
+	@case ('error') {
+		<div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+			<h4 class="ictu-media-player__box-size__heading fw-medium font-roboto f-15 lh-base m-0 text-danger">Lỗi tải xuống</h4>
+			<p class="fw-normal font-roboto f-14 lh-base m-0 text-muted">Quá trình tải xuống file bị gián đoạn!</p>
+			<div class="d-flex justify-content-center align-items-center" style="gap:10px;">
+				<button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+				<button (click)="btnReload()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--reload btn fw-normal font-roboto f-14 lh-base m-0">Tải lại</button>
+			</div>
+		</div>
+	}
+	@default {
+		<div class="ictu-media-player__box-size d-flex flex-column justify-content-center align-items-center">
+			<h4 class="ictu-media-player__box-size__heading fw-normal font-roboto f-14 lh-base m-0">Tải xuống...</h4>
+			<div class="animation-typing-dots">
+				<span class="animation-typing-dots__element"></span>
+				<span class="animation-typing-dots__element"></span>
+				<span class="animation-typing-dots__element"></span>
+			</div>
+			<button (click)="btnClose()" class="ictu-media-player__box-size__btn ictu-media-player__box-size__btn--cancel btn fw-normal font-roboto f-14 lh-base m-0">Hủy</button>
+		</div>
+	}
+}

@@ -1,0 +1,79 @@
+<div class="p-25 position-relative b-block">
+    <div class="row">
+        <div class="col-12">
+            <app-card cardTitle="Hello card">
+                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-card cardTitle="Accordion example">
+                <div class="d-flex flex-column" style="gap: 10px">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <a (click)="panel1.panel?.toggle()" class="link-primary" href="javascript:">Collapsible Group Item #1</a>
+                            </h5>
+                        </div>
+                        <collapse-panel #panel1>
+                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</div>
+                        </collapse-panel>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <a (click)="panel2.panel?.toggle()" class="link-primary" href="javascript:">Collapsible Group Item #2</a>
+                            </h5>
+                        </div>
+                        <collapse-panel #panel2>
+                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</div>
+                        </collapse-panel>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <a (click)="panel3.panel?.toggle()" class="link-primary" href="javascript:">Collapsible Group Item #3</a>
+                            </h5>
+                        </div>
+                        <collapse-panel #panel3>
+                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</div>
+                        </collapse-panel>
+                    </div>
+                </div>
+            </app-card>
+        </div>
+    </div>
+    <div class="row m-y-50">
+        <div class="col-12">
+            <div class="ictu-chakra-tabs d-flex justify-content-start flex-row">
+                <button class="btn ictu-chakra-tabs__btn wid-180 d-inline-flex justify-content-center align-items-center f-14 fw-normal lh-base ictu-chakra-tabs__btn--activated" mat-button>Lesson</button>
+                <button class="btn ictu-chakra-tabs__btn wid-180 d-inline-flex justify-content-center align-items-center f-14 fw-normal lh-base" mat-button>Markers & Questions</button>
+                <button class="btn ictu-chakra-tabs__btn wid-180 d-inline-flex justify-content-center align-items-center f-14 fw-normal lh-base" mat-button>Q&A</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-card cardTitle="Pagination example">
+                <ictu-paginator [control]="paginatorControl()"></ictu-paginator>
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-9">
+            <ictu-editor></ictu-editor>
+        </div>
+        <div class="col-3">
+            <div class="d-flex align-items-center justify-content-center gap-2">
+                <span class="f-roboto f-14 lh-base fw-normal">Loading...</span>
+                <span class="spinner-border spinner-border-sm text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-flip-book [images]="images"></app-flip-book>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="ngx-preview-list">
+	<div class="ngx-preview-list__header">
+		<span>{{ 'list.title'|i18n }}</span>
+		<span class="count">{{ files?.length ? ('list.total'|i18n:files?.length) : '' }}</span>
+	</div>
+	<div class="ngx-preview-list__content">
+		@for (file of files; let i = $index; track file.name) {
+			@if (itemTemplate) {
+				<div style="display: none" #previewTrigger [ngxFilePreview]="file" [trigger]="trigger" [themeMode]="themeMode" [lang]="lang"></div>
+				<ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{
+                $implicit: file,
+                index: i,
+                isActive: i === index,
+                themeMode: themeMode,
+                type: ('types.'+file.type)|i18n,
+                select: triggerSelect.bind(this,i),
+                preview: previewTrigger.click.bind(previewTrigger)
+              }"></ng-container>
+			} @else {
+				<div class="item" (click)="triggerSelect(i)" [ngxFilePreview]="file" [trigger]="trigger" [themeMode]="themeMode" [lang]="lang" [class.active]="i === index">
+					<span class="icon"><preview-icon [themeMode]="themeMode" [size]="40" [svg]="file.type"></preview-icon></span>
+					<div class="info">
+						<div class="main-info">
+							<span class="name">{{ file.name }}</span> <span class="size">{{ file.size|fileSize }}</span>
+						</div>
+						<div class="sub-info">
+							<span class="type">{{ ('types.' + file.type)|i18n }}</span>
+							@if (file.lastModified) {
+								<span class="date">{{ file.lastModified|date:'yyyy-MM-dd HH:mm:ss' }}</span>
+							}
+						</div>
+					</div>
+				</div>
+			}
+		} @empty {
+			<div class="empty">{{ 'list.empty'|i18n }}</div>
+		}
+	</div>
+</div>
+<ng-content></ng-content>

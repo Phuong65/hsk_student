@@ -1,0 +1,139 @@
+<div class="employee-control-multiple position-relative">
+    @switch (state()) {
+        @case ('loading') {
+            <div class="employee-control-multiple__loading">
+                <img alt="Analytics Report Loader" height="50" ngSrc="images/analytics-short-report-loader.svg" priority width="300">
+            </div>
+        }
+        @case ('error') {
+            <div class="employee-control-multiple__notice d-flex justify-content-center align-items-center m-0">
+                <div class="admin-table__alert-danger text-center w-100" style="padding: 10px;">Tải thông tin {{ objectLabel() }} thất bại.
+                    <a (click)="reloadPreview($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">Tải lại</a>
+                </div>
+            </div>
+        }
+        @default {
+            @if (selectedEmployees().length) {
+                <div class="employee-control-multiple__order-list d-flex flex-column" cdkDropList (cdkDropListDropped)="drop($event)">
+                    @for (employee of selectedEmployees(); track employee.id) {
+                        <div class="employee-control-multiple__order-list__elm position-relative d-flex" cdkDrag [ngClass]="!showDeleteButton() ? 'employee-control-multiple__order-list__elm--no-delete' : '' ">
+                            <div class="employee-control-multiple__order-list__start d-inline-flex justify-content-center align-items-start">
+							<span class="employee-control-multiple__order-list__order-tag d-inline-flex justify-content-center align-items-center" cdkDragHandle>
+								<i class="ti ti-grip-vertical f-20 text-muted"></i>
+							</span>
+                            </div>
+                            <div class="employee-control-multiple__order-list__middle d-inline-flex align-items-start">
+                                <ng-container *ngTemplateOutlet="employeeTpl; context: { $implicit: employee }"></ng-container>
+                            </div>
+                            <div class="employee-control-multiple__order-list__end d-inline-flex justify-content-center justify-content-end align-items-start">
+                                <button (click)="removeSelected(employee)" class="employee-control-multiple__order-list__end__btn btn ictu-button-danger-light" mat-flat-button [pTooltip]="'Xóa '+objectLabel()+' khỏi danh sách'" tooltipPosition="top" tooltipStyleClass="ictu-input-form__tooltip">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            @if (previewEmployees().length) {
+                <div class="employee-control-multiple__order-list d-flex flex-column">
+                    @for (employee of previewEmployees(); track employee.id) {
+                        <div class="employee-control-multiple__order-list__elm position-relative d-flex employee-control-multiple__order-list__elm--no-delete">
+                            <div class="employee-control-multiple__order-list__start d-inline-flex justify-content-center align-items-start">
+							<span class="employee-control-multiple__order-list__order-tag d-inline-flex justify-content-center align-items-center">
+								<i class="ti ti-grip-vertical f-20 text-muted"></i>
+							</span>
+                            </div>
+                            <div class="employee-control-multiple__order-list__middle d-inline-flex align-items-start">
+                                <ng-container *ngTemplateOutlet="employeeTpl; context: { $implicit: employee }"></ng-container>
+                            </div>
+                            <div class="employee-control-multiple__order-list__end d-inline-flex justify-content-center justify-content-end align-items-start">
+                                <button class="employee-control-multiple__order-list__end__btn btn ictu-button-danger-light" mat-flat-button [pTooltip]="'Xóa '+objectLabel()+' khỏi danh sách'" tooltipPosition="top" tooltipStyleClass="ictu-input-form__tooltip">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    }
+    <div class="d-flex justify-content-center align-items-center" style="padding:10px;">
+        <button [matMenuTriggerFor]="menuListEmployees" class="btn ictu-button-info-light employee-control-multiple__btn-add-more" mat-flat-button>
+            <div class="d-flex align-items-center justify-content-center" style="gap:10px;">
+                <i class="pi pi-plus-circle f-16"></i><span class="f-roboto f-14 fw-normal m-0 p-0 lh-base">Thêm {{ objectLabel() }}</span>
+            </div>
+        </button>
+    </div>
+</div>
+
+<ng-template #employeeTpl let-employee>
+    <div class="employee-control-multiple__staff d-flex w-100">
+        <div class="employee-control-multiple__staff__avatar d-inline-flex position-relative">
+            <img [alt]="employee.full_name" [ngSrc]="employee.photo ? employee.photo : 'images/user/avatar-2.jpg'" class="position-absolute d-block m-auto p-0" height="100" width="100">
+        </div>
+        <div class="employee-control-multiple__staff__info d-inline-flex flex-column">
+            <h4 class="f-roboto f-14 fw-medium m-0 p-0 lh-base text-truncate">{{ employee.full_name }}</h4>
+            <p class="f-roboto f-14 fw-normal m-0 p-0 lh-base text-muted text-truncate">{{ employee.email }}</p>
+        </div>
+    </div>
+</ng-template>
+
+<mat-menu #menuListEmployees="matMenu" class="ictu-switchers-menu ictu-switchers-menu-fixed-size ictu-switchers-menu-fixed-size--450px" xPosition="before">
+    <div (click)="avoidCloseMenuByClicking($event)" class="employee-control-dropdown">
+        <div class="employee-control-dropdown__head">
+            <svg style="height: auto;width: 20px;aspect-ratio: 1;">
+                <use href="fonts/custom-icon.svg#custom-folder-open"></use>
+            </svg>
+            <h4 class="employee-control-dropdown__head__title">Danh sách {{ objectLabel() }}</h4>
+            <div class="employee-control-dropdown__head__search ms-auto position-relative">
+                <input (keydown.enter)="onEmployeeControlSearch($event)" [(ngModel)]="formSearchText" [disabled]="formSearchState()!== 'success'" class="employee-control-dropdown__head__search__input" pInputText placeholder="Tìm kiếm theo tên hoặc email" type="text">
+            </div>
+        </div>
+        <div class="employee-control-dropdown__body">
+            @switch (formSearchState()) {
+                @case ('loading') {
+                    <div class="employee-control-dropdown__section-loading">
+                        <div class="d-flex position-absolute z-2 top-0 start-0 w-100 h-100 justify-content-center align-items-center">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <div class="d-block ictu-image-loading-bg wid-25 aspect-ratio-1"></div>
+                                <p class="f-14 fw-normal f-roboto" style="margin: 15px 0 0;line-height: 1;color: #555555;">Tìm kiếm {{ objectLabel() }}...</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @case ('success') {
+                    @for (employee of employees(); track employee.id) {
+                        <button style="--mat-menu-item-leading-spacing: 5px;--mat-menu-item-trailing-spacing: 5px;padding-top: 5px;padding-bottom: 5px;border-radius: 4px;overflow: hidden;" (click)="setEmployee(employee)" [class.ictu-switchers-menu__item--active]="false" class="ictu-switchers-menu__item border-bottom-0" mat-menu-item>
+                            <div class="employee-show w-100 align-items-center">
+                                <div class="employee-show__avatar">
+                                    <img [alt]="employee.full_name" [ngSrc]="employee.photo ?? 'images/user/avatar-2.jpg'" width="100" height="100">
+                                </div>
+                                <div class="employee-show__info employee-show__info--truncate">
+                                    <h4 class="employee-show__info__name">{{ employee.full_name }}</h4>
+                                    <p class="employee-show__info__email" style="line-height: 1.5">{{ employee.email }} -
+                                        <span style="color: #1c76da;">{{ employee.phone }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </button>
+                    } @empty {
+                        <div class="employee-control-dropdown__empty">
+                            <svg class="employee-control-dropdown__empty__icon" width="40" height="40" viewBox="0 0 20 20" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path fill="none" d="M15.5 4.8c2 3 1.7 7-1 9.7h0l4.3 4.3-4.3-4.3a7.8 7.8 0 01-9.8 1m-2.2-2.2A7.8 7.8 0 0113.2 2.4M2 18L18 2"></path>
+                            </svg>
+                            <p class="employee-control-dropdown__empty__text" style="border-radius: 0">Không tìm thấy {{ objectLabel() }}</p>
+                        </div>
+                    }
+                }
+                @default {
+                    <div class="admin-table__alert-danger text-center w-100">Tải danh sách {{ objectLabel() }} thất bại. Vui lòng chọn
+                        <a href="javascript:" (click)="reloadEmployeeData($event)" class="admin-table__alert-danger__btn-reload">tải lại</a>
+                    </div>
+                }
+            }
+        </div>
+        <div class="employee-control-dropdown__foot d-flex justify-content-center align-items-center w-100" style="--ictu-paginator-gap:5px">
+            <ictu-paginator (onChangePage)="onChangePage($event)" [control]="paginator"></ictu-paginator>
+        </div>
+    </div>
+</mat-menu>

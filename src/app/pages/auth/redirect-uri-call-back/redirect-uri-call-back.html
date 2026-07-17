@@ -1,0 +1,28 @@
+<div class="redirect-uri-call-back-layout d-flex">
+	<div class="redirect-uri-call-back-layout__inside d-flex justify-content-center align-items-center">
+		@switch (state()) {
+			@case ('loading') {
+				<div class="redirect-uri-call-back-layout__content d-flex justify-content-center align-items-center flex-column">
+					<h4 class="redirect-uri-call-back-layout__heading font-roboto f-14 fw-normal">{{ heading() }}</h4>
+					<p-progressBar mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+				</div>
+			}
+			@case ('checking') {
+				<div class="redirect-uri-call-back-layout__content d-flex justify-content-center align-items-center flex-column">
+					<h4 class="redirect-uri-call-back-layout__heading font-roboto f-14 fw-normal">{{ heading() }}</h4>
+					<p-progressBar mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+				</div>
+			}
+			@case ('invalid') {
+				<div class="alert alert-danger m-0" style="border-radius: 4px;">
+					<h4 class="redirect-uri-call-back-layout__heading font-roboto f-14 fw-normal m-0">{{ heading() }}</h4>
+				</div>
+			}
+			@case ('error') {
+				<div class="alert alert-danger m-0" style="border-radius: 4px;">
+					<h4 class="redirect-uri-call-back-layout__heading font-roboto f-14 fw-normal m-0">{{ heading() }}</h4>
+				</div>
+			}
+		}
+	</div>
+</div>

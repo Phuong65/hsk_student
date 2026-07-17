@@ -1,0 +1,88 @@
+<!-- 	@for (c of lib(); track c) { -->
+<!-- 		<button [ngClass]="['btn',c]" (click)="copyButton(c)" [matTooltip]="c" matTooltipPosition="above">{{ c }}</button> -->
+<!-- 	} -->
+<div class="p-25 position-relative b-block">
+    <div class="row">
+        <div class="col-md-12">
+            <app-card cardTitle="Buttons">
+                <ul class="p-0 m-0 list-none flex gap-4 flex-wrap" style="flex-direction: column;">
+                    @for (color of colors(); track color) {
+                        <li class="flex-auto" style="min-width: 6rem;">
+                            <span class="font-medium capitalize block mb-2 text-left">{{ color }}</span>
+                            <div class="flex gap-4 flex-auto flex-row flex-wrap">
+                                @for (style of styles(); track style) {
+                                    <div class="flex flex-column items-center gap-1 flex-1 flex-wrap">
+                                        <div class="grid-buttons">
+                                            <button [ngClass]="['btn','ictu-button-'+style+'-'+color]" (click)="copyButton('ictu-button-'+style+'-'+color)" [matTooltip]="'ictu-button-'+style+'-'+color" matTooltipPosition="above">{{ 'ictu-button-' + style + '-' + color }}</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <app-card cardTitle="Mat Flat Button width badge color">
+                <ul class="p-0 m-0 list-none flex gap-4 flex-wrap" style="flex-direction: column;">
+                    <li class="flex-auto" style="min-width: 6rem;">
+                        <span class="font-medium capitalize block mb-2 text-left">Buttons</span>
+                        <div class="flex gap-4 flex-auto flex-row flex-wrap">
+                            @for (badge of badges(); track badge) {
+                                <div class="flex flex-column items-center gap-1 flex-1 flex-wrap">
+                                    <button mat-flat-button [ngClass]="['btn','ictu-badge-btn--'+badge]" (click)="copyBadgeButton('ictu-badge-btn--'+badge)" [matTooltip]="'ictu-badge-btn--'+badge" matTooltipPosition="above">{{ 'ictu-badge-btn--' + badge }}</button>
+                                </div>
+                            }
+                        </div>
+                    </li>
+                    <li class="flex-auto" style="min-width: 6rem;">
+                        <span class="font-medium capitalize block mb-2 text-left">Buttons reverse</span>
+                        <div class="flex gap-4 flex-auto flex-row flex-wrap">
+                            @for (badge of badges(); track badge) {
+                                <div class="flex flex-column items-center gap-1 flex-1 flex-wrap">
+                                    <button mat-flat-button [ngClass]="['btn','ictu-badge-btn--'+badge+'-reverse']" (click)="copyBadgeButton('ictu-badge-btn--'+badge+'-reverse')" [matTooltip]="'ictu-badge-btn--'+badge+'-reverse'" matTooltipPosition="above">{{ 'ictu-badge-btn--' + badge + '-reverse' }}</button>
+                                </div>
+                            }
+                        </div>
+                    </li>
+                </ul>
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <app-card cardTitle="Badge">
+                <ul class="p-0 m-0 list-none flex gap-4 flex-wrap" style="flex-direction: column;">
+                    <li class="flex-auto" style="min-width: 6rem;">
+                        <div class="flex gap-4 flex-auto flex-row flex-wrap">
+                            @for (badge of badges(); track badge) {
+                                <div class="flex flex-column items-center gap-1 flex-1 flex-wrap">
+                                    <span [ngClass]="['ictu-badge','ictu-badge--'+badge]" (click)="copyBadge(badge)">{{ badge }}</span>
+                                </div>
+                            }
+                        </div>
+                    </li>
+                </ul>
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-center align-items-center" style="gap:15px">
+                <input type="number" pInputText [(ngModel)]="modelValue" placeholder="value" class="f-roboto f-14 fw-normal">
+                <circle-progress
+                    [value]="value()"
+                    [size]="32"
+                    [thickness]="4"
+                    [lineCap]="'round'"
+                    [reverse]="false"
+                    [fill]="fill()">
+                    <span class="f-roboto fw-medium m-0 p-0" style="font-size: 10px;line-height: 1;">{{ value() * 100 }}%</span>
+                </circle-progress>
+            </div>
+        </div>
+    </div>
+</div>

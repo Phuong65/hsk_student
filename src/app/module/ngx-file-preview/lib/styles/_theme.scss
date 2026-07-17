@@ -1,0 +1,79 @@
+:root {
+    --nfp-primary-color: #177ddc;
+    --nfp-primary-hover: #1890ff;
+    --nfp-primary-active: #0050b3;
+    --nfp-error-color: #d32029;
+    --nfp-warning-color: #d89614;
+    --nfp-success-color: #49aa19;
+
+    --nfp-text-primary: rgba(0, 0, 0, 0.85);
+    --nfp-text-secondary: rgba(0, 0, 0, 0.65);
+    --nfp-text-disabled: rgba(0, 0, 0, 0.25);
+
+    --nfp-bg-container: #ffffff;
+    --nfp-bg-elevated: #fafafa;
+    --nfp-bg-layout: #f0f2f5;
+    --nfp-hover-bg: rgba(0, 0, 0, 0.04);
+
+    --nfp-border-color: #d9d9d9;
+    --nfp-split-color: rgba(0, 0, 0, 0.06);
+
+    --nfp-scrollbar-bg: #ffffff;
+    --nfp-scrollbar-thumb: #d9d9d9;
+
+    --nfp-toolbar-bg: #fafafa;
+    --nfp-toolbar-border: #d9d9d9;
+    --nfp-toolbar-hover: rgba(0, 0, 0, 0.04);
+    --nfp-toolbar-active: #e6f4ff;
+
+    --nfp-preview-mask: rgba(0, 0, 0, 0.30);
+    --nfp-preview-loading-bg: rgba(255, 255, 255, 0.8);
+    --nfp-preview-toolbar-bg: rgba(0, 0, 0, 0.1);
+
+    --nfp-theme-transition-duration: 0.3s;
+}
+
+[data-nfp-theme="dark"] {
+    --nfp-primary-color: #177ddc;
+    --nfp-primary-hover: #1890ff;
+    --nfp-primary-active: #0050b3;
+    --nfp-error-color: #a61d24;
+    --nfp-warning-color: #d89614;
+    --nfp-success-color: #49aa19;
+
+    --nfp-text-primary: rgba(255, 255, 255, 0.85);
+    --nfp-text-secondary: rgba(255, 255, 255, 0.65);
+    --nfp-text-disabled: rgba(255, 255, 255, 0.25);
+
+    --nfp-bg-container: #1a1a1a;
+    --nfp-bg-elevated: #262626;
+    --nfp-bg-layout: #141414;
+    --nfp-hover-bg: rgba(255, 255, 255, 0.08);
+
+    --nfp-border-color: #303030;
+    --nfp-split-color: rgba(255, 255, 255, 0.12);
+
+    --nfp-scrollbar-bg: #1a1a1a;
+    --nfp-scrollbar-thumb: #404040;
+
+    --nfp-toolbar-bg: #262626;
+    --nfp-toolbar-border: #303030;
+    --nfp-toolbar-hover: rgba(255, 255, 255, 0.08);
+    --nfp-toolbar-active: #111b26;
+
+    --nfp-preview-mask: rgba(0, 0, 0, 0.65);
+    --nfp-preview-loading-bg: rgba(0, 0, 0, 0.8);
+    --nfp-preview-toolbar-bg: rgba(0, 0, 0, 0.4);
+    --nfp-theme-transition-duration: 0.3s;
+}
+
+* {
+    transition: background-color var(--nfp-theme-transition-duration) var(--theme-transition-timing),
+    border-color var(--nfp-theme-transition-duration) var(--theme-transition-timing),
+    color var(--nfp-theme-transition-duration) var(--theme-transition-timing);
+}
+
+.no-transition,
+.no-transition * {
+    transition: none !important;
+}

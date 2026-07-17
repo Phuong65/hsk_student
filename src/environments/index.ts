@@ -1,0 +1,26 @@
+import { environment } from "./environment";
+import { DeploymentEnvironment , Environment } from "@environmentModel";
+
+export const linkDriveFileInfo : ( id : string ) => string             = ( id : string ) : string => environment.deployment.driverFile + id;
+export const linkDownloadDriveFile : ( id : string ) => string         = ( id : string ) : string => environment.deployment.driverFile + id + 'download';
+export const linkFileInfo : ( id : string ) => string                  = ( id : string ) : string => environment.deployment.media + id;
+export const getLinkDownload : ( id : string ) => string               = ( id : string ) : string => environment.deployment.media + 'file/' + id;
+export const linkDownloadFile : ( id : string ) => string              = ( id : string ) : string => environment.deployment.media + id + 'download';
+export const linkAwsInfo : ( id : string ) => string                   = ( id : string ) : string => environment.deployment.aws + id;
+export const linkGetFileContentAws : ( id_or_name : string ) => string = ( id_or_name : string ) : string => environment.deployment.aws + 'file/' + id_or_name;
+export const getLinkDriverStream : ( id : string ) => string           = ( id : string ) : string => environment.deployment.driverFile + 'stream/' + id;
+export const getApiRouteLink : ( route : string ) => string            = ( route : string ) : string => ( route ? ''.concat( environment.deployment.api , route ) : environment.deployment.api );
+export const getHostDomain : ( suffix? : string ) => string            = ( suffix? : string ) : string => ( suffix ? ''.concat( environment.deployment.domain , suffix ) : environment.deployment.domain );
+export const ENCRYPT_KEY : string                                      = 'ZkNxq7mS6WHDy04u';
+export const REFRESH_TOKEN_KEY : string                                = '__ocmQk73vw6fp';
+export const ACCESS_TOKEN_KEY : string                                 = '__ocmI69Hl3avA';
+export const USER_STORAGE_KEY : string                                 = '__ocmJg6Db36rU';
+export const EMPLOYEE_STORAGE_KEY : string                             = '__ocm56ZvFpN4H';
+export const STUDENT_STORAGE_KEY : string                              = '__ocm57ZvGpN7Y';
+export const PERMISSION_STORAGE_KEY : string                           = '__ocmF3ACvs0O7';
+export const USER_META_STORAGE_KEY : string                            = '__ocmCX40BVR9Z';
+export const AUTH_OPTIONS : string                                     = '__ocm057iFXr48';
+export const IDENTITY_CODE : string                                    = '12vL0?ZkNxq7mS';
+export const SHIFT_CODE_KEY : string                                   = '7oIu24uZ5lz9';
+export const ENVIRONMENT : Environment                                 = environment;
+export const DEPLOYMENT_INFO : DeploymentEnvironment                   = environment.deployment;

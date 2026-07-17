@@ -1,0 +1,17 @@
+.ictu-editor button[data-mce-name="media"],
+.ictu-editor button[data-mce-name="image"] {
+    display: none !important;
+}
+
+.ictu-editor--square .tox .tox-edit-area::before,
+.ictu-editor--square .tox-tinymce {
+    border-radius: 0;
+}
+
+.ictu-editor--no-border .tox-tinymce {
+    border: none;
+}
+
+.ictu-editor .tox .tox-statusbar {
+    line-height: 1;
+}

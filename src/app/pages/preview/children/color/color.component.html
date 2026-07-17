@@ -1,0 +1,135 @@
+<div class="p-25 position-relative d-block">
+    <div class="row">
+        <div class="col-md-4">
+            <app-card cardTitle="Primary Color">
+                @for (list of primaryColor; track list) {
+                    <div class="{{ list.value }}">
+                        <div class="color-block">
+                            <div class="color-code">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 mat-caption">{{ list.title }}</p>
+                                    <p class="m-b-0 f-w-600 mat-body">{{ list.hexCode }}</p>
+                                </div>
+                            </div>
+                            <div class="color-name">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 f-w-600">{{ list.colorName }}</p>
+                                </div>
+                            </div>
+                            <button class="color-block__btn-copy" (click)="copyContent(list)"></button>
+                        </div>
+                    </div>
+                }
+            </app-card>
+        </div>
+        <div class="col-md-4">
+            <app-card cardTitle="Secondary Color">
+                @for (list of secondaryColor; track list) {
+                    <div class="{{ list.value }}">
+                        <div class="color-block">
+                            <div class="color-code">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 mat-caption">{{ list.title }}</p>
+                                    <p class="m-b-0 f-w-600 mat-body">{{ list.hexCode }}</p>
+                                </div>
+                            </div>
+                            <div class="color-name">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 f-w-600">{{ list.colorName }}</p>
+                                </div>
+                            </div>
+                            <button class="color-block__btn-copy" (click)="copyContent(list)"></button>
+                        </div>
+                    </div>
+                }
+            </app-card>
+        </div>
+        <div class="col-md-4">
+            <app-card cardTitle="Success Color">
+                @for (list of successColor; track list) {
+                    <div class="{{ list.value }}">
+                        <div class="color-block">
+                            <div class="color-code">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 mat-caption">{{ list.title }}</p>
+                                    <p class="m-b-0 f-w-600 mat-body">{{ list.hexCode }}</p>
+                                </div>
+                            </div>
+                            <div class="color-name">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 f-w-600">{{ list.colorName }}</p>
+                                </div>
+                            </div>
+                            <button class="color-block__btn-copy" (click)="copyContent(list)"></button>
+                        </div>
+                    </div>
+                }
+            </app-card>
+        </div>
+        <div class="col-md-4">
+            <app-card cardTitle="Error Color">
+                @for (list of errorColor; track list) {
+                    <div class="{{ list.value }}">
+                        <div class="color-block">
+                            <div class="color-code">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 mat-caption">{{ list.title }}</p>
+                                    <p class="m-b-0 f-w-600 mat-body">{{ list.hexCode }}</p>
+                                </div>
+                            </div>
+                            <div class="color-name">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 f-w-600">{{ list.colorName }}</p>
+                                </div>
+                            </div>
+                            <button class="color-block__btn-copy" (click)="copyContent(list)"></button>
+                        </div>
+                    </div>
+                }
+            </app-card>
+        </div>
+        <div class="col-md-4">
+            <app-card cardTitle="Warning Color">
+                @for (list of warningColor; track list) {
+                    <div class="{{ list.value }}">
+                        <div class="color-block">
+                            <div class="color-code">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 mat-caption">{{ list.title }}</p>
+                                    <p class="m-b-0 f-w-600 mat-body">{{ list.hexCode }}</p>
+                                </div>
+                            </div>
+                            <div class="color-name">
+                                <div class="color-code-inner">
+                                    <p class="m-b-0 f-w-600">{{ list.colorName }}</p>
+                                </div>
+                            </div>
+                            <button class="color-block__btn-copy" (click)="copyContent(list)"></button>
+                        </div>
+                    </div>
+                }
+            </app-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <app-card cardTitle="Warning Color">
+                <ul class="p-0 m-0 list-none flex gap-4 flex-wrap" style="flex-direction: column;">
+                    @for (plate of colorPlates(); track plate.name) {
+                        <li class="flex-auto" style="min-width: 6rem;">
+                            <span class="font-medium capitalize block mb-2 text-left">{{ plate.name }}</span>
+                            <div class="flex gap-4 flex-auto flex-row">
+                                @for (color of plate.colors; track color.value) {
+                                    <div class="flex flex-column items-center gap-1 flex-1">
+                                        <button (click)="copyColor(color , plate.name)" style="border: none; padding: 0; margin: 0;outline: none; box-shadow: none; cursor: pointer;" class="rounded h-8 w-full" [style.background-color]="color.value" mat-button [matTooltip]="[plate.name,color.depth].join(' - ')" matTooltipPosition="above"></button>
+                                        <span class="text-center font-medium">{{ color.depth }}</span>
+                                    </div>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </app-card>
+        </div>
+    </div>
+</div>

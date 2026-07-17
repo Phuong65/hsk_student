@@ -1,0 +1,22 @@
+<div class="app-confirm-wrap">
+	@if (heading) {
+		<h4 class="app-confirm-wrap__heading">{{ heading }}</h4>
+	}
+	<div class="app-confirm-wrap__body">
+		@if (message) {
+			<div [innerHTML]="message | safeHtml " class="app-confirm-wrap__body__message"></div>
+		}
+		<div class="app-confirm-wrap__body__buttons d-flex justify-content-center align-items-center">
+			@for (btn of buttons; track btn.name) {
+				<button [ngStyle]="btn.ngStyle" (click)="dialogRef.close(btn)" [class]="btn.class" [disabled]="btn.readonly" pButton pRipple>
+					@if (btn.icon) {
+						<i pButtonIcon [ngClass]="btn.icon"></i>
+					}
+					@if (btn.label) {
+						<span pButtonLabel>{{ btn.label }}</span>
+					}
+				</button>
+			}
+		</div>
+	</div>
+</div>

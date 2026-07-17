@@ -1,0 +1,39 @@
+.ictu-switch-control:not(.disabled) {
+    cursor: pointer;
+}
+
+.ictu-switch-control__track {
+    background-color: #cbd5e0;
+    padding: 2px;
+    margin: 0;
+    width: 30px;
+    box-sizing: content-box;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background-color 150ms;
+}
+
+.ictu-switch-control__thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background-color: #ffffff;
+    transition: transform .2s;
+}
+
+.ictu-switch-control__guide {
+    display: inline-block;
+    flex-shrink: 0;
+    line-height: 0;
+    font-size: 0;
+}
+
+.ictu-switch-control__guide svg {
+    width: 18px;
+    height: 18px;
+    color: #227aff;
+    font-size: 18px;
+    stroke: currentcolor;
+    cursor: pointer;
+    fill: currentcolor;
+}

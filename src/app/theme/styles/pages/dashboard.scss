@@ -1,0 +1,100 @@
+// this scss file use only for bug fixing because this css in dashboard folder not work there so here put
+@use "../theme-palette-colors" as *;
+@use "sass:map";
+// ================================//
+//      dashboard us css start     //
+// ================================//
+
+.mat-mdc-tab-group.transactions {
+    .mat-mdc-tab-labels {
+        padding: 0 20px !important;
+    }
+
+    .mat-mdc-tab-body-wrapper {
+        ul {
+            padding-left: 0 !important;
+
+            li {
+                padding: 16px 24px;
+                border-top: 1px solid var(--accent-300) !important;
+            }
+        }
+    }
+}
+
+.upgrade-button {
+    background: map.get($yellow-theme, 500) !important;
+
+    a {
+        color: var(--accent-50) !important;
+    }
+
+    &.mdc-button {
+        border-radius: 20px;
+    }
+}
+
+.project-chart {
+    .mat-mdc-tab-header {
+        padding: 20px 20px 0 19px;
+        border-bottom: 1px solid var(--accent-300);
+    }
+
+    .mat-mdc-tab-body-wrapper {
+        margin: 0;
+    }
+
+    .project-body {
+        .list-inline {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-left: 0;
+
+            .list-inline-item {
+                a {
+                    color: inherit;
+                }
+
+                .select-item {
+                    border-color: var(--accent-300);
+                    padding: 10px;
+                    border-radius: 8px;
+                }
+
+                &:not(:last-child) {
+                    margin-right: 0.5rem;
+                }
+            }
+        }
+
+        .project-report {
+            padding-left: 0;
+
+            .list-group-item {
+                padding: 16px 20px;
+
+                .avatar {
+                    border-radius: 8px;
+                }
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid var(--accent-300);
+                }
+            }
+        }
+    }
+}
+
+.transaction-card-header {
+    padding: 20px 20px 0 20px !important;
+    border-bottom: none !important;
+}
+
+.pptx-preview-slide-wrapper > .slide-background {
+    background-size: cover;
+}
+
+// ================================//
+//      dashboard us css end       //
+// ================================//
