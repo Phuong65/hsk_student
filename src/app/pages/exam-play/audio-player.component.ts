@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
     imports: [CommonModule],
     template: `
         @if (canRender() && src()) {
-            <div class="ictu-audio-player__private-mode" [class.__loading]="isBusy()">
+            <div class="ictu-audio-player__private-mode" [class.__loading]="isBusy()" [class.__locked]="disableControls()">
                 @if (loadingError()) {
                     <div class="ictu-audio-player__error-overlay">
                         <i class="fa-solid fa-circle-exclamation"></i>
@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
                         <button type="button" class="ictu-audio-player__reload-btn" (click)="reload()"><i class="fa-solid fa-rotate"></i></button>
                     </div>
                 }
-                <button type="button" class="ictu-audio-player__private-mode__btn" [class.paused-icon]="isPlaying()" [class.__spin]="isBusy()&&!loadingError()" [disabled]="!canPlay()||isBusy()" (click)="toggle()">
+                <button type="button" class="ictu-audio-player__private-mode__btn" [class.paused-icon]="isPlaying()" [class.__spin]="isBusy()&&!loadingError()" [disabled]="!canPlay()||isBusy()||disableControls()" (click)="toggle()">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 494.148 494.148">
                         <g><g>
                             <path d="M405.284,201.188L130.804,13.28C118.128,4.596,105.356,0,94.74,0C74.216,0,61.52,16.472,61.52,44.044v406.124c0,27.54,12.68,43.98,33.156,43.98c10.632,0,23.2-4.6,35.904-13.308l274.608-187.904c17.66-12.104,27.44-28.392,27.44-45.884C432.632,229.572,422.964,213.288,405.284,201.188z"/>
@@ -38,6 +38,8 @@ import { CommonModule } from '@angular/common';
         :host { display: flex; align-items: center; }
         .ictu-audio-player__private-mode { display: flex; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; width: 100%; max-width: 420px; position: relative; }
         .ictu-audio-player__private-mode.__loading { opacity: 0.65; }
+        .ictu-audio-player__private-mode.__locked .ictu-audio-player__private-mode__btn { cursor: default !important; opacity: 1 !important; background-color: #2d69f0 !important; }
+        .ictu-audio-player__private-mode.__locked .ictu-audio-player__process-tag { pointer-events: none; }
         .ictu-audio-player__private-mode__btn { display: inline-block; border-radius: 0; padding: 12px 11px 12px 13px; font-size: 0; line-height: 0; background-color: #2d69f0 !important; outline: none !important; box-shadow: none !important; border: none !important; position: relative; height: 41px; width: 41px; cursor: pointer; flex-shrink: 0; }
         .ictu-audio-player__private-mode__btn:disabled { background-color: #94a3b8 !important; cursor: not-allowed; }
         .ictu-audio-player__private-mode__btn svg { width: 15px; height: 15px; fill: #ffffff; }
@@ -64,8 +66,10 @@ export class AudioPlayerComponent implements OnDestroy {
     readonly autoplay = input<boolean>(false);
     readonly lockSeek = input<boolean>(true);
     readonly canRender = input<boolean>(true);
+    readonly disableControls = input<boolean>(false);
     readonly onLoadError = input<() => void>(() => {});
     readonly onReplayUsed = input<() => void>(() => {});
+    readonly onEnded = input<() => void>(() => {});
 
     readonly isPlaying: WritableSignal<boolean> = signal(false);
     readonly isBusy: WritableSignal<boolean> = signal(false); // loading hoặc lỗi
@@ -87,8 +91,13 @@ export class AudioPlayerComponent implements OnDestroy {
     // Static chỉ lưu progress + duration theo cache key (để resume khi navigate back)
     private static _progressMap = new Map<string, number>();
     private static _durationMap = new Map<string, number>();
+    private static _endedMap = new Map<string, boolean>();
     // Active instance hiện tại đang chơi nhạc (để tạm dừng khi autoplay)
     private static _activeInstance: AudioPlayerComponent | null = null;
+
+    static isMediaEnded(key: string): boolean {
+        return AudioPlayerComponent._endedMap.get(key) === true;
+    }
 
     private _currentSrc = '';
     private _currentCacheKey = '';
@@ -180,6 +189,7 @@ export class AudioPlayerComponent implements OnDestroy {
         a.preload = 'auto';
         this.isBusy.set(true);
         this.loadingError.set(false);
+        AudioPlayerComponent._endedMap.delete(key);
 
         // Restore duration + progress từ static cache (nếu đã load trước đó)
         const cachedDur = AudioPlayerComponent._durationMap.get(key);
@@ -234,6 +244,8 @@ export class AudioPlayerComponent implements OnDestroy {
 
         a.addEventListener('ended', () => {
             this.isPlaying.set(false);
+            AudioPlayerComponent._endedMap.set(key, true);
+            this.onEnded()();
         });
 
         a.addEventListener('error', () => {
@@ -273,6 +285,7 @@ export class AudioPlayerComponent implements OnDestroy {
 
     toggle(): void {
         if (!this.audio) return;
+        if (this.disableControls()) return;
         if (this.audio.paused) {
             if (!this.canPlay()) return;
             // Pause instance đang phát (nếu có)

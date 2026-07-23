@@ -27,6 +27,7 @@ import { ShiftService } from '@services/shift.service';
 import { AuthenticationService } from '@services/authentication.service';
 
 import { AudioPlayerComponent } from './audio-player.component';
+import { MatButtonModule } from '@angular/material/button';
 
 interface QV extends BankQuestion {
     _viewKey?: string;
@@ -58,7 +59,7 @@ interface RecordQuestionState {
 @Component({
     selector: 'app-exam-play',
     standalone: true,
-    imports: [CommonModule, FormsModule, AudioPlayerComponent],
+    imports: [CommonModule, FormsModule, AudioPlayerComponent, MatButtonModule],
     templateUrl: './exam-play.component.html',
     styleUrls: ['./exam-play.component.css'],
 })
@@ -211,6 +212,8 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                             map(allQ => {
                                 const skill = this.skill().toLowerCase();
                                 this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
+                                // Load timer ngay (state hoặc form_detail)
+                                this.loadFormDuration(shiftTest);
                             })
                         );
                     })
@@ -396,6 +399,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         if (this.isRecordQuestion(q)) {
             if (st?.phase === 'preparing' || st?.phase === 'recording' || st?.phase === 'uploading' || st?.phase === 'error') return false;
             const a = this.answerValue(q);
+            if (typeof a === 'string') return a.trim() !== '' || st?.phase === 'uploaded';
             return !!a?.fileId || !!a?.fileName || !!a?.filePath || st?.phase === 'uploaded';
         }
         return !this.isAnswerEmpty(this.answerValue(q));
@@ -622,6 +626,12 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     // Callbacks for AudioPlayerComponent (bind per-question)
     onAudioLoadErrorForQ = (q: any) => () => this.markAudioLoadFailed(q);
     onReplayUsedForQ = (q: any) => () => this.decrementAudioReplay(q);
+    onMediaEndedForQ = (q: any) => () => {
+        if (!this.isRecordQuestion(q)) return;
+        if (this.recordPrepareSeconds(q) > 0) return;
+        if (this.isRecordQuestionAnswered(q)) return;
+        setTimeout(() => this.prepareActiveRecordQuestion(), 2000);
+    };
 
     processDirectionImage(html: string): string {
         if (!html) return '';
@@ -874,11 +884,11 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                     this.recError.set('Upload thất bại.');
                     return;
                 }
-                const answer = { fileId: r.id, fileName: file.name, filePath: r.id, mimeType: 'audio/mp3' };
-                this.updateLocalAnswer(question, answer);
+                const answer = { fileId: String(r.id), fileName: file.name, filePath: String(r.id), mimeType: 'audio/mp3' };
+                this.updateLocalAnswer(question, String(r.id));
                 if (this.recordStates[key]) this.recordStates[key].phase = 'uploaded';
                 this.recordStatus.set('uploaded');
-                this.recAudioUrl.set(this.buildAudioUrl(r.id));
+                this.recAudioUrl.set(this.buildAudioUrl(String(r.id)));
                 if (this.recordStates[key]) this.recordStates[key].uploadResult = answer;
                 this.postAnswer(question);
                 setTimeout(() => this.prepareActiveRecordQuestion(), 2000);
@@ -898,26 +908,29 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
 
     retryRecord(question: QV): void {
         const key = this.questionKey(question);
-        if (this.recorders[key]) { try { this.recorders[key].stop().catch(() => { /* noop */ }); } catch { /* noop */ } }
-        delete this.recorders[key];
-        this.clearRecordTimer(key);
-        this.recAudioUrl.set('');
+        if (!this.recordStates[key]?.uploadResult?.fileId) return;
         this.recError.set('');
-        delete this.recordStates[key];
-        this.recordStatus.set('idle');
-        this.startRecord(question);
+        if (this.recordStates[key]) this.recordStates[key].phase = 'uploading';
+        this.recordStatus.set('uploading');
+        // Cho phép re-POST
+        this.postedAnswerKeys[key] = false;
+        this.postAnswer(question);
     }
 
     private rehydrateRecordStateFromAnswer(question: QV): void {
         if (!this.isRecordQuestion(question)) return;
         const key = this.questionKey(question);
         const answer = this.answerValue(question);
-        if (!answer?.fileId && !answer?.fileName && !answer?.filePath) return;
+        let fileId: string | undefined;
+        if (typeof answer === 'string') fileId = answer;
+        else if (answer?.fileId) fileId = String(answer.fileId);
+        else if (answer?.filePath) fileId = String(answer.filePath);
+        if (!fileId) return;
         const st = this.recordStates[key];
         if (st && (st.phase === 'preparing' || st.phase === 'recording' || st.phase === 'uploading')) return;
-        this.recordStates[key] = { phase: 'uploaded', prepareLeft: 0, speakingLeft: 0, uploadResult: answer };
+        this.recordStates[key] = { phase: 'uploaded', prepareLeft: 0, speakingLeft: 0, uploadResult: { fileId } };
         this.recordStatus.set('uploaded');
-        this.recAudioUrl.set(this.buildAudioUrl(answer.fileId || answer.filePath));
+        this.recAudioUrl.set(this.buildAudioUrl(fileId));
     }
 
     private hasRecordUploadInProgress(): boolean { return this._hasRecordUploadInProgress; }
@@ -931,6 +944,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 if (this.isRecordQuestionAnswered(child)) continue;
                 const st = this.recordStates[this.questionKey(child)];
                 if (st?.phase === 'error') continue;
+                if (this.skill() === 'speaking' && child.media?.path && !AudioPlayerComponent.isMediaEnded(this.questionKey(child))) return null;
                 return child;
             }
             return null;
@@ -939,6 +953,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         if (this.isRecordQuestionAnswered(parent)) return null;
         const st = this.recordStates[this.questionKey(parent)];
         if (st?.phase === 'error') return null;
+        if (this.skill() === 'speaking' && parent.media?.path && !AudioPlayerComponent.isMediaEnded(this.questionKey(parent))) return null;
         return parent;
     }
 
@@ -975,6 +990,22 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     startRecord(question: QV): void { this.prepareRecordQuestion(question); }
+
+    canSubmitRecordEarly = (q: any): boolean => {
+        const state = this.recordStates[this.questionKey(q)];
+        if (!state || state.phase !== 'recording') return false;
+        const total = this.recordSpeakingSeconds(q);
+        const elapsed = total - state.speakingLeft;
+        return elapsed >= 20;
+    }
+
+    submitRecordEarly(question: QV): void {
+        const key = this.questionKey(question);
+        const st = this.recordStates[key];
+        if (!st || st.phase !== 'recording') return;
+        this.clearRecordTimer(key);
+        this.doStop(question);
+    }
 
     recordState(q: any): RecordQuestionState {
         return this.recordStates[this.questionKey(q)] || { phase: 'idle', prepareLeft: 0, speakingLeft: 0 };
@@ -1070,10 +1101,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         this.parents.set(list);
         this.currentParentIndex.set(0);
         this.markActiveParentSeen();
-        // Nếu đã load timer từ route-state path thì khỏi gọi lại loadServerAnswersAndState
-        if (!this._timerLoaded) {
-            this.loadServerAnswersAndState();
-        }
+        this.loadServerAnswersAndState();
         setTimeout(() => this.prepareActiveRecordQuestion(), 300);
     }
 
@@ -1116,6 +1144,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         this.recError.set('');
         this.recAudioUrl.set('');
         this.isSpeaking.set(false);
+        this._progress = [];
         this.resolvedAudioUrls.set({});
         this.stateId = null;
         this.lastTimeLeftSync = 0;
@@ -1202,42 +1231,27 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         if (!st) return;
         const formId = st.form_id || this.shift()?.form_id || 0;
         if (!formId) return;
-        // Kiểm tra state đã tồn tại chưa
+        // Chỉ restore timer từ state đã có (không tạo mới — việc đó do loadServerAnswersAndState)
         this.shiftTestStateService.query(
             [
                 { conditionName: 'shift_test_id', condition: IctuQueryCondition.equal, value: st.id.toString() },
                 { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
             ],
             { limit: 1 }
-        ).pipe(
-            switchMap((res: any) => {
-                const row = res.data?.[0] || null;
-                if (row) {
-                    this.stateId = row.id;
-                    this.examTimeLeft.set(row.time_left || 0);
-                    this._timerLoaded = true;
-                    this.startExamCountdown();
-                    return of(null); // đã có state, không tạo mới
+        ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res: any) => {
+            const row = res.data?.[0] || null;
+            if (row) {
+                this.stateId = row.id;
+                this.examTimeLeft.set(row.time_left || 0);
+                // Restore progress từ server
+                if (row.progress) {
+                    try {
+                        if (Array.isArray(row.progress)) this._progress = row.progress;
+                    } catch { /* ignore */ }
                 }
-                // Chưa có → lấy form_detail để tạo state
-                return this.formDetailService.query(
-                    [
-                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: formId.toString() },
-                        { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
-                    ],
-                    { limit: 1 }
-                ).pipe(map((fr: any) => {
-                    const fd: FormDetail = fr.data?.[0] || null;
-                    const minutes = fd?.time || 0;
-                    const seconds = minutes * 60;
-                    this.examTimeLeft.set(seconds);
-                    this._timerLoaded = true;
-                    this.createState(st.id, seconds);
-                    this.startExamCountdown();
-                }));
-            }),
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe();
+                this.startExamCountdown();
+            }
+        });
     }
 
     private createState(shiftTestId: number, duration: number): void {
@@ -1255,8 +1269,12 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         });
     }
 
+    private _progress: Array<{part: number; question_id: number}> = [];
+    private _answerSyncInterval: any = null;
+
     private startExamCountdown(): void {
         if (this.examCountdownTimer) clearInterval(this.examCountdownTimer);
+        if (this._answerSyncInterval) clearInterval(this._answerSyncInterval);
         if (this.examTimeLeft() <= 0) {
             this.countdownDisplay.set('--:--');
             return;
@@ -1270,7 +1288,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
             const mm = Math.floor(left / 60), ss = left % 60;
             this.countdownDisplay.set(`${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`);
             this.countdownWarning = left < 60;
-            if (Date.now() - this.lastTimeLeftSync > 30000) {
+            if (Date.now() - this.lastTimeLeftSync > 15000) {
                 this.lastTimeLeftSync = Date.now();
                 this.syncState();
             }
@@ -1280,17 +1298,35 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 if (this.canSubmitSkillTest()) this.confirmSubmitSkillTest();
             }
         }, 1000);
+        // Sync answers mỗi 15s: post những câu chưa post
+        this._answerSyncInterval = setInterval(() => {
+            this.syncUnpostedAnswers();
+        }, 15000);
+    }
+
+    private syncUnpostedAnswers(): void {
+        for (const p of this.parents()) {
+            const qs = this.parentQuestions(p);
+            for (const q of qs) {
+                const key = this.questionKey(q);
+                const ser = this.serializeStudentAnswer(q);
+                if (!ser) continue;
+                if (this.postedAnswerKeys[key] && this.postedAnswerValues[key] === ser) continue;
+                this.postAnswer(q);
+            }
+        }
     }
 
     private stopExamCountdown(): void {
         if (this.examCountdownTimer) { clearInterval(this.examCountdownTimer); this.examCountdownTimer = null; }
+        if (this._answerSyncInterval) { clearInterval(this._answerSyncInterval); this._answerSyncInterval = null; }
     }
 
     private syncState(): void {
         if (!this.stateId) return;
         this.shiftTestStateService.update(this.stateId, {
             time_left: this.examTimeLeft(),
-            progress: JSON.stringify({ current: this.currentParentIndex() }),
+            progress: this._progress,
         } as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => { /* ok */ }, error: () => { /* retry */ } });
     }
 
@@ -1328,9 +1364,31 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 if (!existingId && row?.id) this.answerServerIds[key] = row.id;
                 this.postedAnswerKeys[key] = true;
                 this.postedAnswerValues[key] = ser;
+                this.updateProgressForParent(q);
             },
             error: () => { /* keep postedAnswerKeys false to retry */ }
         });
+    }
+
+    private updateProgressForParent(question: any): void {
+        const parent = this.parents().find(p =>
+            String(p.id) === String(question.id) || p.children?.some(c => String(c.id) === String(question.id))
+        );
+        if (!parent) return;
+        const qs = this.parentQuestions(parent);
+        const isComplete = qs.length > 0 && qs.every(q => this.isQuestionAnswered(q));
+        if (!isComplete) return;
+        const parentId = Number(parent.id);
+        if (this._progress.some(item => item.question_id === parentId)) return;
+        this._progress.push({ part: Number(parent.part || 0), question_id: parentId });
+        this.syncProgress();
+    }
+
+    private syncProgress(): void {
+        if (!this.stateId) return;
+        this.shiftTestStateService.update(this.stateId, { progress: this._progress } as any)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
     }
 
     previousParent(): void {

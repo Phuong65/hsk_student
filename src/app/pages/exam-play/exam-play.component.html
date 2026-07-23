@@ -102,7 +102,31 @@
                         <div class="question-direction" [innerHTML]="trustHtml(processDirectionImage(p.question_direction))"></div>
                     }
                 }
-                @if (p.media?.path && skill() !== 'speaking') {
+                <!-- Speaking skill audio: autoplay, không pause, đợi ended rồi mới record -->
+                @if (skill() === 'speaking' && p.media?.path) {
+                    <div class="student-question-media">
+                        <app-audio-player
+                            [src]="buildAudioUrl(p.media.path)"
+                            [cacheKey]="questionKey(p)"
+                            [replay]="1"
+                            [autoplay]="true"
+                            [lockSeek]="true"
+                            [canRender]="!!buildAudioUrl(p.media.path)"
+                            [disableControls]="true"
+                            [onLoadError]="onAudioLoadErrorForQ(p)"
+                            [onEnded]="onMediaEndedForQ(p)" />
+                        @if (recordState(p)?.audioLoadFailed) {
+                            <div class="audio-error-row">
+                                <span class="audio-error-text">Audio không tải được</span>
+                                <button class="audio-reload-btn" (click)="reloadAudio(p)">
+                                    <i class="fa-solid fa-refresh"></i> Tải lại
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                <!-- Other 3 skills audio: hiển thị control, replay limit -->
+                @if (skill() !== 'speaking' && p.media?.path) {
                     <div class="student-question-media">
                         <app-audio-player
                             [src]="buildAudioUrl(p.media.path)"
@@ -180,7 +204,29 @@
             } @else {
                 @if (q.question_direction) { <div class="question-direction question-direction--child" [innerHTML]="trustHtml(processDirectionImage(q.question_direction))"></div> }
             }
-            @if (q.media?.path && skill() !== 'speaking') {
+            @if (skill() === 'speaking' && q.media?.path) {
+                <div class="student-question-media" style="margin-top:8px;">
+                    <app-audio-player
+                        [src]="buildAudioUrl(q.media.path)"
+                        [cacheKey]="questionKey(q)"
+                        [replay]="1"
+                        [autoplay]="true"
+                        [lockSeek]="true"
+                        [canRender]="!!buildAudioUrl(q.media.path)"
+                        [disableControls]="true"
+                        [onLoadError]="onAudioLoadErrorForQ(q)"
+                        [onEnded]="onMediaEndedForQ(q)" />
+                    @if (recordState(q)?.audioLoadFailed) {
+                        <div class="audio-error-row">
+                            <span class="audio-error-text">Audio không tải được</span>
+                            <button class="audio-reload-btn" (click)="reloadAudio(q)">
+                                <i class="fa-solid fa-refresh"></i> Tải lại
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+            @if (skill() !== 'speaking' && q.media?.path) {
                 <div class="student-question-media" style="margin-top:8px;">
                     <app-audio-player
                         [src]="buildAudioUrl(q.media.path)"
@@ -221,23 +267,23 @@
         </div>
     }
     @if (isRecordQuestion(q)) {
-        @if (recordStatus() === 'idle') {
-            <button class="record-start-btn" (click)="startRecord(q)"><i class="fa-solid fa-microphone"
-	                   [class.recording-icon]="recordStatus() === 'recording'"
-	                   [class.speaking-icon]="recordStatus() === 'recording' && isSpeaking()"></i> Bắt đầu ghi âm</button>
-        }
+        <!-- @if (recordStatus() === 'idle') {
+            <button class="record-start-btn" (click)="startRecord(q)"><i class="fa-solid fa-microphone"></i> Bắt đầu ghi âm</button>
+        } -->
         @if (recordStatus() !== 'idle') {
         <div class="student-record-box">
             <div class="student-record-box__head">
-                <i class="fa-solid fa-microphone"></i>
+                <i class="fa-solid fa-microphone"
+                   [class.recording-icon]="recordStatus() === 'recording' && !isSpeaking()"
+                   [class.speaking-icon]="recordStatus() === 'recording' && isSpeaking()"></i>
                 <div>
                     @if (recordStatus() === 'preparing' && prepareLeft() > 0) { <strong>Prepare to speak</strong><span>Recording starts in {{ prepareLeft() }}s</span> }
-                    @if (recordStatus() === 'recording') { <strong style="color:#dc2626;">Recording</strong><span>Speaking time left: {{ speakingLeft() }}s</span> }
-                    @if (recordStatus() === 'uploading') { <strong>Uploading...</strong> }
-                    @if (recordStatus() === 'uploaded') { <span class="badge-light-base badge-success-light"><i class="fa-solid fa-check"></i> Submit success</span> }
-                    @if (recordStatus() === 'error') { <strong>Upload failed</strong><span class="record-error-text">{{ recError() }}</span> }
+                    @if (recordStatus() === 'recording') { <strong style="color:#dc2626;">Recording</strong><span>Speaking time left: {{ speakingLeft() }}s</span> @if (canSubmitRecordEarly(q)) { <button mat-flat-button class="btn ictu-badge-btn--info-reverse"  (click)="submitRecordEarly(q)">Nộp</button> } }
+                    @if (recordStatus() === 'uploading') { <strong class="record-status-uploading"><i class="fa-solid fa-spinner fa-spin"></i> Đang nộp...</strong> }
+                    @if (recordStatus() === 'uploaded') { <span class="student-record-box__status--uploaded"><i class="fa-solid fa-check"></i> Đã nộp bài</span> }
+                    @if (recordStatus() === 'error') { <span class="student-record-box__status--error"><i class="fa-solid fa-circle-exclamation"></i> {{ recError() }}</span> }
                 </div>
-                @if (recordStatus() === 'error') { <button class="nav-button" (click)="retryRecord(q)"><i class="fa-solid fa-refresh"></i> Upload lại</button> }
+                @if (recordStatus() === 'error') { <button type="button" class="student-record-box__retry" (click)="retryRecord(q)"><i class="fa-solid fa-rotate"></i> Nộp lại</button> }
             </div>
         </div>
         }
