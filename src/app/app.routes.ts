@@ -24,6 +24,11 @@ export const routes : Routes = [
 		loadComponent : () : Promise<any> => import('@pages/exam-commitment/exam-commitment.component')
 	} ,
 	{
+		path          : 'exam/:shiftId/:skill' ,
+		canActivate   : [ authGuard ] ,
+		loadComponent : () : Promise<any> => import('@pages/exam-play/exam-play.component').then(c => c.ExamPlayComponent)
+	} ,
+	{
 		path          : 'throw-error' ,
 		loadComponent : () : Promise<any> => import('@pages/throw-error/throw-error.component').then( c => c.ThrowErrorComponent )
 	} ,

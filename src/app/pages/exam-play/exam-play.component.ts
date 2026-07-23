@@ -1,10 +1,10 @@
-import { Component, signal, WritableSignal, AfterViewChecked, ElementRef, computed, inject, DestroyRef, effect, ChangeDetectorRef, OnDestroy, input } from '@angular/core';
+import { Component, signal, WritableSignal, AfterViewChecked, ElementRef, computed, inject, DestroyRef, effect, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap, map, catchError, of, finalize, take } from 'rxjs';
+import { switchMap, map, catchError, of, finalize, take, forkJoin } from 'rxjs';
 
 import { BankQuestion } from '@models/bank-question';
 import { ShiftTest } from '@models/shift-test';
@@ -19,8 +19,12 @@ import { ShiftTestAnswerService } from '@services/shift-test-answer.service';
 import { FormDetailService } from '@services/form-detail.service';
 import { IctuFileService } from '@services/ictu-file.service';
 import { IctuQueryCondition } from '@models/dto';
+import { DtoObject } from '@models/dto';
 import { linkGetFileContentAws } from '@env';
 import { tokenGetter } from '@app/app.config';
+import { StudentService } from '@services/student.service';
+import { ShiftService } from '@services/shift.service';
+import { AuthenticationService } from '@services/authentication.service';
 
 import { AudioPlayerComponent } from './audio-player.component';
 
@@ -58,18 +62,19 @@ interface RecordQuestionState {
     templateUrl: './exam-play.component.html',
     styleUrls: ['./exam-play.component.css'],
 })
-export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
-    // Inputs
-    readonly questions = input<BankQuestion[]>([]);
-    readonly skill = input<string>('');
-    readonly shiftName = input<string>('');
-    readonly studentCode = input<string>('');
-    readonly shiftId = input<number>(0);
-    readonly shiftTest = input<ShiftTest | null>(null);
-    readonly student = input<Student | null>(null);
-    readonly shift = input<Shift | null>(null);
+export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
+    // Internal signals (đã từng là inputs, giờ load từ route params + API)
+    readonly questions: WritableSignal<BankQuestion[]> = signal<BankQuestion[]>([]);
+    readonly skill: WritableSignal<string> = signal<string>('');
+    readonly shiftName: WritableSignal<string> = signal<string>('');
+    readonly studentCode: WritableSignal<string> = signal<string>('');
+    readonly shiftId: WritableSignal<number> = signal<number>(0);
+    readonly shiftTest: WritableSignal<ShiftTest | null> = signal<ShiftTest | null>(null);
+    readonly student: WritableSignal<Student | null> = signal<Student | null>(null);
+    readonly shift: WritableSignal<Shift | null> = signal<Shift | null>(null);
 
     // Services
+    private route = inject(ActivatedRoute);
     private router = inject(Router);
     private sanitizer = inject(DomSanitizer);
     private destroyRef = inject(DestroyRef);
@@ -79,6 +84,9 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
     private shiftTestAnswerService = inject(ShiftTestAnswerService);
     private formDetailService = inject(FormDetailService);
     private fileService = inject(IctuFileService);
+    private studentService = inject(StudentService);
+    private authService = inject(AuthenticationService);
+    private shiftService = inject(ShiftService);
 
     // State signals
     readonly parents: WritableSignal<QV[]> = signal<QV[]>([]);
@@ -128,6 +136,89 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
     private beepAudioUrl = '';
     private _hasRecordUploadInProgress = false;
     private _inlineRestored = false;
+    private _queryShiftTestId = 0;
+    private _timerLoaded = false;
+
+    ngOnInit(): void {
+        // Ưu tiên route state (từ commitment navigate sang) — không cần API
+        const navState = history.state as any;
+        const restoreFromState = navState?.shift && navState?.student && navState?.shiftTest;
+
+        if (restoreFromState) {
+            this.shift.set(navState.shift);
+            this.student.set(navState.student);
+            this.shiftTest.set(navState.shiftTest);
+            const qp = this.route.snapshot.queryParams;
+            this.shiftName.set(qp['shiftName'] || '');
+            this.studentCode.set(qp['studentCode'] || '');
+            this.shiftId.set(+this.route.snapshot.params['shiftId'] || 0);
+            this.skill.set(this.route.snapshot.params['skill'] || '');
+            // Chỉ load questions
+            const st = navState.shiftTest;
+            if (st?.id) {
+                this.shiftTestService.getQuestions(st.id).pipe(
+                    take(1),
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(allQ => {
+                    const skill = this.skill().toLowerCase();
+                    this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
+                });
+            }
+            // Load thời gian từ form_detail
+            this.loadFormDuration(st);
+            return;
+        }
+
+        // Fallback: F5 refresh — load từ API
+        this.route.params.pipe(
+            take(1),
+            map(params => {
+                this.shiftId.set(+params['shiftId'] || 0);
+                this.skill.set(params['skill'] || '');
+            }),
+            switchMap(() => this.route.queryParams.pipe(take(1))),
+            map(qp => {
+                this.shiftName.set(qp['shiftName'] || '');
+                this.studentCode.set(qp['studentCode'] || '');
+                this._queryShiftTestId = +qp['shiftTestId'] || 0;
+            }),
+            switchMap(() => {
+                const sid = this.shiftId();
+                const user = this.authService.user;
+                if (!sid || !user) return of(null);
+                return forkJoin({
+                    student: this.studentService.query(
+                        [{ conditionName: 'user_id', condition: IctuQueryCondition.equal, value: user.id.toString() }],
+                        { limit: 1 }
+                    ).pipe(map(r => r.data?.[0])),
+                    shift: this.shiftService.query(
+                        [{ conditionName: 'id', condition: IctuQueryCondition.equal, value: sid.toString() }],
+                        { limit: 1 }
+                    ).pipe(map((r: any) => r.data?.[0] || r?.[0] || null)),
+                    shiftTest: this._queryShiftTestId
+                        ? this.shiftTestService.query(
+                            [{ conditionName: 'id', condition: IctuQueryCondition.equal, value: this._queryShiftTestId.toString() }],
+                            { limit: 1 }
+                          ).pipe(map(r => r.data?.[0]))
+                        : of(null),
+                }).pipe(
+                    switchMap(({ student, shift, shiftTest }) => {
+                        this.student.set(student || null);
+                        this.shift.set(shift || null);
+                        this.shiftTest.set(shiftTest || null);
+                        if (!shiftTest?.id) return of(null);
+                        return this.shiftTestService.getQuestions(shiftTest.id).pipe(
+                            map(allQ => {
+                                const skill = this.skill().toLowerCase();
+                                this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
+                            })
+                        );
+                    })
+                );
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe();
+    }
 
     constructor() {
         effect(() => {
@@ -979,7 +1070,10 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
         this.parents.set(list);
         this.currentParentIndex.set(0);
         this.markActiveParentSeen();
-        this.loadServerAnswersAndState();
+        // Nếu đã load timer từ route-state path thì khỏi gọi lại loadServerAnswersAndState
+        if (!this._timerLoaded) {
+            this.loadServerAnswersAndState();
+        }
         setTimeout(() => this.prepareActiveRecordQuestion(), 300);
     }
 
@@ -1084,9 +1178,10 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
                     { limit: 1 }
                 ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((fr: any) => {
                     const fd: FormDetail = fr.data?.[0] || null;
-                    const dur = fd?.time || 0;
-                    this.examTimeLeft.set(dur);
-                    this.createState(st.id, dur);
+                    const minutes = fd?.time || 0;
+                    const seconds = minutes * 60;
+                    this.examTimeLeft.set(seconds);
+                    this.createState(st.id, seconds);
                     this.startExamCountdown();
                 });
             }
@@ -1101,6 +1196,48 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy {
             }
         }
         return null;
+    }
+
+    private loadFormDuration(st: ShiftTest | null): void {
+        if (!st) return;
+        const formId = st.form_id || this.shift()?.form_id || 0;
+        if (!formId) return;
+        // Kiểm tra state đã tồn tại chưa
+        this.shiftTestStateService.query(
+            [
+                { conditionName: 'shift_test_id', condition: IctuQueryCondition.equal, value: st.id.toString() },
+                { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
+            ],
+            { limit: 1 }
+        ).pipe(
+            switchMap((res: any) => {
+                const row = res.data?.[0] || null;
+                if (row) {
+                    this.stateId = row.id;
+                    this.examTimeLeft.set(row.time_left || 0);
+                    this._timerLoaded = true;
+                    this.startExamCountdown();
+                    return of(null); // đã có state, không tạo mới
+                }
+                // Chưa có → lấy form_detail để tạo state
+                return this.formDetailService.query(
+                    [
+                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: formId.toString() },
+                        { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
+                    ],
+                    { limit: 1 }
+                ).pipe(map((fr: any) => {
+                    const fd: FormDetail = fr.data?.[0] || null;
+                    const minutes = fd?.time || 0;
+                    const seconds = minutes * 60;
+                    this.examTimeLeft.set(seconds);
+                    this._timerLoaded = true;
+                    this.createState(st.id, seconds);
+                    this.startExamCountdown();
+                }));
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe();
     }
 
     private createState(shiftTestId: number, duration: number): void {

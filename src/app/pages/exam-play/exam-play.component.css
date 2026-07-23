@@ -27,8 +27,8 @@
 .question-page-card--active { display: block; }
 .question-page-card--hidden { display: none; }
 .question-number-badge { display: inline-block; padding: 4px 14px; background: #eef4ff; color: #2563eb; border-radius: 999px; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
-.timer-bar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #15803d; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-.timer-warning { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+.exam-timer { position: fixed; top: 16px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 10px; padding: 12px 24px; background: #fff; color: #111827; font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+.exam-timer.timer-warning { border-color: #f87171; color: #dc2626; background: #fef2f2; }
 .question-direction { color: #282831; font-size: 14px; font-weight: 500; line-height: 1.75; white-space: pre-line; margin-bottom: 24px; }
 .question-direction ::ng-deep img { max-width: 100%; height: auto; }
 .question-direction--child { margin-bottom: 12px; }

@@ -15,16 +15,14 @@ import { ShiftTest } from '@models/shift-test';
 import { Shift } from '@models/shift';
 import { BankQuestion } from '@models/bank-question';
 import { LoadingProgressComponent } from '@theme/components/loading-progress/loading-progress.component';
-import { ExamPlayComponent } from '../exam-play/exam-play.component';
 
 
-
-type State = 'loading' | 'commitment' | 'skill-select' | 'exam' | 'error';
+type State = 'loading' | 'commitment' | 'skill-select' | 'error';
 
 @Component({
     selector: 'app-exam-commitment',
     standalone: true,
-    imports: [CommonModule, LoadingProgressComponent, ExamPlayComponent],
+    imports: [CommonModule, LoadingProgressComponent],
     templateUrl: './exam-commitment.component.html',
     styleUrls: ['./exam-commitment.component.css'],
 })
@@ -43,8 +41,6 @@ export default class ExamCommitmentComponent implements OnInit {
     readonly shiftName: WritableSignal<string> = signal('');
     readonly studentCode: WritableSignal<string> = signal('');
     readonly agreed: WritableSignal<boolean> = signal(false);
-    readonly selectedSkill: WritableSignal<string> = signal('');
-    readonly selectedQuestions: WritableSignal<BankQuestion[]> = signal([]);
     readonly groupedQuestions: WritableSignal<Map<string, BankQuestion[]>> = signal(new Map());
     readonly shiftId: WritableSignal<number> = signal(0);
     readonly student = signal<Student | null>(null);
@@ -67,7 +63,7 @@ export default class ExamCommitmentComponent implements OnInit {
     loadExam(): void {
         this.state.set('loading');
         this.errorMessage.set('');
-        this.selectedQuestions.set([]);
+        this.errorMessage.set('');
         const user = this.auth.user;
         if (!user) { this.state.set('error'); this.errorMessage.set('Bạn chưa đăng nhập.'); setTimeout(() => this.router.navigate(['/auth/login']), 1500); return; }
 
@@ -131,25 +127,30 @@ export default class ExamCommitmentComponent implements OnInit {
     acceptCommitment(): void {
         const st = this.shiftTest();
         if (!st) return;
-        this.shiftTestService.getQuestions(st.id).pipe(
-            tap(qs => {
-                const map = new Map<string, BankQuestion[]>();
-                for (const sk of this.skillOrder) {
-                    const f = qs.filter(q => (q.skill || '').toLowerCase() === sk);
-                    if (f.length) map.set(sk, f);
-                }
-                this.groupedQuestions.set(map);
-                this.state.set('skill-select');
-            }),
-            catchError(() => { this.state.set('error'); this.errorMessage.set('Có lỗi khi tải câu hỏi.'); return of(null); }),
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe();
+        // Chỉ show tất cả skill có sẵn, không cần đếm số câu
+        const map = new Map<string, BankQuestion[]>();
+        for (const sk of this.skillOrder) {
+            map.set(sk, []);
+        }
+        this.groupedQuestions.set(map);
+        this.state.set('skill-select');
     }
 
     selectSkill(skill: string): void {
-        this.selectedSkill.set(skill);
-        this.selectedQuestions.set([...(this.groupedQuestions().get(skill) ?? [])]);
-        this.state.set('exam');
+        const st = this.shiftTest();
+        if (!st) return;
+        this.router.navigate(['/exam', this.shiftId(), skill], {
+            queryParams: {
+                shiftTestId: st.id,
+                shiftName: this.shiftName(),
+                studentCode: this.studentCode(),
+            },
+            state: {
+                shift: this.shift(),
+                student: this.student(),
+                shiftTest: st,
+            }
+        });
     }
 
     testMic(): void {

@@ -70,13 +70,13 @@
     }
 
     <main class="exam-main">
+        @if (examTimeLeft() > 0) {
+            <div class="exam-timer" [class.timer-warning]="countdownWarning">
+                {{ countdownDisplay() }}
+            </div>
+        }
         @for (p of parents(); track p.id) {
             <article class="question-page-card" [class.question-page-card--active]="currentParent()===p" [class.question-page-card--hidden]="currentParent()!==p">
-                @if (examTimeLeft() > 0) {
-                    <div class="timer-bar" [class.timer-warning]="countdownWarning">
-                        <i class="fa-solid fa-clock"></i> {{ countdownDisplay() }}
-                    </div>
-                }
                 <div style="display:none"><span>{{ echoPart(p.part) }}</span><span>{{ partQuestionCount(p) }} questions</span></div>
                             @if (p.children?.length) {
                     <div class="question-number-badge">Câu {{ getParentBadge(p) }}</div>

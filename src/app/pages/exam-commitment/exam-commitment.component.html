@@ -61,13 +61,13 @@
                 <h2>Chọn kỹ năng làm bài</h2>
                 <p class="skill-select-sub">Bài thi gồm các kỹ năng sau. Hãy chọn kỹ năng để bắt đầu.</p>
                 <div class="skill-grid">
-                    @for (skill of skillOrder; track skill) { @if (groupedQuestions().has(skill)) {
+                    @for (skill of skillOrder; track skill) {
                         <button class="skill-card" (click)="selectSkill(skill)">
                             <div class="skill-icon">@switch (skill) { @case ('listening') { <i class="fa-solid fa-headphones"></i> } @case ('reading') { <i class="fa-solid fa-book-open"></i> } @case ('writing') { <i class="fa-solid fa-pen"></i> } @case ('speaking') { <i class="fa-solid fa-microphone"></i> } }</div>
-                            <div class="skill-info"><span class="skill-name">{{ skillLabel(skill) }}</span><span class="skill-count">{{ groupedQuestions().get(skill)?.length }} câu</span></div>
+                            <div class="skill-info"><span class="skill-name">{{ skillLabel(skill) }}</span></div>
                             <i class="fa-solid fa-chevron-right skill-arrow"></i>
                         </button>
-                    } }
+                    }
                 </div>
                 <button class="btn-back" (click)="goBack()">Quay lại</button>
                 <button class="btn-mic-test" (click)="testMic()">Kiểm tra mic <i class="fa-solid fa-microphone"></i></button>
@@ -80,7 +80,4 @@
         </div>
     }
 
-    @if (state() === 'exam' && selectedQuestions().length > 0) {
-        <app-exam-play [questions]="selectedQuestions()" [skill]="selectedSkill()" [shiftName]="shiftName()" [studentCode]="studentCode()" [shiftId]="shiftId()" [shiftTest]="shiftTest()" [student]="student()" [shift]="shift()" />
-    }
 </div>
