@@ -5,7 +5,7 @@ import { BehaviorSubject , catchError , filter , firstValueFrom , forkJoin , map
 import { HttpClient } from '@angular/common/http';
 import weekday from 'dayjs/plugin/weekday';
 import { GoogleSignIn , User , UserSignIn } from '@models/user';
-import { ARRAY_EMPLOYEE_ROLES , PickRole , SysRoleName } from '@models/role';
+import { PickRole , SysRoleName } from '@models/role';
 import { Dto , IctuQueryCondition } from '@models/dto';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import * as CryptoJS from 'crypto-js'; // Do not convert to a default import. Pls
@@ -16,8 +16,6 @@ import { refreshTokenSetter , tokenGetter , tokenSetter } from '@app/app.config'
 import { SysConfigsService } from '@services//sys-configs.service';
 import { IctuNavigation , IctuNavigationItemPms } from '@theme/types/navigation';
 import { Employee } from '@models/employee';
-import { EmployeesService } from '@services/employees.service';
-import { Is } from '@utilities/is';
 import { HocSinh } from '@models/hoc-sinh';
 import { Socket , SocketIoConfig } from 'ngx-socket-io';
 import { ManagerOptions } from 'socket.io-client';
@@ -82,8 +80,6 @@ export class AuthenticationService {
 	private _socket : AppSocket;
 
 	private appRef : ApplicationRef = inject( ApplicationRef );
-
-	private readonly employeesService : EmployeesService = inject( EmployeesService );
 
 	private readonly sysConfigsService : SysConfigsService = inject( SysConfigsService );
 
@@ -569,14 +565,8 @@ export class AuthenticationService {
 			student     : of( null ) ,
 			configs     : loadConfigs$
 		} ).pipe(
-			switchMap( ( { user , permissions , configs } : AuthResponse ) : Observable<AuthResponse> => {
-				if ( Is.array( permissions.data?.roles ) && -1 !== permissions.data.roles.findIndex( ( _role : PickRole ) : boolean => ARRAY_EMPLOYEE_ROLES.includes( _role.name ) ) ) {
-					return this.employeesService.getEmployeeInfo( user ).pipe(
-						map( ( employee : Employee ) : AuthResponse => ( { user , permissions , employee , configs , student : null } ) )
-					);
-				} else {
-					return of( { user , permissions , employee : null , configs , student : null } );
-				}
+		switchMap( ( { user , permissions , configs } : AuthResponse ) : Observable<AuthResponse> => {
+				return of( { user , permissions , employee : null , configs , student : null } );
 			} ) ,
 			map( ( { user , permissions , employee , configs , student } : AuthResponse ) : boolean => {
 				this.saveUser( user );

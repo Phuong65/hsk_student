@@ -1,0 +1,86 @@
+<div class="exam-commitment-page">
+    @if (state() === 'loading') {
+        <div class="loading-wrapper"><app-loading-progress heading="Đang tải bài thi..." /></div>
+    }
+
+    @if (state() === 'error') {
+        <div class="error-wrapper">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <p class="error-text">{{ errorMessage() }}</p>
+                <div class="btn-group">
+                    <button class="btn-retry" (click)="loadExam()">Thử lại</button>
+                    <button class="btn-back" (click)="goBack()">Quay lại</button>
+                    <button class="btn-logout" (click)="logout()">Đăng xuất</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (securityWarningVisible()) {
+        <div class="exam-security-overlay">
+            <div class="exam-security-dialog">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h2>Cảnh báo bảo mật</h2>
+                <p>{{ securityWarningMessage() }}</p>
+                <small>Số lần cảnh báo: {{ violationCount() }}</small>
+                <button type="button" class="exam-security-button" (click)="continueFullscreen()">Tiếp tục làm bài toàn màn hình</button>
+            </div>
+        </div>
+    }
+
+    @if (state() === 'commitment') {
+        <div class="commitment-wrapper">
+            <div class="commitment-info-row">
+                <span><strong>Ca thi:</strong> {{ shiftName() || '---' }}</span>
+                <span><strong>SBD:</strong> {{ studentCode() || '---' }}</span>
+            </div>
+            <div class="commitment-card">
+                <div class="commitment-shield"><i class="fa-solid fa-shield-halved shield-icon"></i></div>
+                <h1 class="commitment-title">CAM KẾT KHÔNG GIAN LẬN</h1>
+                <p class="commitment-subtitle">Trước khi bắt đầu làm bài thi, bạn cần đọc kỹ và cam kết tuân thủ các quy định dưới đây.</p>
+                <div class="commitments-box">
+                    <div class="commitment-item"><div class="commitment-icon-circle"><i class="fa-solid fa-award"></i></div><div class="commitment-content"><div class="commitment-item-title">Làm bài thi một cách trung thực</div><div class="commitment-item-desc">Tôi sẽ tự mình làm bài thi và không nhờ sự trợ giúp từ bất kỳ ai.</div></div></div>
+                    <div class="commitment-item"><div class="commitment-icon-circle"><i class="fa-solid fa-mobile-screen"></i></div><div class="commitment-content"><div class="commitment-item-title">Không sử dụng tài liệu, thiết bị hỗ trợ trái phép</div><div class="commitment-item-desc">Tôi không sử dụng sách, vở, tài liệu, điện thoại, thiết bị ghi âm, ghi hình hoặc bất kỳ công cụ hỗ trợ nào khác trong quá trình làm bài.</div></div></div>
+                    <div class="commitment-item"><div class="commitment-icon-circle"><i class="fa-solid fa-video"></i></div><div class="commitment-content"><div class="commitment-item-title">Tuân thủ quy định giám sát</div><div class="commitment-item-desc">Tôi chấp nhận việc hệ thống giám sát trong suốt quá trình thi và sẽ tuân thủ mọi hướng dẫn từ giám thị.</div></div></div>
+                    <div class="commitment-item"><div class="commitment-icon-circle circle-red"><i class="fa-solid fa-ban"></i></div><div class="commitment-content"><div class="commitment-item-title">Không gian lận dưới mọi hình thức</div><div class="commitment-item-desc">Tôi không trao đổi, chụp màn hình, quay video hoặc thực hiện bất kỳ hành vi gian lận nào khác.</div></div></div>
+                    <div class="commitment-item"><div class="commitment-icon-circle"><i class="fa-solid fa-scale-balanced"></i></div><div class="commitment-content"><div class="commitment-item-title">Chấp nhận xử lý theo quy chế</div><div class="commitment-item-desc">Tôi hiểu rằng mọi hành vi vi phạm sẽ bị xử lý theo quy chế thi hiện hành của nhà trường và pháp luật.</div></div></div>
+                </div>
+                <label class="agreement-line"><input type="checkbox" [checked]="agreed()" (change)="toggleAgreement()" /><span>Tôi đã đọc, hiểu rõ và <strong>đồng ý tuân thủ</strong> tất cả các cam kết trên.</span></label>
+                <div class="commitment-action-row">
+                    <button class="btn-exit" (click)="goBack()"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
+                    <button class="btn-start" [class.btn-disabled]="!agreed()" [disabled]="!agreed()" (click)="acceptCommitment()">Tôi đồng ý, bắt đầu làm bài <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (state() === 'skill-select') {
+        <div class="skill-select-wrapper">
+            <div class="skill-select-card">
+                <h2>Chọn kỹ năng làm bài</h2>
+                <p class="skill-select-sub">Bài thi gồm các kỹ năng sau. Hãy chọn kỹ năng để bắt đầu.</p>
+                <div class="skill-grid">
+                    @for (skill of skillOrder; track skill) { @if (groupedQuestions().has(skill)) {
+                        <button class="skill-card" (click)="selectSkill(skill)">
+                            <div class="skill-icon">@switch (skill) { @case ('listening') { <i class="fa-solid fa-headphones"></i> } @case ('reading') { <i class="fa-solid fa-book-open"></i> } @case ('writing') { <i class="fa-solid fa-pen"></i> } @case ('speaking') { <i class="fa-solid fa-microphone"></i> } }</div>
+                            <div class="skill-info"><span class="skill-name">{{ skillLabel(skill) }}</span><span class="skill-count">{{ groupedQuestions().get(skill)?.length }} câu</span></div>
+                            <i class="fa-solid fa-chevron-right skill-arrow"></i>
+                        </button>
+                    } }
+                </div>
+                <button class="btn-back" (click)="goBack()">Quay lại</button>
+                <button class="btn-mic-test" (click)="testMic()">Kiểm tra mic <i class="fa-solid fa-microphone"></i></button>
+                @if (micTestResult()) {
+                    <div class="mic-test-result" [class.mic-ok]="micTestResult() === 'ok'" [class.mic-fail]="micTestResult() === 'fail'">
+                        {{ micTestResult() === 'ok' ? 'Mic hoạt động tốt' : 'Mic không hoạt động. Kiểm tra quyền truy cập.' }}
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (state() === 'exam' && selectedQuestions().length > 0) {
+        <app-exam-play [questions]="selectedQuestions()" [skill]="selectedSkill()" [shiftName]="shiftName()" [studentCode]="studentCode()" [shiftId]="shiftId()" [shiftTest]="shiftTest()" [student]="student()" [shift]="shift()" />
+    }
+</div>

@@ -1,0 +1,284 @@
+<div class="exam-security-overlay" *ngIf="securityWarningVisible">
+    <div class="exam-security-dialog">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h2>Cảnh báo bảo mật</h2>
+        <p>{{ securityWarningMessage }}</p>
+        <small>Số lần cảnh báo: {{ violationCount }}</small>
+        <button type="button" class="exam-security-button" (click)="continueFullscreen()">Tiếp tục làm bài toàn màn hình</button>
+    </div>
+</div>
+
+<div class="submit-confirm-overlay exit-confirm-overlay" *ngIf="exitConfirmVisible">
+    <div class="submit-confirm-dialog exit-confirm-dialog">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h2>Xác nhận rời khỏi bài thi</h2>
+        <p>Bạn có chắc chắn thoát khỏi bài thi? Khi thoát, bạn không thể làm lại bài thi này.</p>
+        <div class="submit-confirm-actions">
+            <button type="button" class="submit-confirm-button submit-confirm-button--secondary" (click)="cancelExitExam()">Tiếp tục làm bài</button>
+            <button type="button" class="submit-confirm-button submit-confirm-button--primary exit-confirm-button--danger" (click)="confirmExitExam()">Thoát khỏi bài thi</button>
+        </div>
+    </div>
+</div>
+
+<div class="submit-confirm-overlay" *ngIf="submitConfirmVisible">
+    <div class="submit-confirm-dialog">
+        <i class="pi pi-send"></i>
+        <h2>Xác nhận nộp bài</h2>
+        <p>Bạn đã trả lời hết các câu hỏi. Sau khi nộp bài, bạn sẽ không thể chỉnh sửa đáp án.</p>
+        <div class="submit-confirm-actions">
+            <button type="button" class="submit-confirm-button submit-confirm-button--secondary" (click)="cancelSubmitSkillTest()">Kiểm tra lại</button>
+            <button type="button" class="submit-confirm-button submit-confirm-button--primary" [disabled]="submitting" (click)="confirmSubmitSkillTest()">Xác nhận nộp bài</button>
+        </div>
+    </div>
+</div>
+
+<div class="submit-confirm-overlay" *ngIf="scoreResultVisible">
+    <div class="submit-confirm-dialog score-result-dialog">
+        <i class="pi pi-check-circle" style="color: #16a34a;"></i>
+        <h2>Đã nộp bài thành công</h2>
+        <p>Kết quả {{ skillResultLabel(scoreResultData.skill) }}</p>
+        <div class="score-result-body">
+            <div class="score-result-point">
+                <small>Điểm</small>
+                <strong>{{ scoreResultData.point !== null && scoreResultData.point !== undefined ? (scoreResultData.point | number:'1.0-2') : '—' }}</strong>
+            </div>
+        </div>
+        <div class="submit-confirm-actions score-result-actions">
+            <button type="button" class="submit-confirm-button submit-confirm-button--primary score-result-close" (click)="closeScoreResult()">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<div class="student-question-page">
+    <div *ngIf="!loading && message" class="student-question-empty">
+        <i class="pi pi-info-circle"></i>
+        <strong>{{ message }}</strong>
+    </div>
+
+    <section *ngIf="!loading && parents.length" class="exam-shell" [class.exam-shell--panel-closed]="!questionPanelOpen">
+        <div *ngIf="questionPanelOpen" class="question-panel-backdrop" (click)="setQuestionPanelOpen(false)"></div>
+
+        <aside *ngIf="questionPanelOpen" class="question-panel">
+            <div class="question-panel__head">
+                <h2>Question List</h2>
+                <button type="button" class="question-panel__close" aria-label="Close question list" (click)="setQuestionPanelOpen(false)">
+                    <i class="pi pi-times"></i>
+                </button>
+            </div>
+
+            <div class="question-panel__body">
+            <ng-container *ngFor="let partGroup of getGroupedByPart(); trackBy: trackByPart">
+                <div class="question-group-card">
+                    <div class="question-group-card__head">
+                        <div>
+                            <strong>{{ echoPart(partGroup.part) }}</strong>
+                            <span>{{ partGroup.questions.length }} questions</span>
+                        </div>
+                    </div>
+
+                    <div class="question-group-card__body" [class.collapsed]="isPartCollapsed(partGroup.part)">
+                        <button type="button" *ngFor="let q of partGroup.questions; let i = index; trackBy: trackByQuestion" class="question-list-item" [class.active]="currentParentIndex === q._globalIndex" [class.question-list-item--locked]="!canSelectMenuQuestion(q._globalIndex)" [disabled]="!canSelectMenuQuestion(q._globalIndex)" (click)="setActiveParent(q._globalIndex, 'menu')">
+                            <div>
+                                <strong>{{ q._globalIndex + 1 < 10 ? '0' + (q._globalIndex + 1) : q._globalIndex + 1 }}</strong>
+                                <span>{{ hasSeenQuestion(q._globalIndex) ? 'Seen' : 'Unseen' }}</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            </div>
+        </aside>
+
+        <main class="exam-main" *ngIf="currentParent as parent">
+            <header class="exam-header">
+                <div>
+                    <span>{{ skillLabel(selectedSkill) }}</span>
+                    <h1>Question {{ currentParentIndex + 1 }} of {{ parents.length }}</h1>
+                </div>
+                <div *ngIf="skillDurationValue > 0" class="exam-countdown" [class.exam-countdown--warning]="countdownWarning">
+                    <span>Time left</span>
+                    <strong>{{ countdownDisplay }}</strong>
+                </div>
+            </header>
+
+            <article class="question-page-card" [id]="questionDomId(parent)">
+                <div class="question-page-meta">
+                    <span>{{ echoPart(parent.part) }}</span>
+                    <span>{{ partQuestionCount(parent) }} questions on this page</span>
+                </div>
+
+                <div *ngIf="parent.question_direction && !shouldRenderParentControl(parent)" class="question-direction" [innerHTML]="trustHtml(parent.question_direction)"></div>
+
+                <div *ngIf="parent.media?.path" class="student-question-media">
+                    <audio-viewer [width]="520" [height]="260" [type]="parent.media.type" [path]="parent.media.path" [source]="parent.media.source" [replay]="getListeningReplayCount()" [questionId]="questionKey(parent)"></audio-viewer>
+                </div>
+
+                <ng-container *ngIf="shouldRenderParentControl(parent)">
+                    <ng-container *ngTemplateOutlet="questionBlock; context: { question: parent, index: currentParentIndex + 1, showIndex: false }"></ng-container>
+                </ng-container>
+
+                <div *ngIf="parent.children?.length" class="student-question-children">
+                    <section *ngFor="let question of parent.children; let i = index; trackBy: trackByQuestion" class="student-question-child">
+                        <ng-container *ngTemplateOutlet="questionBlock; context: { question: question, index: i + 1, showIndex: true }"></ng-container>
+                    </section>
+                </div>
+            </article>
+        </main>
+
+        <footer class="exam-footer">
+            <div class="exam-tools">
+                <button type="button" class="exam-tool-button" aria-label="Toggle Question List" (click)="setQuestionPanelOpen(!questionPanelOpen)"><i class="pi pi-list"></i></button>
+            </div>
+            <div class="exam-actions">
+                <div *ngIf="incompleteCurrentPageWarning" class="exam-navigation-warning">{{ incompleteCurrentPageWarning }}</div>
+                <button type="button" class="exit-button" (click)="backToDetail()"><i class="pi pi-sign-out"></i></button>
+                <button type="button" class="nav-button" [disabled]="currentParentIndex === 0" (click)="previousParent()">
+                    <i class="pi pi-arrow-left"></i>
+                    <span>Previous</span>
+                </button>
+                <button type="button" class="next-button" [disabled]="submitting || (!canSubmitSkillTest() && (currentParentIndex === parents.length - 1 || !isCurrentParentComplete()))" (click)="handleNextAction()">
+                    <span>{{ canSubmitSkillTest() ? 'Submit' : 'Next' }}</span>
+                    <i *ngIf="!canSubmitSkillTest()" class="pi pi-arrow-right"></i>
+                </button>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<ng-template #questionBlock let-question="question" let-index="index" let-showIndex="showIndex">
+    <div class="student-question-child__body" [class.student-question-child__body--no-number]="!showIndex">
+        <strong *ngIf="showIndex" class="student-question-number">{{ index }}</strong>
+        <div class="student-question-child__content">
+            <ng-container *ngIf="isSelectQuestion(question) && hasSelectMarker(question.question_direction); else normalQuestionDirection">
+                <ng-container *ngIf="hasSelectBlockMarker(question.question_direction); else inlineSelectQuestion">
+                    <ng-container *ngTemplateOutlet="selectBlockQuestion; context: { question: question }"></ng-container>
+                </ng-container>
+                <ng-template #inlineSelectQuestion>
+                    <ng-container *ngTemplateOutlet="selectInlineQuestion; context: { question: question }"></ng-container>
+                </ng-template>
+            </ng-container>
+            <ng-template #normalQuestionDirection>
+                <div *ngIf="question.question_direction" class="question-direction question-direction--child" [innerHTML]="trustHtml(question.question_direction)"></div>
+            </ng-template>
+
+            <ng-container *ngIf="!(isSelectQuestion(question) && hasSelectMarker(question.question_direction))">
+                <ng-container *ngTemplateOutlet="questionControl; context: { question: question }"></ng-container>
+            </ng-container>
+
+            <p *ngIf="isRecordQuestion(question)" class="student-question-params">
+                <ng-container *ngIf="recordPrepareSeconds(question) > 0">Prepare time: {{ recordPrepareSeconds(question) }}s - </ng-container>Speaking time: {{ recordSpeakingSeconds(question) }}s
+            </p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #questionControl let-question="question">
+    <div *ngIf="question.question_type === 'radio'" class="student-radio-list">
+        <label *ngFor="let option of question.answer_option" class="student-radio-option">
+            <input type="radio" [name]="questionKey(question)" [value]="option.id" [checked]="isAnswerSelected(question, option.id)" (change)="updateLocalAnswer(question, option.id)" />
+            <span [innerHTML]="trustHtml(option.value)"></span>
+        </label>
+    </div>
+
+    <p-dropdown *ngIf="isSelectQuestion(question) && !hasSelectMarker(question.question_direction)" [options]="question.answer_option" optionValue="id" appendTo="body" [autoDisplayFirst]="false" [showClear]="false" [ngModel]="answerValue(question)" placeholder="" styleClass="student-question-dropdown" panelStyleClass="student-question-dropdown-panel" (onChange)="updateLocalAnswer(question, $event.value)">
+        <ng-template let-option pTemplate="selectedItem">
+            <span *ngIf="option" class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+        </ng-template>
+        <ng-template let-option pTemplate="item">
+            <span class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+        </ng-template>
+    </p-dropdown>
+
+    <div *ngIf="isParagraphQuestion(question)" class="student-paragraph-board">
+        <div class="student-paragraph-slots">
+            <div class="student-paragraph-title">Drag answers into the correct order</div>
+            <div *ngFor="let option of paragraphPlacedOptions(question); let i = index" class="student-paragraph-slot-row">
+                <span class="student-question-number">{{ i + 1 }}</span>
+                <div cdkDropList class="student-paragraph-slot" [class.student-paragraph-slot--empty]="!option" [cdkDropListData]="[option]" [cdkDropListConnectedTo]="[paragraphBankListId(question)]" [id]="paragraphSlotListId(question, i)" (cdkDropListDropped)="dropParagraphAnswer(question, $event)">
+                    <div class="student-paragraph-slot__box">
+                        <ng-container *ngIf="option; else emptyParagraphSlot">
+                            <div class="student-paragraph-option-content" [innerHTML]="trustHtml(option.value)"></div>
+                            <button type="button" class="student-paragraph-remove" aria-label="Xóa đáp án" (click)="removeParagraphAnswer(question, i)">
+                                <i class="pi pi-times"></i>
+                            </button>
+                        </ng-container>
+                        <ng-template #emptyParagraphSlot>
+                            <span class="student-paragraph-slot__placeholder">Drag answer here</span>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div cdkDropList class="student-paragraph-bank" [cdkDropListData]="paragraphAvailableOptions(question)" [cdkDropListConnectedTo]="paragraphConnectedListIds(question)" [id]="paragraphBankListId(question)" (cdkDropListDropped)="dropParagraphAnswer(question, $event)">
+            <div class="student-paragraph-title">Answers</div>
+            <div *ngFor="let option of paragraphAvailableOptions(question)" cdkDrag [cdkDragData]="option" class="student-paragraph-bank-item">
+                <i class="pi pi-ellipsis-v"></i>
+                <div class="student-paragraph-option-content" [innerHTML]="trustHtml(option.value)"></div>
+                <ng-template cdkDragPreview>
+                    <div class="student-paragraph-preview">
+                        <div class="student-paragraph-preview__content" [innerHTML]="trustHtml(option.value)"></div>
+                    </div>
+                </ng-template>
+            </div>
+
+        </div>
+    </div>
+
+    <input *ngIf="isInputboxQuestion(question)" type="text" class="student-answer-input" [value]="answerValue(question) || ''" (input)="updateLocalAnswer(question, $any($event.target).value)" />
+
+    <div *ngIf="isTextareaQuestion(question)" class="student-answer-textarea-wrap">
+        <textarea rows="4" class="student-answer-textarea" [value]="answerValue(question) || ''" (input)="updateLocalAnswer(question, $any($event.target).value)"></textarea>
+        <div class="student-answer-word-count">{{ answerWordCount(question) }} words</div>
+    </div>
+
+    <ng-container *ngIf="isRecordQuestion(question) && recordState(question) as state">
+        <div *ngIf="state.phase !== 'idle'" class="student-record-box">
+            <div class="student-record-box__head">
+                <i class="pi pi-microphone" [class.student-record-box__icon--recording]="state.phase === 'recording'" [class.student-record-box__icon--speaking]="state.phase === 'recording' && state.isSpeaking"></i>
+                <div>
+                    <strong *ngIf="state.phase === 'preparing' && state.prepareLeft > 0">Prepare to speak</strong>
+                    <strong *ngIf="state.phase === 'recording'">Recording</strong>
+                    <strong *ngIf="state.phase === 'recorded'">Uploading...</strong>
+                    <strong *ngIf="state.phase === 'uploading'">Uploading...</strong>
+                    <span *ngIf="state.phase === 'uploaded'" class="badge-light-base badge-success-light"><div style="display: flex; align-items: center;"><i class="pi pi-check"></i> Submit success</div></span>
+                    <strong *ngIf="state.phase === 'error'">Upload failed</strong>
+                    <span *ngIf="state.phase === 'preparing' && state.prepareLeft > 0">Recording starts in {{ state.prepareLeft }}s</span>
+                    <span *ngIf="state.phase === 'recording'">Speaking time left: {{ state.speakingLeft }}s</span>
+                    <button *ngIf="canSubmitRecordEarly(question)" type="button" class="nav-button" (click)="submitRecordEarly(question)">Submit answer</button>
+                    <span *ngIf="state.phase === 'error'" class="student-record-box__error-text">{{ state.error }}</span>
+                    <button *ngIf="state.phase === 'error'" type="button" class="nav-button student-record-box__retry-btn" (click)="retryRecordQuestion(question)"><i class="pi pi-refresh"></i> Upload lại</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-template>
+
+<ng-template #selectInlineQuestion let-question="question">
+    <div class="student-select-inline">
+        <span [innerHTML]="trustHtml(getSelectQuestionParts(question.question_direction)[0])"></span>
+        <p-dropdown [options]="question.answer_option" optionValue="id" appendTo="body" [autoDisplayFirst]="false" [showClear]="false" [ngModel]="answerValue(question)" placeholder="" styleClass="student-question-dropdown student-question-dropdown--inline" (onChange)="updateLocalAnswer(question, $event.value)">
+            <ng-template let-option pTemplate="selectedItem">
+                <span *ngIf="option" class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+                <span class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+            </ng-template>
+        </p-dropdown>
+        <span [innerHTML]="trustHtml(getSelectQuestionParts(question.question_direction)[1])"></span>
+    </div>
+</ng-template>
+
+<ng-template #selectBlockQuestion let-question="question">
+    <div class="student-select-block">
+        <p-dropdown [options]="question.answer_option" optionValue="id" appendTo="body" [autoDisplayFirst]="false" [showClear]="false" [ngModel]="answerValue(question)" placeholder="" styleClass="student-question-dropdown" (onChange)="updateLocalAnswer(question, $event.value)">
+            <ng-template let-option pTemplate="selectedItem">
+                <span *ngIf="option" class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+                <span class="student-question-dropdown__content" [innerHTML]="trustHtml(option.value)"></span>
+            </ng-template>
+        </p-dropdown>
+        <div class="question-direction" [innerHTML]="trustHtml(getSelectBlockContent(question.question_direction))"></div>
+    </div>
+</ng-template>

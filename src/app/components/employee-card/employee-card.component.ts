@@ -34,7 +34,7 @@ export class EmployeeCardComponent implements OnDestroy {
 
     readonly state : WritableSignal<AppState> = signal( 'loading' );
 
-    readonly canLoadData : Signal<boolean> = signal<boolean>( this.auth.userHasRole( [ 'admin' , 'general_management' , 'training_management' , 'ceo' ] ) )
+    readonly canLoadData : Signal<boolean> = signal<boolean>( false )
 
     readonly avatar : Signal<string> = computed( () : string => {
         return this.employee()?.photo ? this.employee().photo : 'images/user/avatar-placeholder.jpg';

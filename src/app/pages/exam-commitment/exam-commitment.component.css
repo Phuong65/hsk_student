@@ -1,0 +1,70 @@
+:host { display: block; min-height: 100vh; background: #f0f2f5; font-family: Roboto, sans-serif; }
+.loading-wrapper { position: relative; min-height: 100vh; }
+
+.error-wrapper { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+.error-card { background: #fff; border-radius: 20px; padding: 48px 36px; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,.08); max-width: 420px; width: 100%; }
+.error-icon { font-size: 56px; margin-bottom: 16px; }
+.error-text { color: #64748b; font-size: 16px; margin-bottom: 28px; line-height: 1.6; }
+.btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-retry { padding: 10px 28px; background: #4f46e5; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-retry:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,.35); }
+.btn-logout { padding: 10px 28px; background: #ef4444; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-logout:hover { background: #dc2626; transform: translateY(-1px); }
+.btn-back { padding: 10px 28px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-back:hover { background: #e2e8f0; transform: translateY(-1px); }
+
+.exam-security-overlay { position: fixed; inset: 0; z-index: 999999; display: grid; place-items: center; background: rgba(15,23,42,0.72); padding: 20px; }
+.exam-security-dialog { display: grid; gap: 12px; width: min(420px, 100%); padding: 26px; border: 1px solid #fecaca; border-radius: 14px; background: #ffffff; text-align: center; }
+.exam-security-dialog i { color: #dc2626; font-size: 34px; }
+.exam-security-dialog h2 { margin: 0; font-size: 20px; font-weight: 800; }
+.exam-security-dialog p { margin: 0; color: #374151; font-size: 14px; line-height: 1.5; }
+.exam-security-dialog small { color: #991b1b; font-size: 14px; font-weight: 700; }
+.exam-security-button { min-height: 42px; border: 0; border-radius: 8px; background: #1f4f8f; color: #ffffff; cursor: pointer; font-size: 14px; font-weight: 700; }
+
+.commitment-wrapper { min-height: 100vh; padding: 20px; box-sizing: border-box; }
+.commitment-info-row { display: flex; justify-content: center; gap: 40px; padding: 16px 24px; background: #fff; border-radius: 12px; max-width: 800px; margin: 0 auto 16px; box-shadow: 0 2px 8px rgba(0,0,0,.04); font-size: 14px; color: #475569; }
+.commitment-card { background: #fff; border-radius: 24px; padding: 20px 50px; box-shadow: 0 4px 24px rgba(0,0,0,.06); max-width: 800px; width: 100%; text-align: center; max-height: 90vh; overflow-y: auto; margin: 0 auto; }
+.commitment-shield { margin-bottom: 12px; }
+.shield-icon { font-size: 48px; color: #3b82f6; }
+.commitment-title { font-size: 22px; font-weight: 800; color: #0b1e33; margin: 0 0 6px; }
+.commitment-subtitle { font-size: 14px; color: #5a6a7c; margin: 0 0 24px; }
+.commitments-box { background: #fafcff; border: 1px solid #e8edf4; border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 16px; }
+.commitment-item { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #f0f3f8; }
+.commitment-item:last-child { border-bottom: none; padding-bottom: 0; }
+.commitment-item:first-child { padding-top: 0; }
+.commitment-icon-circle { width: 36px; height: 36px; border-radius: 10px; background: #eef4ff; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #2563eb; flex-shrink: 0; }
+.circle-red { background: #fee8e8; color: #dc2626; }
+.commitment-content { flex: 1; }
+.commitment-item-title { font-size: 14px; font-weight: 700; color: #0b1e33; margin-bottom: 2px; }
+.commitment-item-desc { font-size: 13px; color: #6a7b8c; line-height: 1.5; }
+.agreement-line { display: inline-flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 14px; color: #1a2b3e; line-height: 1.5; text-align: left; padding: 12px 16px; background: #f5f9ff; border: 1px solid #d6e2f5; border-radius: 12px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+.agreement-line:hover { background: #edf4ff; border-color: #b8cff0; }
+.agreement-line input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2563eb; margin-top: 1px; flex-shrink: 0; cursor: pointer; }
+.commitment-action-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
+.btn-exit { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; background: #fff; color: #475569; border: 1.5px solid #d1d9e6; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-exit:hover { background: #f8fafc; border-color: #b0bbc9; }
+.btn-start { display: inline-flex; align-items: center; gap: 6px; padding: 10px 28px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.btn-start:hover:not(:disabled) { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37,99,235,.3); }
+.btn-disabled { background: #b3c5e0 !important; color: #e2ebf5 !important; cursor: not-allowed !important; box-shadow: none !important; }
+
+.skill-select-wrapper { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+.skill-select-card { background: #fff; border-radius: 24px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,.06); max-width: 520px; width: 100%; text-align: center; }
+.skill-select-card h2 { font-size: 22px; font-weight: 800; color: #0b1e33; margin: 0 0 8px; }
+.skill-select-sub { color: #5a6a7c; font-size: 14px; margin: 0 0 24px; }
+.skill-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.skill-card { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 18px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #fff; cursor: pointer; transition: all .2s; text-align: left; }
+.skill-card:hover { border-color: #2563eb; background: #f8faff; }
+.skill-icon { width: 44px; height: 44px; border-radius: 12px; background: #eef4ff; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #2563eb; flex-shrink: 0; }
+.skill-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.skill-name { font-size: 15px; font-weight: 700; color: #0b1e33; }
+.skill-count { font-size: 13px; color: #64748b; }
+.skill-arrow { color: #94a3b8; font-size: 13px; flex-shrink: 0; }
+.skill-card:hover .skill-arrow { color: #2563eb; }
+
+@media (max-width: 700px) { .commitment-card { padding: 16px 20px; } .commitment-title { font-size: 18px; } .commitment-action-row { flex-direction: column; align-items: center; } .btn-exit, .btn-start { width: 100%; justify-content: center; } .commitment-info-row { flex-direction: column; gap: 8px; } }
+
+.btn-mic-test { padding: 8px 16px; border: 1px solid #d1d9e6; border-radius: 8px; background: #fff; color: #475569; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; transition: all .2s; }
+.btn-mic-test:hover { background: #f0f4ff; border-color: #2563eb; color: #2563eb; }
+.mic-test-result { margin-top: 8px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+.mic-ok { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.mic-fail { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }

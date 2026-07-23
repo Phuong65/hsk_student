@@ -1,0 +1,118 @@
+<div class="student-info-page">
+    <!-- Loading state -->
+    @if (state() === 'loading') {
+        <div class="loading-wrapper">
+            <app-loading-progress heading="Đang tải thông tin..." />
+        </div>
+    }
+
+    <!-- Error state -->
+    @if (state() === 'error') {
+        <div class="error-wrapper">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <p class="error-text">{{ errorMessage() }}</p>
+                <div class="btn-group">
+                    <button class="btn-retry" (click)="loadData()">Thử lại</button>
+                    <button class="btn-logout" (click)="logout()">Đăng xuất</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Success state -->
+    @if (state() === 'success') {
+        <div class="content">
+            <!-- System welcome banner -->
+            <div class="welcome-card">
+                <div class="welcome-header">
+                    <div class="welcome-brand">
+                        <img src="/images/logo.svg" alt="logo" class="welcome-logo" />
+                        <h1>Hệ thống thi đánh giá năng lực tiếng Trung Quốc</h1>
+                    </div>
+                    <button class="btn-logout-white" (click)="logout()">Đăng xuất</button>
+                </div>
+            </div>
+
+            <!-- Student info card -->
+            <div class="info-card">
+                <h2>Thông tin thí sinh</h2>
+                <div class="student-profile">
+                    <img [src]="avatarSrc()" alt="avatar" class="profile-avatar" />
+                    <div class="profile-details">
+                        <div class="profile-row">
+                            <span class="label">Họ và tên</span>
+                            <span class="value">{{ student()?.full_name || '---' }}</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="label">Email</span>
+                            <span class="value">{{ student()?.email || '---' }}</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="label">Số điện thoại</span>
+                            <span class="value">{{ student()?.phone || '---' }}</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="label">Ngày sinh</span>
+                            <span class="value">{{ (student()?.dob | date:'dd/MM/yyyy') || '---' }}</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="label">Giới tính</span>
+                            <span class="value">{{ student()?.gender === 'male' ? 'Nam' : student()?.gender === 'female' ? 'Nữ' : (student()?.gender || '---') }}</span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="label">Địa chỉ</span>
+                            <span class="value">{{ student()?.address || '---' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exam schedule -->
+            <div class="exam-card">
+                <h2>Lịch thi</h2>
+                @if (shiftRegistrations().length > 0) {
+                    <div class="table-responsive">
+                        <table class="exam-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên ca</th>
+                                    <th>Số báo danh</th>
+                                    <th>Phòng</th>
+                                    <th>Thời gian</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (reg of activeRegistrations(); track reg.id) {
+                                    <tr
+                                        (click)="reg.shift?.status === 1 ? goToExam(reg) : null"
+                                        [style.cursor]="reg.shift?.status === 1 ? 'pointer' : 'default'"
+                                        [class.clickable-row]="reg.shift?.status === 1"
+                                    >
+                                        <td>{{ reg.shift?.name || '---' }}</td>
+                                        <td>{{ reg.student_code }}</td>
+                                        <td>{{ reg.room || '---' }}</td>
+                                        <td>{{ reg.shift?.time_start ? (reg.shift.time_start | date:'dd/MM/yyyy HH:mm') : '---' }}</td>
+                                        <td>
+                                            @switch (reg.shift?.status) {
+                                                @case (-1) { <span class="badge badge-danger">Đã xóa</span> }
+                                                @case (0) { <span class="badge badge-secondary">Chưa kích hoạt</span> }
+                                                @case (1) { <span class="badge badge-primary" style="cursor:pointer">Vào thi</span> }
+                                                @case (2) { <span class="badge badge-success">Đã thi xong</span> }
+                                                @case (3) { <span class="badge badge-info">Đã chấm xong</span> }
+                                                @default { <span class="badge badge-secondary">---</span> }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                } @else {
+                    <p class="empty-text">Bạn chưa đăng ký ca thi nào.</p>
+                }
+            </div>
+        </div>
+    }
+</div>

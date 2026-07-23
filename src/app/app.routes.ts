@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { PreviewComponent , previewRoutes } from "@pages/preview";
 import { adminGuard } from "@guards/admin.guard";
+import { authGuard } from "@guards/auth.guard";
 
 export const routes : Routes = [
 	{
@@ -11,6 +12,16 @@ export const routes : Routes = [
 	{
 		path         : 'auth' ,
 		loadChildren : () : Promise<any> => import('@pages/auth/auth.module').then( m => m.AuthModule )
+	} ,
+	{
+		path          : 'student-info' ,
+		canActivate   : [ authGuard ] ,
+		loadComponent : () : Promise<any> => import('@pages/student-info/student-info.component')
+	} ,
+	{
+		path          : 'exam/:shiftId' ,
+		canActivate   : [ authGuard ] ,
+		loadComponent : () : Promise<any> => import('@pages/exam-commitment/exam-commitment.component')
 	} ,
 	{
 		path          : 'throw-error' ,

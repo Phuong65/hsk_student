@@ -183,20 +183,7 @@ export interface EmployeePositionTag {
 }
 
 export const EmployeePositionTagOrdering : Record<SysRoleName , EmployeePositionTag> = {
-    admin               : { cssClasses : 'ictu-badge ictu-badge--orange' , label : 'Quản trị' , value : 'admin' , ordering : 1 , order : 0 } ,
-    ceo                 : { cssClasses : 'ictu-badge ictu-badge--danger' , label : 'CEO' , value : 'ceo' , ordering : 2 , order : 10 } ,
-    training_management : { cssClasses : 'ictu-badge ictu-badge--purple' , label : 'QL đào tạo' , value : 'training_management' , ordering : 3 , order : 20 } ,
-    general_management  : { cssClasses : 'ictu-badge ictu-badge--dark' , label : 'QL tổng hợp' , value : 'general_management' , ordering : 4 , order : 20 } ,
-    teacher             : { cssClasses : 'ictu-badge ictu-badge--primary' , label : 'Giáo viên' , value : 'teacher' , ordering : 5 , order : 30 } ,
-    teaching_assistant  : { cssClasses : 'ictu-badge ictu-badge--info' , label : 'Trợ giảng' , value : 'teaching_assistant' , ordering : 6 , order : 30 } ,
-    mod_comments        : { cssClasses : 'ictu-badge ictu-badge--info' , label : 'Duyệt nhận xét' , value : 'mod_comments' , ordering : 7 , order : 30 } ,
-    mod_media           : { cssClasses : 'ictu-badge ictu-badge--info' , label : 'Duyệt media' , value : 'mod_media' , ordering : 8 , order : 30 } ,
-    marketing           : { cssClasses : 'ictu-badge ictu-badge--success' , label : 'Marketing' , value : 'marketing' , ordering : 12 , order : 30 } ,
-    supporter           : { cssClasses : 'ictu-badge ictu-badge--warning' , label : 'CS khách hàng' , value : 'supporter' , ordering : 9 , order : 30 } ,
-    sales               : { cssClasses : 'ictu-badge ictu-badge--teal' , label : 'Sales' , value : 'sales' , ordering : 10 , order : 30 } ,
-    accountant          : { cssClasses : 'ictu-badge ictu-badge--pink' , label : 'Kế toán' , value : 'accountant' , ordering : 11 , order : 30 } ,
-    parents             : { cssClasses : 'ictu-badge ictu-badge--success' , label : 'Phụ Huynh' , value : 'parents' , ordering : 13 , order : 90 } ,
     student             : { cssClasses : 'ictu-badge ictu-badge--success' , label : 'Học sinh' , value : 'student' , ordering : 14 , order : 100 }
 }
 
-export const EMPLOYEE_POSITION_OPTIONS : IctuDropdownOptionElement<string>[] = Object.values<{ label : string, value : string }>( EmployeePositionTagOrdering ).filter( ( o : IctuDropdownOptionElement<string> ) : boolean => ! [ 'admin' , 'parents' ].includes( o.value ) );
+export const EMPLOYEE_POSITION_OPTIONS : IctuDropdownOptionElement<string>[] = Object.values<{ label : string, value : string }>( EmployeePositionTagOrdering );

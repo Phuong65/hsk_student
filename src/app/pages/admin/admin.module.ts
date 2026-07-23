@@ -18,7 +18,7 @@ import { ROLE_PROVIDER } from '@app/providers/admin-role.provider';
         NgOptimizedImage ,
         MatButton
     ] ,
-    providers : [ ROLE_PROVIDER.parents ]
+    providers : [ ROLE_PROVIDER.student ]
 } )
 export class AdminModule {
 }
