@@ -109,10 +109,13 @@
                         <app-speaking-audio-player
                             [src]="buildAudioUrl(p.media.path)"
                             [cacheKey]="questionKey(p)"
+                            [replay]="1"
                             [autoplay]="activeRecordKey()===questionKey(p)"
                             [canRender]="!!buildAudioUrl(p.media.path)"
+                            [disableControls]="true"
                             [onLoadError]="onAudioLoadErrorForQ(p)"
-                            (ended)="onMediaEndedForQ(p)()" />
+                            [onReplayUsed]="onReplayUsedForQ(p)"
+                            [onEnded]="onMediaEndedForQ(p)" />
                         @if (recordState(p)?.audioLoadFailed) {
                             <div class="audio-error-row">
                                 <span class="audio-error-text">Audio không tải được</span>
@@ -182,10 +185,13 @@
                     <app-speaking-audio-player
                         [src]="buildAudioUrl(q.media.path)"
                         [cacheKey]="questionKey(q)"
+                        [replay]="1"
                         [autoplay]="true"
                         [canRender]="!!buildAudioUrl(q.media.path)"
+                        [disableControls]="true"
                         [onLoadError]="onAudioLoadErrorForQ(q)"
-                        (ended)="onMediaEndedForQ(q)()" />
+                        [onReplayUsed]="onReplayUsedForQ(q)"
+                        [onEnded]="onMediaEndedForQ(q)" />
                     @if (recordState(q)?.audioLoadFailed) {
                         <div class="audio-error-row">
                             <span class="audio-error-text">Audio không tải được</span>
