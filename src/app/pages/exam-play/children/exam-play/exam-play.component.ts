@@ -124,7 +124,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     private postedAnswerValues: { [key: string]: any } = {};
     private answerServerIds: { [key: string]: number } = {};
     private examCountdownTimer: any = null;
-    private lastTimeLeftSync = 0;
+    private lastTimeLeftSync = Date.now();
     private stateId: number | null = null;
     private _lastSkill = '';
     private _lastQuestionsRef: any = null;
@@ -1142,7 +1142,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         this._progress = [];
         this.resolvedAudioUrls.set({});
         this.stateId = null;
-        this.lastTimeLeftSync = 0;
+        this.lastTimeLeftSync = Date.now();
         this._inlineRestored = false;
     }
 
@@ -1319,10 +1319,9 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
 
     private syncState(): void {
         if (!this.stateId) return;
-        this.shiftTestStateService.update(this.stateId, {
-            time_left: this.examTimeLeft(),
-            progress: this._progress,
-        } as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => { /* ok */ }, error: () => { /* retry */ } });
+        this.shiftTestStateService.update(this.stateId, { time_left: this.examTimeLeft() } as any)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: () => { /* ok */ }, error: () => { /* retry */ } });
     }
 
     // =================== Answer posting ===================

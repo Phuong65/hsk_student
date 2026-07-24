@@ -129,7 +129,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
     private postedAnswerValues: { [key: string]: any } = {};
     private answerServerIds: { [key: string]: number } = {};
     private examCountdownTimer: any = null;
-    private lastTimeLeftSync = 0;
+    private lastTimeLeftSync = Date.now();
     private stateId: number | null = null;
     private _lastSkill = '';
     private _lastQuestionsRef: any = null;
@@ -171,14 +171,11 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
                 ).subscribe({
                     next: allQ => {
                         const skill = this.skill().toLowerCase();
-                        this.state.set('success');
                         this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
                     },
                     error: () => this.state.set('error'),
                 });
             }
-            // Load thời gian từ form_detail
-            this.loadFormDuration(st);
             return;
         }
 
@@ -225,8 +222,6 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
                                 const skill = this.skill().toLowerCase();
                                 this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
                                 this.state.set('success');
-                                // Load timer ngay (state hoặc form_detail)
-                                this.loadFormDuration(shiftTest);
                             })
                         );
                     })
@@ -245,7 +240,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         effect(() => {
             const sk = this.skill();
             const qs = this.questions();
-            if (sk && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
+            if (sk && qs && qs.length > 0 && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
                 this._lastSkill = sk;
                 this._lastQuestionsRef = qs;
                 this.resetAllState();
@@ -1227,7 +1222,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         this._progress = [];
         this.resolvedAudioUrls.set({});
         this.stateId = null;
-        this.lastTimeLeftSync = 0;
+        this.lastTimeLeftSync = Date.now();
         this._inlineRestored = false;
     }
 
@@ -1267,38 +1262,50 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
             }
             // Sau khi restore answers (hoặc không có answer nào), xây danh sách câu record theo thứ tự
             this.buildRecordQuestionOrder();
+            // Answers loaded + record order built → success
+            this.state.set('success');
         });
 
+        // Timer và state. Nếu chưa có stateId, xử lý ở đây.
+        if (this.stateId) return;
+        this.handleTimerAndState(st);
+    }
+
+    private handleTimerAndState(st: ShiftTest): void {
         this.shiftTestStateService.query(
             [
                 { conditionName: 'shift_test_id', condition: IctuQueryCondition.equal, value: st.id.toString() },
                 { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
             ],
             { limit: 1 }
-        ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res: any) => {
-            const data = res.data || res || [];
-            const row = Array.isArray(data) ? data[0] : null;
-            if (row) {
-                this.stateId = row.id;
-                this.examTimeLeft.set(row.time_left || 0);
-                this.startExamCountdown();
-            } else {
-                this.formDetailService.query(
+        ).pipe(
+            switchMap((res: any) => {
+                const row = res.data?.[0] || null;
+                if (row) {
+                    this.stateId = row.id;
+                    this.examTimeLeft.set(row.time_left || 0);
+                    this.startExamCountdown();
+                    return of(null);
+                }
+                const formId = st.form_id || this.shift()?.form_id || 0;
+                if (!formId) return of(null);
+                return this.formDetailService.query(
                     [
-                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: String(st.form_id ?? '') },
+                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: formId.toString() },
                         { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
                     ],
                     { limit: 1 }
-                ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((fr: any) => {
+                ).pipe(map((fr: any) => {
                     const fd: FormDetail = fr.data?.[0] || null;
                     const minutes = fd?.time || 0;
                     const seconds = minutes * 60;
                     this.examTimeLeft.set(seconds);
                     this.createState(st.id, seconds);
                     this.startExamCountdown();
-                });
-            }
-        });
+                }));
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe();
     }
 
     private findQuestionByServerId(bqId: number): QV | null {
@@ -1315,40 +1322,59 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         if (!st) return;
         const formId = st.form_id || this.shift()?.form_id || 0;
         if (!formId) return;
-        // Chỉ restore timer từ state đã có (không tạo mới — việc đó do loadServerAnswersAndState)
         this.shiftTestStateService.query(
             [
                 { conditionName: 'shift_test_id', condition: IctuQueryCondition.equal, value: st.id.toString() },
                 { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
             ],
             { limit: 1 }
-        ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res: any) => {
-            const row = res.data?.[0] || null;
-            if (row) {
-                this.stateId = row.id;
-                this.examTimeLeft.set(row.time_left || 0);
-                // Restore progress từ server
-                if (row.progress) {
-                    try {
-                        if (Array.isArray(row.progress)) this._progress = row.progress;
-                    } catch { /* ignore */ }
+        ).pipe(
+            switchMap((res: any) => {
+                const row = res.data?.[0] || null;
+                if (row) {
+                    this.stateId = row.id;
+                    this.examTimeLeft.set(row.time_left || 0);
+                    if (row.progress) {
+                        try { if (Array.isArray(row.progress)) {
+                            // Merge: chỉ thêm item từ server chưa có trong _progress
+                            for (const item of row.progress) {
+                                if (!this._progress.some(p => p.question_id === item.question_id)) {
+                                    this._progress.push(item);
+                                }
+                            }
+                        }} catch { /* ignore */ }
+                    }
+                    this.startExamCountdown();
+                    return of(null);
                 }
-                this.startExamCountdown();
-            }
-        });
+                return this.formDetailService.query(
+                    [
+                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: formId.toString() },
+                        { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
+                    ],
+                    { limit: 1 }
+                ).pipe(map((fr: any) => {
+                    const fd: FormDetail = fr.data?.[0] || null;
+                    const minutes = fd?.time || 0;
+                    const seconds = minutes * 60;
+                    this.examTimeLeft.set(seconds);
+                    this.createState(st.id, seconds);
+                    this.startExamCountdown();
+                }));
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe();
     }
 
     private createState(shiftTestId: number, duration: number): void {
-        const payload: Partial<ShiftTestState> = {
+        this.shiftTestStateService.create({
             shift_test_id: shiftTestId,
             student_id: this.student()?.id ?? 0,
             skill: this.skill(),
-            progress: JSON.stringify({ current: 0 }),
             duration,
             time_left: duration,
             completed: 0,
-        };
-        this.shiftTestStateService.create(payload as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((row: any) => {
+        } as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((row: any) => {
             this.stateId = row?.id ?? null;
         });
     }
@@ -1408,10 +1434,9 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
 
     private syncState(): void {
         if (!this.stateId) return;
-        this.shiftTestStateService.update(this.stateId, {
-            time_left: this.examTimeLeft(),
-            progress: this._progress,
-        } as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => { /* ok */ }, error: () => { /* retry */ } });
+        this.shiftTestStateService.update(this.stateId, { time_left: this.examTimeLeft() } as any)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: () => { /* ok */ }, error: () => { /* retry */ } });
     }
 
     // =================== Answer posting ===================
@@ -1474,7 +1499,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         if (!this.stateId) return;
         this.shiftTestStateService.update(this.stateId, { progress: this._progress } as any)
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({ error: () => { } });
+            .subscribe({ error: () => {} });
     }
 
     previousParent(): void {
