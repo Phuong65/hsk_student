@@ -26,8 +26,9 @@ import { StudentService } from '@services/student.service';
 import { ShiftService } from '@services/shift.service';
 import { AuthenticationService } from '@services/authentication.service';
 
-import { AudioPlayerComponent } from './audio-player.component';
+import { AudioPlayerComponent } from '../../audio-player.component';
 import { MatButtonModule } from '@angular/material/button';
+import { LoadingProgressComponent } from '@theme/components/loading-progress/loading-progress.component';
 
 interface QV extends BankQuestion {
     _viewKey?: string;
@@ -59,7 +60,7 @@ interface RecordQuestionState {
 @Component({
     selector: 'app-exam-play',
     standalone: true,
-    imports: [CommonModule, FormsModule, AudioPlayerComponent, MatButtonModule],
+    imports: [CommonModule, FormsModule, AudioPlayerComponent, MatButtonModule, LoadingProgressComponent],
     templateUrl: './exam-play.component.html',
     styleUrls: ['./exam-play.component.css'],
 })
@@ -98,6 +99,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     readonly completedQuestionIds: WritableSignal<Set<string>> = signal(new Set());
     readonly submitConfirmVisible: WritableSignal<boolean> = signal(false);
     readonly exitConfirmVisible: WritableSignal<boolean> = signal(false);
+    readonly state: WritableSignal<'loading' | 'success' | 'error'> = signal('loading');
     readonly submitting: WritableSignal<boolean> = signal(false);
     readonly incompleteCurrentPageWarning: WritableSignal<string> = signal('');
     readonly scoreResultVisible: WritableSignal<boolean> = signal(false);
@@ -141,6 +143,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     private _timerLoaded = false;
 
     ngOnInit(): void {
+        this.state.set('loading');
         // Ưu tiên route state (từ commitment navigate sang) — không cần API
         const navState = history.state as any;
         const restoreFromState = navState?.shift && navState?.student && navState?.shiftTest;
@@ -163,6 +166,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 ).subscribe(allQ => {
                     const skill = this.skill().toLowerCase();
                     this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
+                    this.state.set('success');
                 });
             }
             // Load thời gian từ form_detail
@@ -227,7 +231,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         effect(() => {
             const sk = this.skill();
             const qs = this.questions();
-            if (qs && qs.length > 0 && sk && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
+            if (sk && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
                 this._lastSkill = sk;
                 this._lastQuestionsRef = qs;
                 this.resetAllState();
@@ -626,13 +630,6 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     // Callbacks for AudioPlayerComponent (bind per-question)
     onAudioLoadErrorForQ = (q: any) => () => this.markAudioLoadFailed(q);
     onReplayUsedForQ = (q: any) => () => this.decrementAudioReplay(q);
-    onMediaEndedForQ = (q: any) => () => {
-        if (!this.isRecordQuestion(q)) return;
-        if (this.recordPrepareSeconds(q) > 0) return;
-        if (this.isRecordQuestionAnswered(q)) return;
-        setTimeout(() => this.prepareActiveRecordQuestion(), 2000);
-    };
-
     processDirectionImage(html: string): string {
         if (!html) return '';
         const token = tokenGetter();
@@ -944,7 +941,6 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 if (this.isRecordQuestionAnswered(child)) continue;
                 const st = this.recordStates[this.questionKey(child)];
                 if (st?.phase === 'error') continue;
-                if (this.skill() === 'speaking' && child.media?.path && !AudioPlayerComponent.isMediaEnded(this.questionKey(child))) return null;
                 return child;
             }
             return null;
@@ -953,7 +949,6 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         if (this.isRecordQuestionAnswered(parent)) return null;
         const st = this.recordStates[this.questionKey(parent)];
         if (st?.phase === 'error') return null;
-        if (this.skill() === 'speaking' && parent.media?.path && !AudioPlayerComponent.isMediaEnded(this.questionKey(parent))) return null;
         return parent;
     }
 
@@ -1201,7 +1196,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
             } else {
                 this.formDetailService.query(
                     [
-                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: st.form_id.toString() },
+                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: String(st.form_id ?? '') },
                         { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
                     ],
                     { limit: 1 }

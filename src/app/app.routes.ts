@@ -26,7 +26,7 @@ export const routes : Routes = [
 	{
 		path          : 'exam/:shiftId/:skill' ,
 		canActivate   : [ authGuard ] ,
-		loadComponent : () : Promise<any> => import('@pages/exam-play/exam-play.component').then(c => c.ExamPlayComponent)
+		loadComponent : () : Promise<any> => import('@pages/exam-play/skill-router.component')
 	} ,
 	{
 		path          : 'throw-error' ,

@@ -1,0 +1,248 @@
+<div class="exam-shell" [class.exam-shell--panel-closed]="!questionPanelOpen()">
+    @if (questionPanelOpen()) { <div class="question-panel-backdrop" (click)="questionPanelOpen.set(false)"></div> }
+
+    @if (exitConfirmVisible()) {
+        <div class="submit-confirm-overlay">
+            <div class="submit-confirm-dialog" style="border-color:#fecaca">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#dc2626"></i>
+                <h2>Xác nhận rời khỏi bài thi</h2>
+                <p>Bạn có chắc chắn thoát? Khi thoát, bạn không thể làm lại.</p>
+                <div class="submit-confirm-actions">
+                    <button type="button" class="submit-confirm-button submit-confirm-button--secondary" (click)="cancelExitExam()">Tiếp tục</button>
+                    <button type="button" class="submit-confirm-button submit-confirm-button--primary exit-danger" (click)="confirmExitExam()">Thoát</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (submitConfirmVisible()) {
+        <div class="submit-confirm-overlay">
+            <div class="submit-confirm-dialog">
+                <i class="fa-solid fa-paper-plane" style="color:#1f4f8f"></i>
+                <h2>Xác nhận nộp bài</h2>
+                <p>Bạn đã trả lời hết. Sau khi nộp, bạn không thể chỉnh sửa.</p>
+                <div class="submit-confirm-actions">
+                    <button type="button" class="submit-confirm-button submit-confirm-button--secondary" (click)="cancelSubmitSkillTest()">Kiểm tra lại</button>
+                    <button type="button" class="submit-confirm-button submit-confirm-button--primary" [disabled]="submitting()" (click)="confirmSubmitSkillTest()">Nộp bài</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (scoreResultVisible()) {
+        <div class="submit-confirm-overlay">
+            <div class="submit-confirm-dialog" style="text-align:center">
+                <i class="fa-solid fa-check-circle" style="color:#16a34a;font-size:34px"></i>
+                <h2>Đã nộp bài thành công</h2>
+                <p>Kết quả {{ skill() }}</p>
+                <div class="submit-confirm-actions" style="grid-template-columns:1fr">
+                    <button type="button" class="submit-confirm-button submit-confirm-button--primary" (click)="closeScoreResult()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (questionPanelOpen()) {
+        <aside class="question-panel">
+            <div class="question-panel__head">
+                <h2>Danh sách câu hỏi</h2>
+                <button type="button" class="question-panel__close" (click)="questionPanelOpen.set(false)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="question-panel__body">
+                @for (pg of partGroups(); track pg.part; let pi=$index) {
+                    <div class="question-group-card">
+                        <div class="question-group-card__head"><div><strong>{{ echoPart(pg.part) }}</strong><span> ({{ getPartRange(pg) }})</span></div></div>
+                        <div class="question-group-card__body" [class.collapsed]="isPartCollapsed(pg.part)">
+                            <button type="button" class="question-list-item"
+                                [class.active]="currentPartIndex() === pi"
+                                (click)="setActivePart(pi)">
+                                <div><strong>Phần {{ pg.part }}</strong></div>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </aside>
+    }
+
+    <main class="exam-main">
+        @if (state() === 'loading') {
+            <app-loading-progress heading="Đang tải đề thi..." />
+        }
+        @if (state() === 'error') {
+            <div class="exam-loading-error" style="text-align:center;padding:40px;color:#dc2626;font-weight:700;font-size:18px;">
+                <i class="fa-solid fa-circle-exclamation"></i> Lỗi tải dữ liệu. <button type="button" class="nav-button" style="margin-top:12px" (click)="reloadPage()">Tải lại</button>
+            </div>
+        }
+        @if (state() === 'success') {
+        @if (examTimeLeft() > 0) {
+            <div class="exam-timer" [class.timer-warning]="countdownWarning">
+                {{ countdownDisplay() }}
+            </div>
+        }
+        @if (currentPart(); as part) {
+            @for (p of part.questions; track p.id) {
+            <article class="question-page-card question-page-card--active">
+                <div class="question-number-badge">Câu {{ getParentBadge(p) }}</div>
+                @if (p.question_direction && !shouldRenderParentControl(p)) {
+                    @if (hasInputInlineMarker(p.question_direction)) {
+                        <div class="input-inline-direction-container" [attr.data-qid]="p.id">
+                            <div class="input-inline-question">
+                                @for (part of processInputDirection(p.question_direction); track $index) {
+                                    @if (part.html) { <span [innerHTML]="trustHtml(processDirectionImage(part.html))"></span> }
+                                    @if (part.label) {
+                                        <span class="input-inline-wrapper">
+                                            <span class="input-inline-label">{{ part.label }}</span>
+                                            <input class="input-inline-box" [style.width.px]="getInputWidth(part.label)" [value]="answerValue(p)??''" (input)="updateLocalAnswer(p, $any($event.target).value)" />
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="question-direction" [innerHTML]="trustHtml(processDirectionImage(p.question_direction))"></div>
+                    }
+                }
+                @if (!shouldRenderParentControl(p) && p.media?.path) {
+                    <div class="student-question-media">
+                        <app-speaking-audio-player
+                            [src]="buildAudioUrl(p.media.path)"
+                            [cacheKey]="questionKey(p)"
+                            [autoplay]="activeRecordKey()===questionKey(p)"
+                            [canRender]="!!buildAudioUrl(p.media.path)"
+                            [onLoadError]="onAudioLoadErrorForQ(p)"
+                            (ended)="onMediaEndedForQ(p)()" />
+                        @if (recordState(p)?.audioLoadFailed) {
+                            <div class="audio-error-row">
+                                <span class="audio-error-text">Audio không tải được</span>
+                                <button class="audio-reload-btn" (click)="reloadAudio(p)">
+                                    <i class="fa-solid fa-refresh"></i> Tải lại
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                @if (shouldRenderParentControl(p)) { <ng-container *ngTemplateOutlet="qb; context:{parent:p, q:p, si:false}"></ng-container> }
+                @if (p.children?.length) {
+                    <div class="student-question-children">
+                        @for (c of p.children; track c.id; let ci=$index) {
+                            <section class="student-question-child"><ng-container *ngTemplateOutlet="qb; context:{parent:p, q:c, si:true, idx:seqIndexOf(c) || ci+1}"></ng-container></section>
+                        }
+                    </div>
+                }
+            </article>
+            }
+        }
+        }
+
+    </main>
+
+    <footer class="exam-footer">
+        <button type="button" class="exam-tool-button" (click)="questionPanelOpen.set(!questionPanelOpen())"><i class="fa-solid fa-list"></i></button>
+        <div class="exam-actions">
+            @if (incompleteCurrentPageWarning()) { <div class="exam-navigation-warning">{{ incompleteCurrentPageWarning() }}</div> }
+            <button type="button" class="nav-button" [disabled]="currentPartIndex()===0" (click)="previousParent()"><i class="fa-solid fa-arrow-left"></i> Trước</button>
+            <button type="button" class="next-button"
+                [disabled]="submitting() || (!canSubmitSkillTest() && (currentPartIndex()===partGroups().length-1 || !isCurrentPartComplete()))"
+                (click)="handleNextAction()">
+                <span>{{ canSubmitSkillTest() ? 'Nộp bài' : 'Sau' }}</span>
+                @if (!canSubmitSkillTest()) { <i class="fa-solid fa-arrow-right"></i> }
+            </button>
+        </div>
+    </footer>
+</div>
+
+<ng-template #qb let-parent="parent" let-q="q" let-si="si" let-idx="idx">
+    <div class="student-question-child__body" [class.--no-number]="!si">
+        @if (si) { <strong class="student-question-number">{{ idx }}</strong> }
+        <div class="student-question-child__content">
+            @if (isSelectQuestion(q) && hasSelectMarker(q.question_direction)) {
+                @if (hasSelectBlockMarker(q.question_direction)) { <ng-container *ngTemplateOutlet="sbq; context:{q:q}"></ng-container> }
+                @else { <ng-container *ngTemplateOutlet="isq; context:{q:q}"></ng-container> }
+            } @else if (hasInputInlineMarker(q.question_direction)) {
+                <div class="input-inline-direction-container" [attr.data-qid]="q.id">
+                    <div class="input-inline-question">
+                        @for (part of processInputDirection(q.question_direction); track $index) {
+                            @if (part.html) { <span [innerHTML]="trustHtml(processDirectionImage(part.html))"></span> }
+                            @if (part.label) {
+                                <span class="input-inline-wrapper">
+                                    <span class="input-inline-label">{{ part.label }}</span>
+                                    <input class="input-inline-box" [style.width.px]="getInputWidth(part.label)" [value]="answerValue(q)??''" (input)="updateLocalAnswer(q, $any($event.target).value)" />
+                                </span>
+                            }
+                        }
+                    </div>
+                </div>
+            } @else {
+                @if (q.question_direction) { <div class="question-direction question-direction--child" [innerHTML]="trustHtml(processDirectionImage(q.question_direction))"></div> }
+            }
+            @if (q.media?.path && activeRecordKey()===questionKey(q)) {
+                <div class="student-question-media" style="margin-top:8px;">
+                    <app-speaking-audio-player
+                        [src]="buildAudioUrl(q.media.path)"
+                        [cacheKey]="questionKey(q)"
+                        [autoplay]="true"
+                        [canRender]="!!buildAudioUrl(q.media.path)"
+                        [onLoadError]="onAudioLoadErrorForQ(q)"
+                        (ended)="onMediaEndedForQ(q)()" />
+                    @if (recordState(q)?.audioLoadFailed) {
+                        <div class="audio-error-row">
+                            <span class="audio-error-text">Audio không tải được</span>
+                            <button class="audio-reload-btn" (click)="reloadAudio(q)">
+                                <i class="fa-solid fa-refresh"></i> Tải lại
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+            @if (!(isSelectQuestion(q) && hasSelectMarker(q.question_direction))) { <ng-container *ngTemplateOutlet="qc; context:{q:q}"></ng-container> }
+            @if (isRecordQuestion(q)) { <p class="student-question-params">@if (recordPrepareSeconds(q) > 0) { Chuẩn bị: {{ formatSeconds(recordPrepareSeconds(q)) }} - } Nói: {{ formatSeconds(recordSpeakingSeconds(q)) }}</p> }
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #qc let-q="q">
+    @if (q.question_type === 'radio') {
+        <div class="student-radio-list">@for (opt of q.answer_option; track opt.id) { <label class="student-radio-option"><input type="radio" [name]="questionKey(q)" [value]="opt.id" [checked]="isAnswerSelected(q, opt.id)" (change)="updateLocalAnswer(q, opt.id)" /><span [innerHTML]="trustHtml(processDirectionImage(opt.value))"></span></label> }</div>
+    }
+    @if (isSelectQuestion(q) && !hasSelectMarker(q.question_direction)) {
+        <div class="student-select-inline"><select class="student-select-box" [ngModel]="answerValue(q)" (change)="updateLocalAnswer(q, $any($event.target).value)">@for (opt of q.answer_option; track opt.id) { <option [value]="opt.id" [innerHTML]="trustHtml(processDirectionImage(opt.value))"></option> }</select></div>
+    }
+    @if (isInputboxQuestion(q) || isTextareaQuestion(q)) {
+        <div class="student-answer-textarea-wrap">
+            <textarea rows="4" class="student-answer-textarea" [value]="answerValue(q)??''" (input)="updateLocalAnswer(q, $any($event.target).value)"></textarea>
+            <div class="student-answer-word-count">{{ wordCount(answerValue(q)) }} từ</div>
+        </div>
+    }
+    @if (isRecordQuestion(q)) { @let rs = recordState(q);
+        @if (rs.phase !== 'idle') {
+        <div class="student-record-box">
+            <div class="student-record-box__head">
+                <i class="fa-solid fa-microphone"
+                   [class.recording-icon]="rs.phase === 'recording' && !rs.isSpeaking"
+                   [class.speaking-icon]="rs.phase === 'recording' && rs.isSpeaking"></i>
+                <div>
+                    @if (rs.phase === 'preparing' && rs.prepareLeft > 0) { <strong>Prepare to speak</strong><span>Recording starts in {{ rs.prepareLeft }}s</span> }
+                    @if (rs.phase === 'recording') { <strong style="color:#dc2626;">Recording</strong><span>Speaking time left: {{ rs.speakingLeft }}s</span> @if (canSubmitRecordEarly(q)) { <button mat-flat-button class="btn ictu-badge-btn--info-reverse"  (click)="submitRecordEarly(q)">Nộp</button> } }
+                    @if (rs.phase === 'uploading') { <strong class="record-status-uploading"><i class="fa-solid fa-spinner fa-spin"></i> Đang nộp...</strong> }
+                    @if (rs.phase === 'uploaded') { <span class="student-record-box__status--uploaded"><i class="fa-solid fa-check"></i> Đã nộp bài</span> }
+                    @if (rs.phase === 'error') { <span class="student-record-box__status--error"><i class="fa-solid fa-circle-exclamation"></i> {{ rs.error }}</span> }
+                </div>
+                @if (rs.phase === 'error') { <button type="button" class="student-record-box__retry" (click)="retryRecord(q)"><i class="fa-solid fa-rotate"></i> Nộp lại</button> }
+            </div>
+        </div>
+        }
+    }
+    @if (isParagraphQuestion(q) || q.question_type==='drag-drop' || q.question_type==='reorder-words') { <div class="q-placeholder"><i class="fa-solid fa-info-circle"></i> "{{ q.question_type }}" đang phát triển</div> }
+    @if (['checkbox','group-radio','group-input','grouping'].includes(q.question_type)) {
+        <div class="student-radio-list">@for (opt of q.answer_option; track opt.id) { <label class="student-radio-option"><input type="radio" [name]="questionKey(q)" [value]="opt.id" [checked]="isAnswerSelected(q, opt.id)" (change)="updateLocalAnswer(q, opt.id)" /><span [innerHTML]="trustHtml(processDirectionImage(opt.value))"></span></label> }</div>
+    }
+</ng-template>
+
+<ng-template #isq let-q="q">
+    <div class="student-select-inline"><span [innerHTML]="trustHtml(getSelectQuestionParts(q.question_direction)[0])"></span><select class="student-select-box student-select-box--inline" [ngModel]="answerValue(q)" (change)="updateLocalAnswer(q, $any($event.target).value)">@for (opt of q.answer_option; track opt.id) { <option [value]="opt.id" [innerHTML]="trustHtml(processDirectionImage(opt.value))"></option> }</select><span [innerHTML]="trustHtml(getSelectQuestionParts(q.question_direction)[1])"></span></div>
+</ng-template>
+
+<ng-template #sbq let-q="q">
+    <div class="student-select-block"><select class="student-select-box" [ngModel]="answerValue(q)" (change)="updateLocalAnswer(q, $any($event.target).value)">@for (opt of q.answer_option; track opt.id) { <option [value]="opt.id" [innerHTML]="trustHtml(processDirectionImage(opt.value))"></option> }</select><div class="question-direction" [innerHTML]="trustHtml(processDirectionImage(getSelectBlockContent(q.question_direction)))"></div></div>
+</ng-template>

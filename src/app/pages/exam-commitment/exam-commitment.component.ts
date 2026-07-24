@@ -53,8 +53,6 @@ export default class ExamCommitmentComponent implements OnInit {
     readonly securityWarningMessage: WritableSignal<string> = signal('');
     readonly violationCount: WritableSignal<number> = signal(0);
 
-    // student and shiftTest moved to readonly public signals above
-
     ngOnInit(): void {
         this.title.setTitle('Thi');
         this.loadExam();
@@ -62,7 +60,6 @@ export default class ExamCommitmentComponent implements OnInit {
 
     loadExam(): void {
         this.state.set('loading');
-        this.errorMessage.set('');
         this.errorMessage.set('');
         const user = this.auth.user;
         if (!user) { this.state.set('error'); this.errorMessage.set('Bạn chưa đăng nhập.'); setTimeout(() => this.router.navigate(['/auth/login']), 1500); return; }
@@ -127,7 +124,6 @@ export default class ExamCommitmentComponent implements OnInit {
     acceptCommitment(): void {
         const st = this.shiftTest();
         if (!st) return;
-        // Chỉ show tất cả skill có sẵn, không cần đếm số câu
         const map = new Map<string, BankQuestion[]>();
         for (const sk of this.skillOrder) {
             map.set(sk, []);

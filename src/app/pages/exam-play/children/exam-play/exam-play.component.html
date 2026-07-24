@@ -70,6 +70,9 @@
     }
 
     <main class="exam-main">
+        @if (state() === 'loading') {
+            <app-loading-progress heading="Đang tải đề thi..." />
+        }
         @if (examTimeLeft() > 0) {
             <div class="exam-timer" [class.timer-warning]="countdownWarning">
                 {{ countdownDisplay() }}
@@ -102,31 +105,7 @@
                         <div class="question-direction" [innerHTML]="trustHtml(processDirectionImage(p.question_direction))"></div>
                     }
                 }
-                <!-- Speaking skill audio: autoplay, không pause, đợi ended rồi mới record -->
-                @if (skill() === 'speaking' && p.media?.path) {
-                    <div class="student-question-media">
-                        <app-audio-player
-                            [src]="buildAudioUrl(p.media.path)"
-                            [cacheKey]="questionKey(p)"
-                            [replay]="1"
-                            [autoplay]="true"
-                            [lockSeek]="true"
-                            [canRender]="!!buildAudioUrl(p.media.path)"
-                            [disableControls]="true"
-                            [onLoadError]="onAudioLoadErrorForQ(p)"
-                            [onEnded]="onMediaEndedForQ(p)" />
-                        @if (recordState(p)?.audioLoadFailed) {
-                            <div class="audio-error-row">
-                                <span class="audio-error-text">Audio không tải được</span>
-                                <button class="audio-reload-btn" (click)="reloadAudio(p)">
-                                    <i class="fa-solid fa-refresh"></i> Tải lại
-                                </button>
-                            </div>
-                        }
-                    </div>
-                }
-                <!-- Other 3 skills audio: hiển thị control, replay limit -->
-                @if (skill() !== 'speaking' && p.media?.path) {
+                @if (p.media?.path) {
                     <div class="student-question-media">
                         <app-audio-player
                             [src]="buildAudioUrl(p.media.path)"
@@ -204,29 +183,7 @@
             } @else {
                 @if (q.question_direction) { <div class="question-direction question-direction--child" [innerHTML]="trustHtml(processDirectionImage(q.question_direction))"></div> }
             }
-            @if (skill() === 'speaking' && q.media?.path) {
-                <div class="student-question-media" style="margin-top:8px;">
-                    <app-audio-player
-                        [src]="buildAudioUrl(q.media.path)"
-                        [cacheKey]="questionKey(q)"
-                        [replay]="1"
-                        [autoplay]="true"
-                        [lockSeek]="true"
-                        [canRender]="!!buildAudioUrl(q.media.path)"
-                        [disableControls]="true"
-                        [onLoadError]="onAudioLoadErrorForQ(q)"
-                        [onEnded]="onMediaEndedForQ(q)" />
-                    @if (recordState(q)?.audioLoadFailed) {
-                        <div class="audio-error-row">
-                            <span class="audio-error-text">Audio không tải được</span>
-                            <button class="audio-reload-btn" (click)="reloadAudio(q)">
-                                <i class="fa-solid fa-refresh"></i> Tải lại
-                            </button>
-                        </div>
-                    }
-                </div>
-            }
-            @if (skill() !== 'speaking' && q.media?.path) {
+            @if (q.media?.path) {
                 <div class="student-question-media" style="margin-top:8px;">
                     <app-audio-player
                         [src]="buildAudioUrl(q.media.path)"
