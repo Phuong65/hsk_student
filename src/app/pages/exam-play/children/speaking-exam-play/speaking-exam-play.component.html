@@ -230,8 +230,9 @@
                    [class.recording-icon]="rs.phase === 'recording' && !rs.isSpeaking"
                    [class.speaking-icon]="rs.phase === 'recording' && rs.isSpeaking"></i> }
                 <div>
-                    @if (rs.phase === 'preparing' && rs.prepareLeft > 0) { <strong>Prepare to speak</strong><span>Recording starts in {{ rs.prepareLeft }}s</span> }
-                    @if (rs.phase === 'recording') { <strong style="color:#dc2626;">Recording</strong><span>Speaking time left: {{ rs.speakingLeft }}s</span> @if (canSubmitRecordEarly(q)) { <button mat-flat-button class="btn ictu-badge-btn--info-reverse"  (click)="submitRecordEarly(q)">Nộp</button> } }
+                    @if (rs.phase === 'preparing' && rs.prepareLeft > 0) { <strong>Chuẩn bị thu âm</strong><span>Thu âm sau: {{ rs.prepareLeft }}s</span> }
+                    @if (rs.phase === 'recording') { <strong style="color:#dc2626;">Đang thu âm</strong><span>Thời gian còn lại: {{ rs.speakingLeft }}s</span>}
+                    <!-- @if (canSubmitRecordEarly(q)) { <button mat-flat-button class="btn ictu-badge-btn--info-reverse" style="padding-left: 10px"  (click)="submitRecordEarly(q)">Nộp</button> } -->
                     @if (rs.phase === 'uploading') { <strong class="record-status-uploading"><i class="fa-solid fa-spinner fa-spin"></i> Đang nộp...</strong> }
                     @if (rs.phase === 'uploaded') { <span style="color:#16a34a;font-weight:700;font-size:13px;">Đã nộp</span> }
                     @if (rs.phase === 'error') { <span class="student-record-box__status--error"><i class="fa-solid fa-circle-exclamation"></i> {{ rs.error }}</span> }

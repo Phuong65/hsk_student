@@ -28,6 +28,9 @@ import { AuthenticationService } from '@services/authentication.service';
 
 import { SpeakingAudioPlayerComponent } from '../../speaking-audio-player.component';
 import { LoadingProgressComponent } from '@theme/components/loading-progress/loading-progress.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface QV extends BankQuestion {
     _viewKey?: string;
@@ -59,7 +62,7 @@ interface RecordQuestionState {
 @Component({
     selector: 'app-speaking-exam-play',
     standalone: true,
-    imports: [CommonModule, FormsModule, SpeakingAudioPlayerComponent, LoadingProgressComponent],
+    imports: [CommonModule, FormsModule, SpeakingAudioPlayerComponent, LoadingProgressComponent, MatButtonModule, MatIconModule, MatTooltipModule],
     templateUrl: './speaking-exam-play.component.html',
     styleUrls: ['./speaking-exam-play.component.css'],
 })
@@ -209,7 +212,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
                         ? this.shiftTestService.query(
                             [{ conditionName: 'id', condition: IctuQueryCondition.equal, value: this._queryShiftTestId.toString() }],
                             { limit: 1 }
-                          ).pipe(map(r => r.data?.[0]))
+                        ).pipe(map(r => r.data?.[0]))
                         : of(null),
                 }).pipe(
                     switchMap(({ student, shift, shiftTest }) => {
@@ -974,7 +977,9 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
 
     private buildRecordQuestionOrder(): void {
         this._recordQuestionOrder = [];
-        for (const p of this.parents()) {
+        const part = this.currentPart();
+        if (!part) return;
+        for (const p of part.questions) {
             if (p.children?.length) {
                 for (const c of p.children) {
                     if (this.isRecordQuestion(c)) this._recordQuestionOrder.push(this.questionKey(c));
@@ -993,8 +998,9 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
                 break;
             }
         }
+        // Nếu tất cả đã nộp và còn part kế → activeRecordKey = null (advanceToNextRecord sẽ chuyển part)
         if (!foundNext && this._recordQuestionOrder.length > 0) {
-            this.activeRecordKey.set(this._recordQuestionOrder[0]);
+            this.activeRecordKey.set(null);
         }
     }
 
@@ -1010,12 +1016,18 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
 
     private advanceToNextRecord(): void {
         const current = this.activeRecordKey();
-        if (!current) return;
-        const idx = this._recordQuestionOrder.indexOf(current);
-        if (idx >= 0 && idx < this._recordQuestionOrder.length - 1) {
-            this.activeRecordKey.set(this._recordQuestionOrder[idx + 1]);
-        } else {
-            this.activeRecordKey.set(null);
+        // Nếu còn câu record tiếp theo trong _recordQuestionOrder
+        if (current) {
+            const idx = this._recordQuestionOrder.indexOf(current);
+            if (idx >= 0 && idx < this._recordQuestionOrder.length - 1) {
+                this.activeRecordKey.set(this._recordQuestionOrder[idx + 1]);
+                return;
+            }
+        }
+        // Hết câu trong part hiện tại → chuyển part
+        this.activeRecordKey.set(null);
+        if (this.currentPartIndex() < this.partGroups().length - 1) {
+            setTimeout(() => this.nextParent(), 1000);
         }
     }
 
@@ -1052,7 +1064,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         if (!state || state.phase !== 'recording') return false;
         const total = this.recordSpeakingSeconds(q);
         const elapsed = total - state.speakingLeft;
-        return elapsed >= 20;
+        return elapsed >= 15;
     }
 
     submitRecordEarly(question: QV): void {
@@ -1341,7 +1353,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         });
     }
 
-    private _progress: Array<{part: number; question_id: number}> = [];
+    private _progress: Array<{ part: number; question_id: number }> = [];
     private _answerSyncInterval: any = null;
 
     private startExamCountdown(): void {
@@ -1462,7 +1474,7 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
         if (!this.stateId) return;
         this.shiftTestStateService.update(this.stateId, { progress: this._progress } as any)
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({ error: () => {} });
+            .subscribe({ error: () => { } });
     }
 
     previousParent(): void {
