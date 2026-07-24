@@ -84,6 +84,7 @@
             @for (p of part.questions; track p.id) {
             <article class="question-page-card question-page-card--active">
                 <div class="question-number-badge">Câu {{ getParentBadge(p) }}</div>
+                @if (isRecordQuestion(p) || hasRecordChild(p)) { <span class="student-question-params">@if (recordPrepareSeconds(p) > 0) { Chuẩn bị: {{ formatSeconds(recordPrepareSeconds(p)) }} - } Nói: {{ formatSeconds(recordSpeakingSeconds(p)) }}</span> }
                 @if (p.question_direction && !shouldRenderParentControl(p)) {
                     @if (hasInputInlineMarker(p.question_direction)) {
                         <div class="input-inline-direction-container" [attr.data-qid]="p.id">
@@ -103,7 +104,7 @@
                         <div class="question-direction" [innerHTML]="trustHtml(processDirectionImage(p.question_direction))"></div>
                     }
                 }
-                @if (!shouldRenderParentControl(p) && p.media?.path) {
+                @if (p.media?.path) {
                     <div class="student-question-media">
                         <app-speaking-audio-player
                             [src]="buildAudioUrl(p.media.path)"
@@ -176,7 +177,7 @@
             } @else {
                 @if (q.question_direction) { <div class="question-direction question-direction--child" [innerHTML]="trustHtml(processDirectionImage(q.question_direction))"></div> }
             }
-            @if (q.media?.path && activeRecordKey()===questionKey(q)) {
+            @if (si && q.media?.path && activeRecordKey()===questionKey(q)) {
                 <div class="student-question-media" style="margin-top:8px;">
                     <app-speaking-audio-player
                         [src]="buildAudioUrl(q.media.path)"
@@ -196,7 +197,7 @@
                 </div>
             }
             @if (!(isSelectQuestion(q) && hasSelectMarker(q.question_direction))) { <ng-container *ngTemplateOutlet="qc; context:{q:q}"></ng-container> }
-            @if (isRecordQuestion(q)) { <p class="student-question-params">@if (recordPrepareSeconds(q) > 0) { Chuẩn bị: {{ formatSeconds(recordPrepareSeconds(q)) }} - } Nói: {{ formatSeconds(recordSpeakingSeconds(q)) }}</p> }
+            @if (false && isRecordQuestion(q)) { <p class="student-question-params">@if (recordPrepareSeconds(q) > 0) { Chuẩn bị: {{ formatSeconds(recordPrepareSeconds(q)) }} - } Nói: {{ formatSeconds(recordSpeakingSeconds(q)) }}</p> }
         </div>
     </div>
 </ng-template>
@@ -218,14 +219,15 @@
         @if (rs.phase !== 'idle') {
         <div class="student-record-box">
             <div class="student-record-box__head">
-                <i class="fa-solid fa-microphone"
+                @if (rs.phase === 'uploaded') { <i class="fa-solid fa-check-circle" style="color:#16a34a;font-size:24px;width:42px;text-align:center;flex-shrink:0;"></i> }
+                @if (rs.phase !== 'uploaded') { <i class="fa-solid fa-microphone"
                    [class.recording-icon]="rs.phase === 'recording' && !rs.isSpeaking"
-                   [class.speaking-icon]="rs.phase === 'recording' && rs.isSpeaking"></i>
+                   [class.speaking-icon]="rs.phase === 'recording' && rs.isSpeaking"></i> }
                 <div>
                     @if (rs.phase === 'preparing' && rs.prepareLeft > 0) { <strong>Prepare to speak</strong><span>Recording starts in {{ rs.prepareLeft }}s</span> }
                     @if (rs.phase === 'recording') { <strong style="color:#dc2626;">Recording</strong><span>Speaking time left: {{ rs.speakingLeft }}s</span> @if (canSubmitRecordEarly(q)) { <button mat-flat-button class="btn ictu-badge-btn--info-reverse"  (click)="submitRecordEarly(q)">Nộp</button> } }
                     @if (rs.phase === 'uploading') { <strong class="record-status-uploading"><i class="fa-solid fa-spinner fa-spin"></i> Đang nộp...</strong> }
-                    @if (rs.phase === 'uploaded') { <span class="student-record-box__status--uploaded"><i class="fa-solid fa-check"></i> Đã nộp bài</span> }
+                    @if (rs.phase === 'uploaded') { <span style="color:#16a34a;font-weight:700;font-size:13px;">Đã nộp</span> }
                     @if (rs.phase === 'error') { <span class="student-record-box__status--error"><i class="fa-solid fa-circle-exclamation"></i> {{ rs.error }}</span> }
                 </div>
                 @if (rs.phase === 'error') { <button type="button" class="student-record-box__retry" (click)="retryRecord(q)"><i class="fa-solid fa-rotate"></i> Nộp lại</button> }

@@ -511,6 +511,10 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
 
     isRecordQuestion(q: any): boolean { return q.question_type === 'record'; }
 
+    hasRecordChild(p: any): boolean {
+        return p?.children?.some?.(c => c.question_type === 'record') ?? false;
+    }
+
     isTextareaQuestion(q: any): boolean { return q.question_type === 'textarea'; }
 
     isInputboxQuestion(q: any): boolean { return q.question_type === 'inputbox'; }

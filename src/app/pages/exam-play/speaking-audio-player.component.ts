@@ -75,6 +75,21 @@ export class SpeakingAudioPlayerComponent implements OnDestroy {
             this.createAudio(src, key);
             if (this.autoplay()) setTimeout(() => this.tryPlay(), 200);
         });
+        // Khi autoplay chuyển từ false→true (activeRecordKey trùng), phát audio
+        effect(() => {
+            const shouldPlay = this.autoplay();
+            if (!shouldPlay || !this.audio) return;
+            if (!this.audio.paused) return;
+            if (this.audio.readyState < 2) {
+                const onCanPlay = () => {
+                    this.audio?.removeEventListener('canplay', onCanPlay);
+                    this.tryPlay();
+                };
+                this.audio.addEventListener('canplay', onCanPlay);
+                return;
+            }
+            this.tryPlay();
+        });
     }
 
     private createAudio(src: string, key: string): void {
