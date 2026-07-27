@@ -166,11 +166,8 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 ).subscribe(allQ => {
                     const skill = this.skill().toLowerCase();
                     this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
-                    this.state.set('success');
                 });
             }
-            // Load thời gian từ form_detail
-            this.loadFormDuration(st);
             return;
         }
 
@@ -216,8 +213,6 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                             map(allQ => {
                                 const skill = this.skill().toLowerCase();
                                 this.questions.set(allQ.filter(q => (q.skill || '').toLowerCase() === skill));
-                                // Load timer ngay (state hoặc form_detail)
-                                this.loadFormDuration(shiftTest);
                             })
                         );
                     })
@@ -231,7 +226,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         effect(() => {
             const sk = this.skill();
             const qs = this.questions();
-            if (sk && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
+            if (sk && qs && qs.length > 0 && (sk !== this._lastSkill || qs !== this._lastQuestionsRef)) {
                 this._lastSkill = sk;
                 this._lastQuestionsRef = qs;
                 this.resetAllState();
@@ -350,7 +345,6 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
             return;
         }
         this.incompleteCurrentPageWarning.set('');
-        this.saveCurrentAnswers();
         this.nextParent();
     }
 
@@ -1140,6 +1134,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         this.recAudioUrl.set('');
         this.isSpeaking.set(false);
         this._progress = [];
+        this._pendingProgress = false;
         this.resolvedAudioUrls.set({});
         this.stateId = null;
         this.lastTimeLeftSync = Date.now();
@@ -1178,6 +1173,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 this.answerVersion.update(v => v + 1);
                 this.cdr.markForCheck();
             }
+            this.state.set('success');
         });
 
         this.shiftTestStateService.query(
@@ -1194,9 +1190,11 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 this.examTimeLeft.set(row.time_left || 0);
                 this.startExamCountdown();
             } else {
+                const formId = st.form_id || this.shift()?.form_id || 0;
+                if (!formId) return;
                 this.formDetailService.query(
                     [
-                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: String(st.form_id ?? '') },
+                        { conditionName: 'form_id', condition: IctuQueryCondition.equal, value: String(formId) },
                         { conditionName: 'skill', condition: IctuQueryCondition.equal, value: this.skill() },
                     ],
                     { limit: 1 }
@@ -1241,7 +1239,13 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
                 // Restore progress từ server
                 if (row.progress) {
                     try {
-                        if (Array.isArray(row.progress)) this._progress = row.progress;
+                        if (Array.isArray(row.progress)) {
+                            for (const item of row.progress) {
+                                if (!this._progress.some(p => p.question_id === item.question_id)) {
+                                    this._progress.push(item);
+                                }
+                            }
+                        }
                     } catch { /* ignore */ }
                 }
                 this.startExamCountdown();
@@ -1250,21 +1254,30 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     private createState(shiftTestId: number, duration: number): void {
-        const payload: Partial<ShiftTestState> = {
+        const payload = {
             shift_test_id: shiftTestId,
             student_id: this.student()?.id ?? 0,
             skill: this.skill(),
-            progress: JSON.stringify({ current: 0 }),
             duration,
             time_left: duration,
             completed: 0,
         };
-        this.shiftTestStateService.create(payload as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((row: any) => {
-            this.stateId = row?.id ?? null;
+        this.shiftTestStateService.create(payload as any).pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
+            next: (row: any) => {
+                this.stateId = row?.id ?? null;
+                // Nếu timer đang chạy mà chưa có stateId, PUT ngay sau khi có
+                if (this.stateId && this.examTimeLeft() > 0) this.syncState();
+                // Nếu có progress pending, PUT ngay
+                if (this.stateId && this._pendingProgress) this.syncProgress();
+            },
+            error: () => {}
         });
     }
 
     private _progress: Array<{part: number; question_id: number}> = [];
+    private _pendingProgress = false;
     private _answerSyncInterval: any = null;
 
     private startExamCountdown(): void {
@@ -1379,7 +1392,11 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     private syncProgress(): void {
-        if (!this.stateId) return;
+        if (!this.stateId) {
+            this._pendingProgress = true;
+            return;
+        }
+        this._pendingProgress = false;
         this.shiftTestStateService.update(this.stateId, { progress: this._progress } as any)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({ error: () => {} });
