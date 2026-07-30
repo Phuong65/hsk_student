@@ -80,7 +80,7 @@ export default class LoginComponent implements OnInit , OnDestroy {
 		if ( this.auth.userLoggedIn ) {
 			void this.redirectAfterAuthenticated();
 		} else {
-			this.title.setTitle( '.:: Đăng nhập - [AMS] ::.' );
+			this.title.setTitle( '.:: Đăng nhập - [HSK] ::.' );
 			setTimeout( () : void => this.loading.set( false ) , 500 );
 		}
 	}

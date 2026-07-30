@@ -69,7 +69,7 @@ export class AdminLayoutComponent implements OnInit , OnDestroy {
     private title : Title = inject<Title>( Title );
 
     ngOnInit () : void {
-        this.title.setTitle( 'Hệ thống quản lý trung tâm đào tạo - [AMS]' );
+        this.title.setTitle( 'Hệ thống thi tiếng Trung Quốc - [HSK]' );
 
         this.breakpointObserver.observe( [ '(min-width: 1025px)' , '(max-width: 1024.98px)' ] ).pipe(
             takeUntil( this.destroyed$ )

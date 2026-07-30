@@ -58,7 +58,7 @@ export default class ForgotPasswordComponent implements OnDestroy {
 	}
 
 	constructor() {
-		this.title.setTitle( '.:: Quên mật khẩu - [AMS] ::.' );
+		this.title.setTitle( '.:: Quên mật khẩu - [HSK] ::.' );
 		this.submitObserver.asObservable().pipe(
 			takeUntilDestroyed() ,
 			distinctUntilChanged()

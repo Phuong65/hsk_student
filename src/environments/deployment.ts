@@ -58,7 +58,7 @@ export const DEPLOYMENTS_FOR_DEV : Record<DevelopmentServers , DeploymentEnviron
 export const DEPLOYMENTS_FOR_PRODUCTION : Record<ProductionDomainName , DeploymentEnvironment> = {
     'ams.ictu.vn' : new DeploymentEnvironment( {
         apiServiceConfig    : {
-            title                                : 'Hệ thống quản lý trung tâm học thuật - [AMS]' ,
+            title                                : 'Hệ thống thi tiếng Trung Quốc - [HSK]' ,
             realm                                : 'dacms' ,
             port                                 : 9081 ,
             googleClientId                       : '196027039836-kjhoo8f8p3i2eldcodouvs94p1gbi4jo.apps.googleusercontent.com' ,
