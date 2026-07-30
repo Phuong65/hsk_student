@@ -1273,15 +1273,13 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     private createState(shiftTestId: number, duration: number): void {
-        const payload = {
+        this.shiftTestStateService.create({
             shift_test_id: shiftTestId,
             student_id: this.student()?.id ?? 0,
             skill: this.skill(),
             duration,
             time_left: duration,
-            completed: 0,
-        };
-        this.shiftTestStateService.create(payload as any).pipe(
+        } as any).pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
             next: (row: any) => {

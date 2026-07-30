@@ -135,6 +135,6 @@
 .question-panel__tabs button.active { color: #4b3193; border-bottom-color: #4b3193; }
 .panel-empty { padding: 24px; text-align: center; color: #9ca3af; font-size: 13px; }
 .question-page-card__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.bookmark-btn { width: 36px; height: 36px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #9ca3af; cursor: pointer; display: grid; place-items: center; font-size: 16px; flex-shrink: 0; transition: color .15s, border-color .15s, background .15s; }
-.bookmark-btn:hover { border-color: #f59e0b; color: #f59e0b; }
-.bookmark-btn.bookmarked { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
+.bookmark-btn { width: 36px; height: 36px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #111827; cursor: pointer; display: grid; place-items: center; font-size: 16px; flex-shrink: 0; font-weight: 700; transition: all .15s; }
+.bookmark-btn:hover { border-color: #111827; background: #f9fafb; color: #111827; }
+.bookmark-btn.bookmarked { background: #e5e7eb; border-color: #111827; color: #111827; font-weight: 700; }

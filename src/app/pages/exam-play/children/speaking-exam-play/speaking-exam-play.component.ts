@@ -1373,7 +1373,6 @@ export class SpeakingExamPlayComponent implements AfterViewChecked, OnDestroy, O
             skill: this.skill(),
             duration,
             time_left: duration,
-            completed: 0,
         } as any).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((row: any) => {
             this.stateId = row?.id ?? null;
         });
