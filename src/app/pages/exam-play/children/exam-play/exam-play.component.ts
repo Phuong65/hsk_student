@@ -97,6 +97,8 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     readonly collapsedParts: WritableSignal<Set<number>> = signal(new Set());
     readonly seenQuestionKeys: WritableSignal<Set<string>> = signal(new Set());
     readonly completedQuestionIds: WritableSignal<Set<string>> = signal(new Set());
+    readonly bookmarkedIds: WritableSignal<Set<string>> = signal(new Set());
+    readonly showBookmarkedOnly: WritableSignal<boolean> = signal(false);
     readonly submitConfirmVisible: WritableSignal<boolean> = signal(false);
     readonly exitConfirmVisible: WritableSignal<boolean> = signal(false);
     readonly state: WritableSignal<'loading' | 'success' | 'error'> = signal('loading');
@@ -463,6 +465,21 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     hasSeenQuestion(q: any): boolean { return this.seenQuestionKeys().has(this.questionKey(q)); }
+
+    toggleBookmark(q: any): void {
+        const key = this.questionKey(q);
+        const s = new Set(this.bookmarkedIds());
+        if (s.has(key)) s.delete(key); else s.add(key);
+        this.bookmarkedIds.set(s);
+    }
+
+    isBookmarked(q: any): boolean {
+        return this.bookmarkedIds().has(this.questionKey(q));
+    }
+
+    getBookmarkedParents(): QV[] {
+        return this.parents().filter(p => this.isBookmarked(p));
+    }
 
     getQuestionRange(q: QV): string {
         if (q.children?.length) {
@@ -1119,6 +1136,8 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
         this.collapsedParts.set(new Set());
         this.seenQuestionKeys.set(new Set());
         this.completedQuestionIds.set(new Set());
+        this.bookmarkedIds.set(new Set());
+        this.showBookmarkedOnly.set(false);
         this.submitConfirmVisible.set(false);
         this.exitConfirmVisible.set(false);
         this.submitting.set(false);

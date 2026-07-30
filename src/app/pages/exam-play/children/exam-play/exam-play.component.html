@@ -48,22 +48,42 @@
                 <h2>Danh sách câu hỏi</h2>
                 <button type="button" class="question-panel__close" (click)="questionPanelOpen.set(false)"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            <div class="question-panel__tabs">
+                <button type="button" [class.active]="!showBookmarkedOnly()" (click)="showBookmarkedOnly.set(false)">Tất cả</button>
+                <button type="button" [class.active]="showBookmarkedOnly()" (click)="showBookmarkedOnly.set(true)">
+                    <i class="fa-regular fa-bookmark"></i> Đã đánh dấu ({{ bookmarkedIds().size }})
+                </button>
+            </div>
             <div class="question-panel__body">
-                @for (pg of getGroupedByPart(); track pg.part) {
-                    <div class="question-group-card">
-                        <div class="question-group-card__head"><div><strong>{{ echoPart(pg.part) }}</strong><span> ({{ getPartRange(pg) }})</span></div></div>
-                        <div class="question-group-card__body" [class.collapsed]="isPartCollapsed(pg.part)">
-                            @for (q of pg.questions; track q.id) {
-                                <button type="button" class="question-list-item"
-                                    [class.active]="currentParentIndex() === q._globalIndex"
-                                    [class.question-list-item--locked]="!canSelectMenuQuestion(q._globalIndex!)"
-                                    [disabled]="!canSelectMenuQuestion(q._globalIndex!)"
-                                    (click)="setActiveParent(q._globalIndex!, 'menu')">
-                                    <div><strong>{{ getQuestionRange(q) }}</strong></div>
-                                </button>
-                            }
+                @if (!showBookmarkedOnly()) {
+                    @for (pg of getGroupedByPart(); track pg.part) {
+                        <div class="question-group-card">
+                            <div class="question-group-card__head"><div><strong>{{ echoPart(pg.part) }}</strong><span> ({{ getPartRange(pg) }})</span></div></div>
+                            <div class="question-group-card__body" [class.collapsed]="isPartCollapsed(pg.part)">
+                                @for (q of pg.questions; track q.id) {
+                                    <button type="button" class="question-list-item"
+                                        [class.active]="currentParentIndex() === q._globalIndex"
+                                        [class.question-list-item--locked]="!canSelectMenuQuestion(q._globalIndex!)"
+                                        [disabled]="!canSelectMenuQuestion(q._globalIndex!)"
+                                        (click)="setActiveParent(q._globalIndex!, 'menu')">
+                                        <div><strong>{{ getQuestionRange(q) }}</strong></div>
+                                    </button>
+                                }
+                            </div>
                         </div>
-                    </div>
+                    }
+                }
+                @if (showBookmarkedOnly()) {
+                    @for (q of getBookmarkedParents(); track q.id) {
+                        <button type="button" class="question-list-item"
+                            [class.active]="currentParentIndex() === q._globalIndex"
+                            (click)="setActiveParent(q._globalIndex!, 'menu')">
+                            <div><strong>{{ getQuestionRange(q) }}</strong></div>
+                        </button>
+                    }
+                    @if (getBookmarkedParents().length === 0) {
+                        <div class="panel-empty">Chưa có câu hỏi nào được đánh dấu</div>
+                    }
                 }
             </div>
         </aside>
@@ -81,11 +101,14 @@
         @for (p of parents(); track p.id) {
             <article class="question-page-card" [class.question-page-card--active]="currentParent()===p" [class.question-page-card--hidden]="currentParent()!==p">
                 <div style="display:none"><span>{{ echoPart(p.part) }}</span><span>{{ partQuestionCount(p) }} questions</span></div>
+                <div class="question-page-card__header">
                             @if (p.children?.length) {
                     <div class="question-number-badge">Câu {{ getParentBadge(p) }}</div>
                 } @else {
                     <div class="question-number-badge">Câu {{ getQuestionRange(p) }}</div>
                 }
+                    <button type="button" class="bookmark-btn" [class.bookmarked]="isBookmarked(p)" (click)="toggleBookmark(p)"><i class="fa-regular fa-bookmark"></i></button>
+                </div>
                 @if (p.question_direction && !shouldRenderParentControl(p)) {
                     @if (hasInputInlineMarker(p.question_direction)) {
                         <div class="input-inline-direction-container" [attr.data-qid]="p.id">

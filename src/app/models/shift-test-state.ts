@@ -1,5 +1,6 @@
 import { IctuBaseModel } from '@models/ictu-base-model';
 
+
 export interface ShiftTestState extends IctuBaseModel {
     id: number;
     shift_test_id: number;
@@ -8,5 +9,6 @@ export interface ShiftTestState extends IctuBaseModel {
     progress: string;
     duration: number;
     time_left: number;
-    completed: number;
+    ended: number;
+    ended_at: string;
 }
