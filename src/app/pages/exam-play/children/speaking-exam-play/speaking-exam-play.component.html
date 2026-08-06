@@ -15,6 +15,19 @@
         </div>
     }
 
+    @if (securityEscapeVisible()) {
+        <div class="submit-confirm-overlay">
+            <div class="submit-confirm-dialog">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#dc2626"></i>
+                <h2>Không thể thoát toàn màn hình</h2>
+                <p>Bạn cần ở chế độ toàn màn hình để làm bài thi. Vui lòng không thoát.</p>
+                <div class="submit-confirm-actions" style="grid-template-columns:1fr">
+                    <button type="button" class="submit-confirm-button submit-confirm-button--primary" (click)="resumeFullscreen()">Tiếp tục</button>
+                </div>
+            </div>
+        </div>
+    }
+
     @if (submitConfirmVisible()) {
         <div class="submit-confirm-overlay">
             <div class="submit-confirm-dialog">

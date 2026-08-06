@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PreviewComponent , previewRoutes } from "@pages/preview";
 import { adminGuard } from "@guards/admin.guard";
 import { authGuard } from "@guards/auth.guard";
+import { examSecurityGuard } from "@guards/exam-security.guard";
 
 export const routes : Routes = [
 	{
@@ -25,7 +26,7 @@ export const routes : Routes = [
 	} ,
 	{
 		path          : 'exam/:shiftId/:skill' ,
-		canActivate   : [ authGuard ] ,
+		canActivate   : [ authGuard , examSecurityGuard ] ,
 		loadComponent : () : Promise<any> => import('@pages/exam-play/skill-router.component')
 	} ,
 	{

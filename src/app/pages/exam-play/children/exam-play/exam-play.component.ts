@@ -142,7 +142,14 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     private _hasRecordUploadInProgress = false;
     private _inlineRestored = false;
     private _queryShiftTestId = 0;
+    readonly securityEscapeVisible: WritableSignal<boolean> = signal(false);
+    private _escapeHandler: any = null;
     private _timerLoaded = false;
+
+    resumeFullscreen(): void {
+        this.securityEscapeVisible.set(false);
+        document.documentElement.requestFullscreen().catch(() => {});
+    }
 
     ngOnInit(): void {
         this.state.set('loading');
@@ -225,6 +232,8 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
     }
 
     constructor() {
+        this._escapeHandler = () => this.securityEscapeVisible.set(true);
+        window.addEventListener('exam:fullscreen-escape', this._escapeHandler);
         effect(() => {
             const sk = this.skill();
             const qs = this.questions();
@@ -271,6 +280,7 @@ export class ExamPlayComponent implements AfterViewChecked, OnDestroy, OnInit {
             if (st?.audioUrl) URL.revokeObjectURL(st.audioUrl);
         });
         if (this.beepAudioUrl) URL.revokeObjectURL(this.beepAudioUrl);
+        if (this._escapeHandler) window.removeEventListener('exam:fullscreen-escape', this._escapeHandler);
     }
 
     // =================== Helpers ===================
